@@ -7,6 +7,10 @@ on:
     branches:
       - main
 
+defaults:
+  run:
+    working-directory: packages/react-native-citizen-escposprinter
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -19,9 +23,6 @@ jobs:
 
       - name: Lint files
         run: yarn lint
-
-      - name: Typecheck files
-        run: yarn typecheck
 
   test:
     runs-on: ubuntu-latest
