@@ -84,6 +84,9 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+  // Dependency on local binaries
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 if (isNewArchitectureEnabled()) {
