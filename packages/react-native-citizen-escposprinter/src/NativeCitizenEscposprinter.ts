@@ -21,8 +21,6 @@ import type {
 } from "./ESCPOSConst";
 
 export interface Spec extends TurboModule {
-  test(): Promise<any>;
-
   connect(
     type:
       | ESCPOSConst.CMP_PORT_Bluetooth

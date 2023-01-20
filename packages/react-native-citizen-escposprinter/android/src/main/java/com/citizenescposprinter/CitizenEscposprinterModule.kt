@@ -55,11 +55,6 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
   }
 
   @ReactMethod
-  override fun test(promise: Promise) {
-    promise.resolve(0)
-  }
-
-  @ReactMethod
   override fun connect(
       connectType: Int,
       address: String,

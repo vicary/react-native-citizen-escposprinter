@@ -44,10 +44,6 @@ const CitizenEscposprinter =
 
 export { ESCPOSConst };
 
-export function test(): Promise<any> {
-  return CitizenEscposprinter.test();
-}
-
 /**
  * This method is used to connect the printer. Please specify the type and
  * address/UsbDevice of the printer connection.
