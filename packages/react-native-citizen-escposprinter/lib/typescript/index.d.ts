@@ -1,6 +1,5 @@
 import { CitizenPrinerInfo, ESCPOSConst, ESCPOSPrinterBarcodeType, ESCPOSPrinterConnectType, ESCPOSPrinterCutType, ESCPOSPrinterDrawer, ESCPOSPrinterGS1DatabarType, ESCPOSPrinterMarkFeedType, ESCPOSPrinterPageModeControl, ESCPOSPrinterPDF417ECLevel, ESCPOSPrinterPrintAlignment, ESCPOSPrinterQRCodeECLevel, ESCPOSPrinterRotation, ESCPOSPrinterSearchType, ESCPOSPrinterTextPosition, ESCPOSPrinterTransactionControl, ESCPOSPrinterTypeface } from "./ESCPOSConst";
 export { ESCPOSConst };
-export declare function test(): Promise<any>;
 /**
  * This method is used to connect the printer. Please specify the type and
  * address/UsbDevice of the printer connection.

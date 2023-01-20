@@ -41,7 +41,6 @@ exports.setLog = setLog;
 exports.setNVBitmap = setNVBitmap;
 exports.setPrintCompletedTimeout = setPrintCompletedTimeout;
 exports.status = status;
-exports.test = test;
 exports.transactionPrint = transactionPrint;
 exports.unitFeed = unitFeed;
 exports.watermarkPrint = watermarkPrint;
@@ -61,10 +60,6 @@ require("./NativeCitizenEscposprinter").default : _reactNative.NativeModules.Cit
     throw new Error(LINKING_ERROR);
   }
 });
-function test() {
-  return CitizenEscposprinter.test();
-}
-
 /**
  * This method is used to connect the printer. Please specify the type and
  * address/UsbDevice of the printer connection.

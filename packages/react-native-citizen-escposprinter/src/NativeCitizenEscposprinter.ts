@@ -1,23 +1,5 @@
 import type { TurboModule } from "react-native";
 import { TurboModuleRegistry } from "react-native";
-import type {
-  ESCPOSConst,
-  ESCPOSPrinterBarcodeType,
-  ESCPOSPrinterConnectType,
-  ESCPOSPrinterCutType,
-  ESCPOSPrinterDrawer,
-  ESCPOSPrinterGS1DatabarType,
-  ESCPOSPrinterMarkFeedType,
-  ESCPOSPrinterPageModeControl,
-  ESCPOSPrinterPDF417ECLevel,
-  ESCPOSPrinterPrintAlignment,
-  ESCPOSPrinterQRCodeECLevel,
-  ESCPOSPrinterRotation,
-  ESCPOSPrinterSearchType,
-  ESCPOSPrinterTextPosition,
-  ESCPOSPrinterTransactionControl,
-  ESCPOSPrinterTypeface,
-} from "./ESCPOSConst";
 
 export interface Spec extends TurboModule {
   connect(

@@ -15,9 +15,6 @@ require("./NativeCitizenEscposprinter").default : NativeModules.CitizenEscpospri
   }
 });
 export { ESCPOSConst };
-export function test() {
-  return CitizenEscposprinter.test();
-}
 
 /**
  * This method is used to connect the printer. Please specify the type and

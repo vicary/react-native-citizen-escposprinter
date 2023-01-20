@@ -169,10 +169,13 @@ export type ESCPOSPrinterRotation = ESCPOSConst.CMP_RP_ROTATE180 | ESCPOSConst.C
 export type ESCPOSPrinterPageModeControl = ESCPOSConst.CMP_PM_PAGE_MODE | ESCPOSConst.CMP_PM_PRINT_SAVE | ESCPOSConst.CMP_PM_NORMAL | ESCPOSConst.CMP_PM_CANCEL;
 export type ESCPOSPrinterWatermarkStart = ESCPOSConst.CMP_WM_START | ESCPOSConst.CMP_WM_STOP;
 export type ESCPOSPrinterSearchType = ESCPOSConst.CMP_PORT_Bluetooth | ESCPOSConst.CMP_PORT_Bluetooth_Insecure | ESCPOSConst.CMP_PORT_WiFi;
-export type CitizenPrinerInfo = {
-    ipAddress?: string;
-    macAddress?: string;
-    deviceName?: string;
-    bdAddress?: string;
+export type CitizenPrinerInfo = CitizenPrinerBluetoothInfo | CitizenPrinerWiFiInfo;
+export type CitizenPrinerWiFiInfo = {
+    ipAddress: string;
+    macAddress: string;
+};
+export type CitizenPrinerBluetoothInfo = {
+    deviceName: string;
+    bdAddress: string;
 };
 //# sourceMappingURL=ESCPOSConst.d.ts.map
