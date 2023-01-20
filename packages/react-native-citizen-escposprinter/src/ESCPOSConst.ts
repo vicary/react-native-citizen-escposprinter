@@ -308,9 +308,16 @@ export type ESCPOSPrinterSearchType =
   | ESCPOSConst.CMP_PORT_Bluetooth_Insecure
   | ESCPOSConst.CMP_PORT_WiFi;
 
-export type CitizenPrinerInfo = {
-  ipAddress?: string;
-  macAddress?: string;
-  deviceName?: string;
-  bdAddress?: string;
+export type CitizenPrinerInfo =
+  | CitizenPrinerBluetoothInfo
+  | CitizenPrinerWiFiInfo;
+
+export type CitizenPrinerWiFiInfo = {
+  ipAddress: string;
+  macAddress: string;
+};
+
+export type CitizenPrinerBluetoothInfo = {
+  deviceName: string;
+  bdAddress: string;
 };

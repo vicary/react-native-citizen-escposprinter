@@ -1,7 +1,6 @@
 import type { TurboModule } from "react-native";
 import { TurboModuleRegistry } from "react-native";
 import type {
-  CitizenPrinerInfo,
   ESCPOSConst,
   ESCPOSPrinterBarcodeType,
   ESCPOSPrinterConnectType,
@@ -22,11 +21,8 @@ import type {
 
 export interface Spec extends TurboModule {
   connect(
-    type:
-      | ESCPOSConst.CMP_PORT_Bluetooth
-      | ESCPOSConst.CMP_PORT_Bluetooth_Insecure
-      | ESCPOSConst.CMP_PORT_WiFi
-      | ESCPOSConst.CMP_PORT_USB,
+    /** @type ESCPOSPrinterConnectType */
+    type: number,
     address: string,
     port?: number,
     timeout?: number,
@@ -45,29 +41,33 @@ export interface Spec extends TurboModule {
 
   printText(
     data: string,
-    alignment: ESCPOSPrinterPrintAlignment,
-    /** ESCPOSPrinterTextAttribute */
+    /** @type ESCPOSPrinterPrintAlignment */
+    alignment: number,
+    /** @type ESCPOSPrinterTextAttribute */
     attribute: number,
-    /** ESCPOSPrinterTextSize */
+    /** @type ESCPOSPrinterTextSize */
     textSize: number,
   ): Promise<void>;
 
   printPaddingText(
     data: string,
-    /** ESCPOSPrinterTextAttribute */
+    /** @type ESCPOSPrinterTextAttribute */
     attribute: number,
-    /** ESCPOSPrinterTextSize */
+    /** @type ESCPOSPrinterTextSize */
     textSize: number,
     length: number,
-    side: ESCPOSConst.CMP_SIDE_RIGHT | ESCPOSConst.CMP_SIDE_LEFT,
+    /** @type ESCPOSConst.CMP_SIDE_RIGHT | ESCPOSConst.CMP_SIDE_LEFT */
+    side: number,
   ): Promise<void>;
 
   printTextLocalFont(
     data: string,
-    alignment: ESCPOSPrinterPrintAlignment,
-    fontType: ESCPOSPrinterTypeface,
+    /** @type ESCPOSPrinterPrintAlignment */
+    alignment: number,
+    /** @type ESCPOSPrinterTypeface */
+    fontType: string,
     point: number,
-    /** ESCPOSPrinterFontStyle */
+    /** @type ESCPOSPrinterFontStyle */
     style: number,
     /** 1-1000 */
     hRatio: number,
@@ -76,21 +76,24 @@ export interface Spec extends TurboModule {
   ): Promise<void>;
 
   printBitmap(
-    /** base64 encoded bitmap data */
     data: string,
     width?: number,
-    alignment?: ESCPOSPrinterPrintAlignment,
-    /** ESCPOSPrinterBitmapMode */
+    /** @type ESCPOSPrinterPrintAlignment */
+    alignment?: number,
+    /** @type ESCPOSPrinterBitmapMode */
     mode?: number,
   ): Promise<void>;
 
   printBarCode(
     data: string,
-    symbology: ESCPOSPrinterBarcodeType,
+    /** @type ESCPOSPrinterBarcodeType */
+    symbology: number,
     height: number,
     width: number,
-    alignment: ESCPOSPrinterPrintAlignment,
-    textPosition: ESCPOSPrinterTextPosition,
+    /** @type ESCPOSPrinterPrintAlignment */
+    alignment: number,
+    /** @type ESCPOSPrinterTextPosition */
+    textPosition: number,
   ): Promise<void>;
 
   printPDF417(
@@ -99,38 +102,63 @@ export interface Spec extends TurboModule {
     steps: number,
     moduleWidth: number,
     stepHeight: number,
-    ECLevel: ESCPOSPrinterPDF417ECLevel,
-    alignment: ESCPOSPrinterPrintAlignment,
+    /** @type ESCPOSPrinterPDF417ECLevel */
+    ECLevel: number,
+    /** @type ESCPOSPrinterPrintAlignment */
+    alignment: number,
   ): Promise<void>;
 
   printQRCode(
     data: string,
     moduleSize: number,
-    ECLevel: ESCPOSPrinterQRCodeECLevel,
-    alignment: ESCPOSPrinterPrintAlignment,
+    /** @type ESCPOSPrinterQRCodeECLevel */
+    ECLevel: number,
+    /** @type ESCPOSPrinterPrintAlignment */
+    alignment: number,
   ): Promise<void>;
 
   printGS1DataBarStacked(
     data: string,
-    symbology: ESCPOSPrinterGS1DatabarType,
+    /** @type ESCPOSPrinterGS1DatabarType */
+    symbology: number,
     moduleSize: number,
     maxSize: number,
-    alignment: ESCPOSPrinterPrintAlignment,
+    /** @type ESCPOSPrinterPrintAlignment */
+    alignment: number,
   ): Promise<void>;
 
-  cutPaper(type: ESCPOSPrinterCutType): Promise<void>;
+  cutPaper(
+    /** @type ESCPOSPrinterCutType */
+    type: number,
+  ): Promise<void>;
 
   unitFeed(ufCount: number): Promise<void>;
 
-  markFeed(type: ESCPOSPrinterMarkFeedType): Promise<void>;
+  markFeed(
+    /** @type ESCPOSPrinterMarkFeedType */
+    type: number,
+  ): Promise<void>;
 
-  openDrawer(drawer: ESCPOSPrinterDrawer, pulseLen: number): Promise<void>;
+  openDrawer(
+    /** @type ESCPOSPrinterDrawer */
+    drawer: number,
+    pulseLen: number,
+  ): Promise<void>;
 
-  transactionPrint(control: ESCPOSPrinterTransactionControl): Promise<void>;
+  transactionPrint(
+    /** @type ESCPOSPrinterTransactionControl */
+    control: number,
+  ): Promise<void>;
 
-  rotatePrint(rotation: ESCPOSPrinterRotation): Promise<void>;
+  rotatePrint(
+    /** @type ESCPOSPrinterRotation */
+    rotation: number,
+  ): Promise<void>;
 
-  pageModePrint(control: ESCPOSPrinterPageModeControl): Promise<void>;
+  pageModePrint(
+    /** @type ESCPOSPrinterPageModeControl */
+    control: number,
+  ): Promise<void>;
 
   clearPrintArea(): Promise<void>;
 
@@ -143,29 +171,31 @@ export interface Spec extends TurboModule {
   printNVBitmap(nvImageNumber: number): Promise<void>;
 
   searchCitizenPrinter(
-    connectType: ESCPOSPrinterSearchType,
+    /** @type ESCPOSPrinterSearchType */
+    connectType: number,
     timeout: number,
-  ): Promise<CitizenPrinerInfo[]>;
+  ): Promise<object[]>;
 
   searchESCPOSPrinter(
-    connectType:
-      | ESCPOSConst.CMP_PORT_Bluetooth
-      | ESCPOSConst.CMP_PORT_Bluetooth_Insecure
-      | ESCPOSConst.CMP_PORT_WiFi,
+    /** @type ESCPOSPrinterSearchType */
+    connectType: number,
     timeout: number,
   ): Promise<string[]>;
 
   printerCheckEx(
-    connectType: ESCPOSPrinterConnectType,
+    /** @type ESCPOSPrinterConnectType */
+    connectType: number,
     address: string,
     port?: number,
     timeout?: number,
   ): Promise<void>;
 
   openDrawerEx(
-    drawer: ESCPOSPrinterDrawer,
+    /** @type ESCPOSPrinterDrawer */
+    drawer: number,
     pulseLen: number,
-    connectType: ESCPOSPrinterConnectType,
+    /** @type ESCPOSPrinterConnectType */
+    connectType: number,
     address: string,
     port?: number,
     timeout?: number,
@@ -173,7 +203,7 @@ export interface Spec extends TurboModule {
 
   setPrintCompletedTimeout(timeout: number): Promise<void>;
 
-  setLog(mode: 0 | 1 | 2, path: string, maxSize: number): Promise<void>;
+  setLog(mode: number, path: string, maxSize: number): Promise<void>;
 
   getVersionCode(): Promise<number>;
 
