@@ -1,5 +1,23 @@
 import { NativeModules, Platform } from "react-native";
-import { ESCPOSConst } from "./ESCPOSConst";
+import {
+  CitizenPrinerInfo,
+  ESCPOSConst,
+  ESCPOSPrinterBarcodeType,
+  ESCPOSPrinterConnectType,
+  ESCPOSPrinterCutType,
+  ESCPOSPrinterDrawer,
+  ESCPOSPrinterGS1DatabarType,
+  ESCPOSPrinterMarkFeedType,
+  ESCPOSPrinterPageModeControl,
+  ESCPOSPrinterPDF417ECLevel,
+  ESCPOSPrinterPrintAlignment,
+  ESCPOSPrinterQRCodeECLevel,
+  ESCPOSPrinterRotation,
+  ESCPOSPrinterSearchType,
+  ESCPOSPrinterTextPosition,
+  ESCPOSPrinterTransactionControl,
+  ESCPOSPrinterTypeface,
+} from "./ESCPOSConst";
 
 const LINKING_ERROR =
   "The package 'react-native-citizen-escposprinter' doesn't seem to be linked. Make sure: \n\n" +
@@ -25,6 +43,10 @@ const CitizenEscposprinter =
   );
 
 export { ESCPOSConst };
+
+export function test(): Promise<any> {
+  return CitizenEscposprinter.test();
+}
 
 /**
  * This method is used to connect the printer. Please specify the type and
@@ -63,15 +85,12 @@ export { ESCPOSConst };
  * device on the Android terminal will be displayed, please tap the OK button.
  */
 export function connect(
-  connectType:
-    | ESCPOSConst.CMP_PORT_Bluetooth
-    | ESCPOSConst.CMP_PORT_Bluetooth_Insecure
-    | ESCPOSConst.CMP_PORT_WiFi
-    | ESCPOSConst.CMP_PORT_USB,
+  connectType: ESCPOSPrinterConnectType,
   address: string,
-  port = 9100,
+  port = 0,
+  timeout = 0,
 ): Promise<void> {
-  return CitizenEscposprinter.connect(connectType, address, port);
+  return CitizenEscposprinter.connect(connectType, address, port, timeout);
 }
 
 /**
@@ -137,15 +156,8 @@ export function printerCheck(): Promise<void> {
  * the logical sum.
  */
 export function status(
-  type:
-    | ESCPOSConst.CMP_STS_PRINTEROFF
-    | ESCPOSConst.CMP_STS_MSR_READ
-    | ESCPOSConst.CMP_STS_PAPER_EMPTY
-    | ESCPOSConst.CMP_STS_COVER_OPEN
-    | ESCPOSConst.CMP_STS_BATTERY_LOW
-    | ESCPOSConst.CMP_STS_PAPER_NEAREMPTY
-    | ESCPOSConst.CMP_STS_DRAWER_LEVEL_H
-    | ESCPOSConst.CMP_STS_ONPRESENTER = 0,
+  /** ESCPOSPrinterStatus */
+  type = 0,
 ): Promise<number> {
   return CitizenEscposprinter.status(type);
 }
@@ -162,34 +174,11 @@ export function status(
  */
 export function printText(
   data: string,
-  alignment:
-    | ESCPOSConst.CMP_ALIGNMENT_LEFT
-    | ESCPOSConst.CMP_ALIGNMENT_CENTER
-    | ESCPOSConst.CMP_ALIGNMENT_RIGHT,
-  attribute:
-    | ESCPOSConst.CMP_FNT_DEFAULT
-    | ESCPOSConst.CMP_FNT_FONTB
-    | ESCPOSConst.CMP_FNT_FONTC
-    | ESCPOSConst.CMP_FNT_BOLD
-    | ESCPOSConst.CMP_FNT_REVERSE
-    | ESCPOSConst.CMP_FNT_UNDERLINE,
-  textSize:
-    | ESCPOSConst.CMP_TXT_1WIDTH
-    | ESCPOSConst.CMP_TXT_2WIDTH
-    | ESCPOSConst.CMP_TXT_3WIDTH
-    | ESCPOSConst.CMP_TXT_4WIDTH
-    | ESCPOSConst.CMP_TXT_5WIDTH
-    | ESCPOSConst.CMP_TXT_6WIDTH
-    | ESCPOSConst.CMP_TXT_7WIDTH
-    | ESCPOSConst.CMP_TXT_8WIDTH
-    | ESCPOSConst.CMP_TXT_1HEIGHT
-    | ESCPOSConst.CMP_TXT_2HEIGHT
-    | ESCPOSConst.CMP_TXT_3HEIGHT
-    | ESCPOSConst.CMP_TXT_4HEIGHT
-    | ESCPOSConst.CMP_TXT_5HEIGHT
-    | ESCPOSConst.CMP_TXT_6HEIGHT
-    | ESCPOSConst.CMP_TXT_7HEIGHT
-    | ESCPOSConst.CMP_TXT_8HEIGHT,
+  alignment: ESCPOSPrinterPrintAlignment = ESCPOSConst.CMP_ALIGNMENT_LEFT,
+  /** ESCPOSPrinterTextAttribute */
+  attribute = ESCPOSConst.CMP_FNT_DEFAULT,
+  /** ESCPOSPrinterTextSize */
+  textSize = ESCPOSConst.CMP_TXT_1WIDTH | ESCPOSConst.CMP_TXT_1HEIGHT,
 ): Promise<void> {
   return CitizenEscposprinter.printText(data, alignment, attribute, textSize);
 }
@@ -209,30 +198,10 @@ export function printText(
  */
 export function printPaddingText(
   data: string,
-  attribute:
-    | ESCPOSConst.CMP_FNT_DEFAULT
-    | ESCPOSConst.CMP_FNT_FONTB
-    | ESCPOSConst.CMP_FNT_FONTC
-    | ESCPOSConst.CMP_FNT_BOLD
-    | ESCPOSConst.CMP_FNT_REVERSE
-    | ESCPOSConst.CMP_FNT_UNDERLINE,
-  textSize:
-    | ESCPOSConst.CMP_TXT_1WIDTH
-    | ESCPOSConst.CMP_TXT_2WIDTH
-    | ESCPOSConst.CMP_TXT_3WIDTH
-    | ESCPOSConst.CMP_TXT_4WIDTH
-    | ESCPOSConst.CMP_TXT_5WIDTH
-    | ESCPOSConst.CMP_TXT_6WIDTH
-    | ESCPOSConst.CMP_TXT_7WIDTH
-    | ESCPOSConst.CMP_TXT_8WIDTH
-    | ESCPOSConst.CMP_TXT_1HEIGHT
-    | ESCPOSConst.CMP_TXT_2HEIGHT
-    | ESCPOSConst.CMP_TXT_3HEIGHT
-    | ESCPOSConst.CMP_TXT_4HEIGHT
-    | ESCPOSConst.CMP_TXT_5HEIGHT
-    | ESCPOSConst.CMP_TXT_6HEIGHT
-    | ESCPOSConst.CMP_TXT_7HEIGHT
-    | ESCPOSConst.CMP_TXT_8HEIGHT,
+  /** ESCPOSPrinterTextAttribute */
+  attribute: number,
+  /** ESCPOSPrinterTextSize */
+  textSize: number,
   length: number,
   side: ESCPOSConst.CMP_SIDE_RIGHT | ESCPOSConst.CMP_SIDE_LEFT,
 ): Promise<void> {
@@ -245,12 +214,680 @@ export function printPaddingText(
   );
 }
 
-export function searchESCPOSPrinter(
-  ifType:
-    | ESCPOSConst.CMP_PORT_Bluetooth
-    | ESCPOSConst.CMP_PORT_Bluetooth_Insecure
-    | ESCPOSConst.CMP_PORT_WiFi,
-  timeout: number,
-): Promise<string[]> {
-  return CitizenEscposprinter.searchESCPOSPrinter(ifType, timeout);
+/**
+ * This method is used to print text by using a font installed in the computer,
+ * which specifies alignment, font, size, style, and ratio.
+ *
+ * What this method does internally is to generate a graphic image based on the
+ * given parameters, to print the graphic image.
+ *
+ * Font style can be specified in combination bold, reverse, underline, italic
+ * and strikeout. If you want to combine, please specify the logical sum.
+ */
+export function printTextLocalFont(
+  data: string,
+  alignment: ESCPOSPrinterPrintAlignment,
+  fontType: ESCPOSPrinterTypeface,
+  point: number,
+  /** ESCPOSPrinterFontStyle */
+  style: number,
+  /** 1-1000 */
+  hRatio: number,
+  /** 1-1000 */
+  vRatio: number,
+): Promise<void> {
+  return CitizenEscposprinter.printTextLocalFont(
+    data,
+    alignment,
+    fontType,
+    point,
+    style,
+    hRatio,
+    vRatio,
+  );
 }
+
+/**
+ * This method is used to print bitmap which specifies base64 encoded bitmap
+ * data, along with width, alignment and mode.
+ */
+export function printBitmap(
+  /** base64 encoded bitmap data */
+  data: string,
+  width: number = ESCPOSConst.CMP_BM_ASIS,
+  alignment: ESCPOSPrinterPrintAlignment = ESCPOSConst.CMP_ALIGNMENT_CENTER,
+  /** ESCPOSPrinterBitmapMode */
+  mode = ESCPOSConst.CMP_BM_MODE_HT_THRESHOLD |
+    ESCPOSConst.CMP_BM_MODE_CMD_RASTER,
+): Promise<void> {
+  return CitizenEscposprinter.printBitmap(data, width, alignment, mode);
+}
+
+/**
+ * **THIS METHOD IS NOT IMPLEMENTED**
+ *
+ * This method is used to store bitmap which specifies number and file name and
+ * width and mode. The stored bitmap can print using printNVBitmap method or
+ * watermarkPrint method.
+ *
+ * The fileName parameter sets the full path of the bitmap file to store.
+ *
+ * The bitmap formats that can be stored are BMP / JPG / PNG / GIF.
+ *
+ * If the width parameter is omitted, it is in CMP_BM_ASIS to store.
+ *
+ * The mode parameter can be specified in combination with the halftone and
+ * store method. To use of the combination, please specify the logical sum.
+ * If the mode parameter is omitted, it is in `CMP_BM_MODE_HT_THRESHOLD` |
+ * `CMP_BM_MODE_CMD_MONO` to store.
+ *
+ * For more information on the mode parameter is as follows.
+ */
+export function setNVBitmap(): Promise<void> {
+  // /** 1 - 20 */
+  // nvImageNumber: number,
+  // fileName: string,
+  // /**
+  //  * Bitmap width expressed. Expressed in the unit of measure given by MapMode
+  //  * (default dots).
+  //  */
+  // width: number = ESCPOSConst.CMP_BM_ASIS,
+  // /**
+  //  * **[CT-S281, PMU3300, CMP-20/30 Series]**
+  //  *
+  //  * It is necessary that the bitmap numbers are contiguous from number 1. If
+  //  * you register a new bitmap after the connection, the bitmap that was
+  //  * previously registered will be erased. The CMP-20/30 series, please register
+  //  * with a USB connection. The CMP-20 series is automatically disconnected
+  //  * because the printer is reset when the registration is completed.
+  //  *
+  //  * **[CT-D101/150/151, CT-E301/351/601/651, CT-S251/281II/310II/601/651/801/851/601II/651II/801II/851II/2000/4000 Series]**
+  //  *
+  //  * It is not necessary that the bitmap numbers are contiguous. And it is
+  //  * possible to remove a registered image by assigning the fileName parameter
+  //  * as an empty string.
+  //  */
+  // mode: ESCPOSPrinterNVImageMode = ESCPOSConst.CMP_BM_MODE_HT_THRESHOLD |
+  //   ESCPOSConst.CMP_BM_MODE_CMD_MONO,
+  throw new Error("Not implemented");
+}
+
+/**
+ * This method is used to print bitmap image (Logo) that is stored in the flash
+ * memory of the printer.
+ *
+ * To use this method, you need to register of the logo in advance. Logo
+ * registration, please store it using `setNVBitmap` method or use the
+ * "POS Printer utility" of utility software for the printer.
+ *
+ * Registration mode varies among the model of the printer. Please register as follows.
+ *
+ * **[CT-S281, PMU3300, CMP-20/30 Series]**
+ *
+ * Please register the logo with "Unused key code mode".
+ *
+ * To the image number to use, it is necessary to register the logo sequentially.
+ *
+ *
+ * **[CT-D101/150/151, CT-E301/351/601/651, CT-S251/281II/310II/601/651/801/851/601II/651II/801II/851II/751/2000/4000/4500 Series]**
+ *
+ * Please register the logo with "Key code mode".
+ *
+ * To the image number to use, it is necessary to register the logo that
+ * specifies the key code.
+ */
+export function printNVBitmap(
+  /** 1 - 20 */
+  nvImageNumber: number,
+): Promise<void> {
+  return CitizenEscposprinter.printNVBitmap(nvImageNumber);
+}
+
+/**
+ * This method is used to print one-dimensional barcode.
+ *
+ * GS1 DataBar (CMP_BCS_GS1DATABAR, CMP_BCS_GS1DATABAR_E, CMP_BCS_GS1DATABAR_T,
+ * CMP_BCS_GS1DATABAR_L) can use only the printers of CT-D101/150/151,
+ * CT-E301/351/601/651, CT-S251/310II/601/651/801/851/601II/651II/801II/851II/751/4500
+ * series.
+ *
+ * The designation of CMP_ALIGNMENT_CENTER and CMP_ALIGNMENT_RIGHT of the
+ * Barcode alignment on the page mode is ignored.
+ */
+export function printBarCode(
+  data: string,
+  symbology: ESCPOSPrinterBarcodeType,
+  /**
+   * 1 - 255 (dots)
+   *
+   * Expressed in the unit of measure given by MapMode (default dots).
+   */
+  height: number,
+  /**
+   * 2 - 6 (dots)
+   *
+   * Expressed in the unit of measure given by MapMode (default dots).
+   */
+  width: number,
+  alignment: ESCPOSPrinterPrintAlignment,
+  textPosition: ESCPOSPrinterTextPosition,
+): Promise<void> {
+  return CitizenEscposprinter.printBarCode(
+    data,
+    symbology,
+    height,
+    width,
+    alignment,
+    textPosition,
+  );
+}
+
+/**
+ * This method is used to print PDF-417 barcode.
+ *
+ * Please refer to the Command Reference of the printer for details on each
+ * parameter.
+ *
+ * The designation of CMP_ALIGNMENT_CENTER and CMP_ALIGNMENT_RIGHT of the
+ * Barcode alignment on the page mode is ignored.
+ */
+export function printPDF417(
+  data: string,
+  /** 1 - 30, 0 = automatic */
+  digits: number,
+  /** 3 - 90, 0 = automatic */
+  steps: number,
+  /**
+   * 2 - 8 (dots)
+   *
+   * Expressed in the unit of measure given by MapMode (default dots).
+   */
+  moduleWidth: number,
+  /** 2 - 8 */
+  stepHeight: number,
+  ECLevel: ESCPOSPrinterPDF417ECLevel,
+  alignment: ESCPOSPrinterPrintAlignment,
+): Promise<void> {
+  return CitizenEscposprinter.printPDF417(
+    data,
+    digits,
+    steps,
+    moduleWidth,
+    stepHeight,
+    ECLevel,
+    alignment,
+  );
+}
+
+/**
+ * This method is used to print QRCode barcode.
+ *
+ * Please refer to the Command Reference of the printer for details on each
+ * parameter.
+ *
+ * The designation of CMP_ALIGNMENT_CENTER and CMP_ALIGNMENT_RIGHT of the
+ * Barcode alignment on the page mode is ignored.
+ */
+export function printQRCode(
+  data: string,
+  /**
+   * 1 - 16 (dots)
+   *
+   * Expressed in the unit of measure given by MapMode (default dots).
+   */
+  moduleSize: number,
+  ECLevel: ESCPOSPrinterQRCodeECLevel,
+  alignment: ESCPOSPrinterPrintAlignment = ESCPOSConst.CMP_ALIGNMENT_CENTER,
+): Promise<void> {
+  return CitizenEscposprinter.printQRCode(data, moduleSize, ECLevel, alignment);
+}
+
+/**
+ * This method is used to print 2-dimensional GS1 DataBar barcode.
+ *
+ * This method can use only the printers of CT-D101/150/151, CT-E301/351/601/651,
+ * CT-S251/310II/601/651/801/851/601II/651II/801II/851II/751/4500 series.
+ *
+ * Please refer to the Command Reference of the printer for details on each
+ * parameter.
+ *
+ * The designation of CMP_ALIGNMENT_CENTER and CMP_ALIGNMENT_RIGHT of the
+ * Barcode alignment on the page mode is ignored.
+ */
+export function printGS1DataBarStacked(
+  data: string,
+  symbology: ESCPOSPrinterGS1DatabarType,
+  /**
+   * 2 - 8 (dots)
+   *
+   * Expressed in the unit of measure given by MapMode (default dots).
+   */
+  moduleSize: number,
+  /**
+   * 106 - 39528 (dots)
+   *
+   * Expressed in the unit of measure given by MapMode (default dots).
+   */
+  maxSize: number,
+  alignment: ESCPOSPrinterPrintAlignment,
+): Promise<void> {
+  return CitizenEscposprinter.printGS1DataBarStacked(
+    data,
+    symbology,
+    moduleSize,
+    maxSize,
+    alignment,
+  );
+}
+
+/** This method is used to cut the paper. */
+export function cutPaper(type: ESCPOSPrinterCutType): Promise<void> {
+  return CitizenEscposprinter.cutPaper(type);
+}
+
+/** This method is used to feed the paper in dot units. */
+export function unitFeed(
+  /** Expressed in the unit of measure given by MapMode (default dots). */
+  ufCount: number,
+): Promise<void> {
+  return CitizenEscposprinter.unitFeed(ufCount);
+}
+
+/** This method is used to utilize label paper and black mark paper. */
+export function markFeed(type: ESCPOSPrinterMarkFeedType): Promise<void> {
+  return CitizenEscposprinter.markFeed(type);
+}
+
+/** This method is used to open the cash drawer is connected to the printer. */
+export function openDrawer(
+  drawer: ESCPOSPrinterDrawer,
+  /** 1 - 8 (x 100) msec */
+  pulseLen: number,
+): Promise<void> {
+  return CitizenEscposprinter.openDrawer(drawer, pulseLen);
+}
+
+/**
+ * This method is used to start or end a transaction mode.
+ *
+ * If control is CMP_TP_TRANSACTION, then transaction mode is entered.
+ * Subsequent methods calls will buffer the print data. The methods applied to a
+ * transaction mode are as follows.
+ * - printText
+ * - printBitmap
+ * - printNVBitmap
+ * - printBarCode
+ * - printPDF417
+ * - printQRCode
+ * - printGS1DataBarStacked
+ * - cutPaper
+ * - unitFeed
+ * - markFeed
+ * - openDrawer
+ * - rotatePrint
+ * - pageModePrint
+ * - clearePrintArea
+ * - printData
+ * - printNormal
+ *
+ * If control is CMP_TP_NORMAL, then transaction mode is exited. If some data
+ * was buffered, then the buffered data is printed. The entire transaction is
+ * treated as one message.
+ *
+ * Calling the clearOutput method cancels transaction mode. Any buffered print
+ * lines are also cleared.
+ */
+export function transactionPrint(
+  control: ESCPOSPrinterTransactionControl,
+): Promise<void> {
+  return CitizenEscposprinter.transactionPrint(control);
+}
+
+/**
+ * This method is used to start or end a rotation print mode.
+ *
+ * If rotation includes `CMP_RP_ROTATE180`, then upside-down print mode is
+ * entered. The methods applied to a rotation print mode are as follows.
+ * - printText
+ * - printNormal
+ *
+ * If rotation includes `CMP_RP_BARCODE` and/or `CMP_RP_BITMAP`, the following
+ * methods are printed also rotated.
+ * - printBarcod
+ * - printPDF417
+ * - printQRCode
+ * - printGS1DataBarStacked
+ * - printBitmap
+ *
+ * If rotation is `CMP_RP_NORMAL`, then rotation mode is exited.
+ */
+export function rotatePrint(rotation: ESCPOSPrinterRotation): Promise<void> {
+  return CitizenEscposprinter.rotatePrint(rotation);
+}
+
+/**
+ * This method is used to start or end a Page Mode.
+ *
+ * If control is `CMP_PM_PAGE_MODE`, then Page Mode is entered. Subsequent methods
+ * calls will buffer the print data. The methods applied to a Page Mode are as
+ * follows.
+ * - printText
+ * - printBitmap
+ * - printBarCode
+ * - printPDF417
+ * - printQRCode
+ * - printGS1DataBarStacked
+ * - printNormal
+ *
+ * If control is `CMP_PM_PRINT_SAVE`, then Page Mode is not exited. If some data
+ * is buffered, then the buffered data is saved and printed. This control is
+ * used to print the same page layout with additional print items inside of the
+ * page.
+ *
+ * If control is `CMP_PM_NORMAL`, then Page Mode is exited. If some data is
+ * buffered, then the buffered data is printed. The buffered data will not be
+ * saved.
+ *
+ * If control is `CMP_PM_CANCEL`, then Page Mode is exited. If some data is
+ * buffered, then the buffered data is not printed and is not saved.
+ *
+ * Note that when the `pageModePrint` method is called, all of the data that
+ * is to be printed in the PageModePrintArea will be printed and the paper is
+ * fed to the end of the PageModePrintArea. If more than one PageModePrintArea
+ * is defined, then after the pageModePrint method is called, all of the data
+ * that is to be printed in the respective PageModePrintArea(s) will be printed
+ * and the paper will be fed to the end of the PageModePrintArea located the
+ * farthest “down” the sheet of paper.
+ *
+ * The entire Page Mode transaction is treated as one message. Calling the
+ * `clearOutput` method cancels Page Mode. Any buffered print lines are also
+ * cleared.
+ */
+export function pageModePrint(
+  control: ESCPOSPrinterPageModeControl,
+): Promise<void> {
+  return CitizenEscposprinter.pageModePrint(control);
+}
+
+/** This method is used to clear the area defined by the PageModePrintArea property. */
+export function clearPrintArea(): Promise<void> {
+  return CitizenEscposprinter.clearPrintArea();
+}
+
+/**
+ * This method is used to clear all buffered output data by tranzactionPrint
+ * method and `pageModePrint` method.
+ *
+ * Also, when possible, halts outputs that are in progress. At the same time,
+ * the command to clear print data on the printer is sent.
+ */
+export function clearOutput(): Promise<void> {
+  return CitizenEscposprinter.clearOutput();
+}
+
+/**
+ * This method is used to send data bytes to the printer directly.
+ *
+ * It is usually not necessary, please use if you want to send ESC commands
+ * directly to the printer.
+ *
+ * If you want to use, please be careful so as not to affect the other methods.
+ */
+export function printData(data: string): Promise<void> {
+  return CitizenEscposprinter.printData(data);
+}
+
+/**
+ * This method is used to print using the escape sequences that are defined in
+ * the OPOS.
+ *
+ * Please refer to "Programming Manual" for more information.
+ */
+export function printNormal(data: string): Promise<void> {
+  return CitizenEscposprinter.printNormal(data);
+}
+
+/**
+ * **THIS METHOD IS NOT IMPLEMENTED YET.**
+ *
+ * This method is used to print watermark.
+ *
+ * This is available with a printer of the CT-D151, CT-E601/651,
+ * CT-S251/601II/651II/801II/851II/751 series.
+ *
+ * The bitmap image stored in the flash memory of the printer is printed out as
+ * watermark.
+ *
+ * To use this method, you need to register of the logo in advance. Logo
+ * registration, please store it using `setNVBitmap` method or use the
+ * "POS Printer utility" of utility software for the printer.
+ *
+ * When the printing of watermark was stopped in `CMP_WM_STOP`, all other
+ * arguments are ignored.
+ */
+export function watermarkPrint(): Promise<void> {
+  // start: ESCPOSPrinterWatermarkStart,
+  // /** 1 - 20 */
+  // nvImageNumber: number,
+  // /**
+  //  * 0 - 65,535 (dots)
+  //  *
+  //  * Expressed in the unit of measure given by MapMode (default dots).
+  //  */
+  // pass: number,
+  // /**
+  //  * 0 - 65,535 (dots)
+  //  *
+  //  * Expressed in the unit of measure given by MapMode (default dots).
+  //  */
+  // feed: number,
+  // /**
+  //  * 0: Infinite repetition
+  //  *
+  //  * 1 - 65,535: The repetition number of times
+  //  */
+  // repeat: number,
+  throw new Error("Not implemented yet");
+  // return CitizenEscposprinter.watermarkPrint(
+  //   start,
+  //   nvImageNumber,
+  //   pass,
+  //   feed,
+  //   repeat,
+  // );
+}
+
+/**
+ * This method is used to search the printer. Please specify the type of the
+ * printer connection and the search time. Before the execution of this method,
+ * must execute the setContext method. This method cannot be used on the
+ * simulator.
+ *
+ * After search time passed, set a result to the result parameter and return the
+ * information of the found printers as array type.
+ *
+ * In the case of CMP_PORT_WiFi for the connection type, you can search only
+ * the printers of CT-D101/150/151, CT-E301/351/601/651,
+ * CT-S251/310II/601/651/801/851/601II/651II/801II/851II/751/4500 series.
+ * Recommended value of search time is more than 3 seconds. When the search time
+ * is shorter than the second, a search may fail by the network situation.
+ *
+ * In the case of CMP_PORT_Bluetooth or CMP_PORT_Bluetooth_Insecure for the
+ * connection type, you can get the paired address when specifying 0 for the
+ * search time. When specifying 1 - 30 for the search time you can get the
+ * connectable address. Recommended value of search time is more than 10 seconds.
+ *
+ * When the search time is shorter than the second, a search may fail by the
+ * Bluetooth situation.
+ */
+export function searchCitizenPrinter(
+  connectType: ESCPOSPrinterSearchType,
+  timeout: number,
+): Promise<CitizenPrinerInfo[]> {
+  return CitizenEscposprinter.searchCitizenPrinter(connectType, timeout);
+}
+
+/**
+ * This method is used to search the printer. Please specify the type of the
+ * printer connection and the search time. Before the execution of this method,
+ * must execute the setContext method. This method cannot be used on the
+ * simulator.
+ *
+ * After search time passed, set a result to the result parameter and return the
+ * information of the found printers as String array type.
+ *
+ * In the case of CMP_PORT_WiFi for the connection type, you can search only the
+ * printers of CT-D101/150/151, CT-E301/351/601/651,
+ * CT-S251/310II/601/651/801/851/601II/651II/801II/851II/751/4500 series.
+ * Recommended value of search time is more than 3 seconds. When the search time
+ * is shorter than the second, a search may fail by the network situation.
+ *
+ * In the case of CMP_PORT_Bluetooth or CMP_PORT_Bluetooth_Insecure for the
+ * connection type, you can get the paired address when specifying 0 for the
+ * search time. When specifying 1 - 30 for the search time you can get the
+ * connectable address. Recommended value of search time is more than 10 seconds.
+ *
+ * When the search time is shorter than the second, a search may fail by the
+ * Bluetooth situation.
+ */
+export function searchESCPOSPrinter(
+  connectType: ESCPOSPrinterSearchType,
+  timeout?: number,
+): Promise<string[]> {
+  if (connectType === ESCPOSConst.CMP_PORT_WiFi) {
+    timeout ??= 5;
+  } else {
+    timeout ??= 10;
+  }
+
+  return CitizenEscposprinter.searchESCPOSPrinter(connectType, timeout);
+}
+
+/**
+ * This method is used to connect printer and get the status of the printer.
+ * After the process is complete, disconnect the connection. (except
+ * connection type `CMP_PORT_SNMP`)
+ *
+ * The `CMP_PORT_SNMP` in the connect type can be used with printers connected
+ * to the network. By using this connection type, you can get the status
+ * regardless of other connections. In order to use this connection type, the
+ * printer supported with this function.
+ */
+export function printerCheckEx(
+  connectType: ESCPOSPrinterConnectType,
+  /**
+   * WiFi:
+   * - 0.0.0.0 ~ 255.255.255.255
+   *
+   * Bluetooth:
+   * - 00:00:00:00:00:00 ~ FF:FF:FF:FF:FF:FF
+   * - Device name (Automatic detection)
+   */
+  address: string,
+  port?: number,
+  timeout?: number,
+): Promise<void> {
+  return CitizenEscposprinter.printerCheckEx(
+    connectType,
+    address,
+    port,
+    timeout,
+  );
+}
+
+/**
+ * This method is used to connect printer and open the cash drawer is connected
+ * to the printer. After the process is complete, disconnect the connection.
+ *
+ * This method can execute even if the printer error (cover open or paper empty).
+ */
+export function openDrawerEx(
+  drawer: ESCPOSPrinterDrawer,
+  /** 1 - 8 (x 100) msec */
+  pulseLen: number,
+  connectType: ESCPOSPrinterConnectType,
+  /**
+   * WiFi:
+   * - 0.0.0.0 ~ 255.255.255.255
+   *
+   * Bluetooth:
+   * - 00:00:00:00:00:00 ~ FF:FF:FF:FF:FF:FF
+   * - Device name (Automatic detection)
+   */
+  address: string,
+  port?: number,
+  timeout?: number,
+): Promise<void> {
+  return CitizenEscposprinter.openDrawerEx(
+    drawer,
+    pulseLen,
+    connectType,
+    address,
+    port,
+    timeout,
+  );
+}
+
+/**
+ * This method is used to set the timeout to check the print completion
+ * notification.
+ *
+ * When you create an instance, the timeout is initialized to 0.
+ *
+ * Please refer to "2.5.1. Function to detect the completion of printing"
+ * for details of the function to detect the completion of printing.
+ */
+export function setPrintCompletedTimeout(
+  /**
+   * 0: Automatically adjusts the timeout.
+   *
+   * Other Values: Specify the timeout. Expressed in milliseconds.
+   */
+  timeout: number,
+): Promise<void> {
+  return CitizenEscposprinter.setPrintCompletedTimeout(timeout);
+}
+
+/** Sets the logging function. See "3.2 Logging function" for more details */
+export function setLog(
+  /**
+   * 0: None
+   *
+   * 1: Access logs
+   *
+   * 2: Error logs
+   */
+  mode: 0 | 1 | 2,
+  /** The folder of the external storage path */
+  path: string,
+  /**
+   * Maximum size (MB)
+   *
+   * 0: Unlimited
+   */
+  maxSize: number,
+): Promise<void> {
+  return CitizenEscposprinter.setLog(mode, path, maxSize);
+}
+
+/**
+ * This method is used to get a numerical value for the version number of this SDK.
+ *
+ * @returns Return a numerical value for the version number of this SDK. (Ver1.00 is 100)
+ */
+export function getVersionCode(): Promise<number> {
+  return CitizenEscposprinter.getVersionCode();
+}
+
+/**
+ * This method is used to get a string for the version number of this SDK.
+ *
+ * @returns Return a string for the version number of this SDK. (Ver1.00 is "1.00")
+ */
+export function getVersionName(): Promise<string> {
+  return CitizenEscposprinter.getVersionName();
+}
+
+// TODO: Try catch to reject promises in Java
+// TODO: Rewrite CONTRIBUTING.md, telling them to implement a function in oldarch, newarch and ios in PRs
+// TODO: Connect UsbDevice

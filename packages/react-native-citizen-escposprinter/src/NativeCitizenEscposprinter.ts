@@ -1,8 +1,28 @@
 import type { TurboModule } from "react-native";
 import { TurboModuleRegistry } from "react-native";
-import type { ESCPOSConst } from "./ESCPOSConst";
+import type {
+  CitizenPrinerInfo,
+  ESCPOSConst,
+  ESCPOSPrinterBarcodeType,
+  ESCPOSPrinterConnectType,
+  ESCPOSPrinterCutType,
+  ESCPOSPrinterDrawer,
+  ESCPOSPrinterGS1DatabarType,
+  ESCPOSPrinterMarkFeedType,
+  ESCPOSPrinterPageModeControl,
+  ESCPOSPrinterPDF417ECLevel,
+  ESCPOSPrinterPrintAlignment,
+  ESCPOSPrinterQRCodeECLevel,
+  ESCPOSPrinterRotation,
+  ESCPOSPrinterSearchType,
+  ESCPOSPrinterTextPosition,
+  ESCPOSPrinterTransactionControl,
+  ESCPOSPrinterTypeface,
+} from "./ESCPOSConst";
 
 export interface Spec extends TurboModule {
+  test(): Promise<any>;
+
   connect(
     type:
       | ESCPOSConst.CMP_PORT_Bluetooth
@@ -11,6 +31,7 @@ export interface Spec extends TurboModule {
       | ESCPOSConst.CMP_PORT_USB,
     address: string,
     port?: number,
+    timeout?: number,
   ): Promise<boolean>;
 
   disconnect(): Promise<void>;
@@ -20,86 +41,145 @@ export interface Spec extends TurboModule {
   printerCheck(): Promise<void>;
 
   status(
-    type?:
-      | ESCPOSConst.CMP_STS_PRINTEROFF
-      | ESCPOSConst.CMP_STS_MSR_READ
-      | ESCPOSConst.CMP_STS_PAPER_EMPTY
-      | ESCPOSConst.CMP_STS_COVER_OPEN
-      | ESCPOSConst.CMP_STS_BATTERY_LOW
-      | ESCPOSConst.CMP_STS_PAPER_NEAREMPTY
-      | ESCPOSConst.CMP_STS_DRAWER_LEVEL_H
-      | ESCPOSConst.CMP_STS_ONPRESENTER,
+    /** ESCPOSPrinterStatus */
+    type?: number,
   ): Promise<number>;
 
   printText(
     data: string,
-    alignment:
-      | ESCPOSConst.CMP_ALIGNMENT_LEFT
-      | ESCPOSConst.CMP_ALIGNMENT_CENTER
-      | ESCPOSConst.CMP_ALIGNMENT_RIGHT,
-    attribute:
-      | ESCPOSConst.CMP_FNT_DEFAULT
-      | ESCPOSConst.CMP_FNT_FONTB
-      | ESCPOSConst.CMP_FNT_FONTC
-      | ESCPOSConst.CMP_FNT_BOLD
-      | ESCPOSConst.CMP_FNT_REVERSE
-      | ESCPOSConst.CMP_FNT_UNDERLINE,
-    textSize:
-      | ESCPOSConst.CMP_TXT_1WIDTH
-      | ESCPOSConst.CMP_TXT_2WIDTH
-      | ESCPOSConst.CMP_TXT_3WIDTH
-      | ESCPOSConst.CMP_TXT_4WIDTH
-      | ESCPOSConst.CMP_TXT_5WIDTH
-      | ESCPOSConst.CMP_TXT_6WIDTH
-      | ESCPOSConst.CMP_TXT_7WIDTH
-      | ESCPOSConst.CMP_TXT_8WIDTH
-      | ESCPOSConst.CMP_TXT_1HEIGHT
-      | ESCPOSConst.CMP_TXT_2HEIGHT
-      | ESCPOSConst.CMP_TXT_3HEIGHT
-      | ESCPOSConst.CMP_TXT_4HEIGHT
-      | ESCPOSConst.CMP_TXT_5HEIGHT
-      | ESCPOSConst.CMP_TXT_6HEIGHT
-      | ESCPOSConst.CMP_TXT_7HEIGHT
-      | ESCPOSConst.CMP_TXT_8HEIGHT,
+    alignment: ESCPOSPrinterPrintAlignment,
+    /** ESCPOSPrinterTextAttribute */
+    attribute: number,
+    /** ESCPOSPrinterTextSize */
+    textSize: number,
   ): Promise<void>;
 
   printPaddingText(
     data: string,
-    attribute:
-      | ESCPOSConst.CMP_FNT_DEFAULT
-      | ESCPOSConst.CMP_FNT_FONTB
-      | ESCPOSConst.CMP_FNT_FONTC
-      | ESCPOSConst.CMP_FNT_BOLD
-      | ESCPOSConst.CMP_FNT_REVERSE
-      | ESCPOSConst.CMP_FNT_UNDERLINE,
-    textSize:
-      | ESCPOSConst.CMP_TXT_1WIDTH
-      | ESCPOSConst.CMP_TXT_2WIDTH
-      | ESCPOSConst.CMP_TXT_3WIDTH
-      | ESCPOSConst.CMP_TXT_4WIDTH
-      | ESCPOSConst.CMP_TXT_5WIDTH
-      | ESCPOSConst.CMP_TXT_6WIDTH
-      | ESCPOSConst.CMP_TXT_7WIDTH
-      | ESCPOSConst.CMP_TXT_8WIDTH
-      | ESCPOSConst.CMP_TXT_1HEIGHT
-      | ESCPOSConst.CMP_TXT_2HEIGHT
-      | ESCPOSConst.CMP_TXT_3HEIGHT
-      | ESCPOSConst.CMP_TXT_4HEIGHT
-      | ESCPOSConst.CMP_TXT_5HEIGHT
-      | ESCPOSConst.CMP_TXT_6HEIGHT
-      | ESCPOSConst.CMP_TXT_7HEIGHT
-      | ESCPOSConst.CMP_TXT_8HEIGHT,
+    /** ESCPOSPrinterTextAttribute */
+    attribute: number,
+    /** ESCPOSPrinterTextSize */
+    textSize: number,
     length: number,
     side: ESCPOSConst.CMP_SIDE_RIGHT | ESCPOSConst.CMP_SIDE_LEFT,
   ): Promise<void>;
 
+  printTextLocalFont(
+    data: string,
+    alignment: ESCPOSPrinterPrintAlignment,
+    fontType: ESCPOSPrinterTypeface,
+    point: number,
+    /** ESCPOSPrinterFontStyle */
+    style: number,
+    /** 1-1000 */
+    hRatio: number,
+    /** 1-1000 */
+    vRatio: number,
+  ): Promise<void>;
+
+  printBitmap(
+    /** base64 encoded bitmap data */
+    data: string,
+    width?: number,
+    alignment?: ESCPOSPrinterPrintAlignment,
+    /** ESCPOSPrinterBitmapMode */
+    mode?: number,
+  ): Promise<void>;
+
+  printBarCode(
+    data: string,
+    symbology: ESCPOSPrinterBarcodeType,
+    height: number,
+    width: number,
+    alignment: ESCPOSPrinterPrintAlignment,
+    textPosition: ESCPOSPrinterTextPosition,
+  ): Promise<void>;
+
+  printPDF417(
+    data: string,
+    digits: number,
+    steps: number,
+    moduleWidth: number,
+    stepHeight: number,
+    ECLevel: ESCPOSPrinterPDF417ECLevel,
+    alignment: ESCPOSPrinterPrintAlignment,
+  ): Promise<void>;
+
+  printQRCode(
+    data: string,
+    moduleSize: number,
+    ECLevel: ESCPOSPrinterQRCodeECLevel,
+    alignment: ESCPOSPrinterPrintAlignment,
+  ): Promise<void>;
+
+  printGS1DataBarStacked(
+    data: string,
+    symbology: ESCPOSPrinterGS1DatabarType,
+    moduleSize: number,
+    maxSize: number,
+    alignment: ESCPOSPrinterPrintAlignment,
+  ): Promise<void>;
+
+  cutPaper(type: ESCPOSPrinterCutType): Promise<void>;
+
+  unitFeed(ufCount: number): Promise<void>;
+
+  markFeed(type: ESCPOSPrinterMarkFeedType): Promise<void>;
+
+  openDrawer(drawer: ESCPOSPrinterDrawer, pulseLen: number): Promise<void>;
+
+  transactionPrint(control: ESCPOSPrinterTransactionControl): Promise<void>;
+
+  rotatePrint(rotation: ESCPOSPrinterRotation): Promise<void>;
+
+  pageModePrint(control: ESCPOSPrinterPageModeControl): Promise<void>;
+
+  clearPrintArea(): Promise<void>;
+
+  clearOutput(): Promise<void>;
+
+  printData(data: string): Promise<void>;
+
+  printNormal(data: string): Promise<void>;
+
+  printNVBitmap(nvImageNumber: number): Promise<void>;
+
+  searchCitizenPrinter(
+    connectType: ESCPOSPrinterSearchType,
+    timeout: number,
+  ): Promise<CitizenPrinerInfo[]>;
+
   searchESCPOSPrinter(
-    type:
+    connectType:
       | ESCPOSConst.CMP_PORT_Bluetooth
       | ESCPOSConst.CMP_PORT_Bluetooth_Insecure
       | ESCPOSConst.CMP_PORT_WiFi,
     timeout: number,
   ): Promise<string[]>;
+
+  printerCheckEx(
+    connectType: ESCPOSPrinterConnectType,
+    address: string,
+    port?: number,
+    timeout?: number,
+  ): Promise<void>;
+
+  openDrawerEx(
+    drawer: ESCPOSPrinterDrawer,
+    pulseLen: number,
+    connectType: ESCPOSPrinterConnectType,
+    address: string,
+    port?: number,
+    timeout?: number,
+  ): Promise<void>;
+
+  setPrintCompletedTimeout(timeout: number): Promise<void>;
+
+  setLog(mode: 0 | 1 | 2, path: string, maxSize: number): Promise<void>;
+
+  getVersionCode(): Promise<number>;
+
+  getVersionName(): Promise<string>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>("CitizenEscposprinter");

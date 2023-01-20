@@ -1,4 +1,5 @@
 import { NativeModules, Platform } from "react-native";
+import { ESCPOSConst } from "./ESCPOSConst";
 const LINKING_ERROR = "The package 'react-native-citizen-escposprinter' doesn't seem to be linked. Make sure: \n\n" + Platform.select({
   ios: "- You have run 'pod install'\n",
   default: ""
@@ -13,159 +14,728 @@ require("./NativeCitizenEscposprinter").default : NativeModules.CitizenEscpospri
     throw new Error(LINKING_ERROR);
   }
 });
-export let ESCPOSConst;
-(function (ESCPOSConst) {
-  ESCPOSConst[ESCPOSConst["CMP_ALIGNMENT_LEFT"] = 0] = "CMP_ALIGNMENT_LEFT";
-  ESCPOSConst[ESCPOSConst["CMP_ALIGNMENT_CENTER"] = 1] = "CMP_ALIGNMENT_CENTER";
-  ESCPOSConst[ESCPOSConst["CMP_ALIGNMENT_RIGHT"] = 2] = "CMP_ALIGNMENT_RIGHT";
-  ESCPOSConst[ESCPOSConst["CMP_BCS_Code128_Parsed"] = 3] = "CMP_BCS_Code128_Parsed";
-  ESCPOSConst[ESCPOSConst["CMP_BCS_UPCA"] = 101] = "CMP_BCS_UPCA";
-  ESCPOSConst[ESCPOSConst["CMP_BCS_UPCE"] = 102] = "CMP_BCS_UPCE";
-  ESCPOSConst[ESCPOSConst["CMP_BCS_EAN8"] = 103] = "CMP_BCS_EAN8";
-  ESCPOSConst[ESCPOSConst["CMP_BCS_EAN13"] = 104] = "CMP_BCS_EAN13";
-  ESCPOSConst[ESCPOSConst["CMP_BCS_JAN8"] = 105] = "CMP_BCS_JAN8";
-  ESCPOSConst[ESCPOSConst["CMP_BCS_JAN13"] = 106] = "CMP_BCS_JAN13";
-  ESCPOSConst[ESCPOSConst["CMP_BCS_ITF"] = 107] = "CMP_BCS_ITF";
-  ESCPOSConst[ESCPOSConst["CMP_BCS_Codabar"] = 108] = "CMP_BCS_Codabar";
-  ESCPOSConst[ESCPOSConst["CMP_BCS_Code39"] = 109] = "CMP_BCS_Code39";
-  ESCPOSConst[ESCPOSConst["CMP_BCS_Code93"] = 110] = "CMP_BCS_Code93";
-  ESCPOSConst[ESCPOSConst["CMP_BCS_Code128"] = 111] = "CMP_BCS_Code128";
-  ESCPOSConst[ESCPOSConst["CMP_BCS_GS1DATABAR"] = 131] = "CMP_BCS_GS1DATABAR";
-  ESCPOSConst[ESCPOSConst["CMP_BCS_GS1DATABAR_E"] = 132] = "CMP_BCS_GS1DATABAR_E";
-  ESCPOSConst[ESCPOSConst["CMP_BCS_GS1DATABAR_S"] = 133] = "CMP_BCS_GS1DATABAR_S";
-  ESCPOSConst[ESCPOSConst["CMP_BCS_GS1DATABAR_E_S"] = 134] = "CMP_BCS_GS1DATABAR_E_S";
-  ESCPOSConst[ESCPOSConst["CMP_BCS_GS1DATABAR_T"] = 135] = "CMP_BCS_GS1DATABAR_T";
-  ESCPOSConst[ESCPOSConst["CMP_BCS_GS1DATABAR_L"] = 136] = "CMP_BCS_GS1DATABAR_L";
-  ESCPOSConst[ESCPOSConst["CMP_BCS_GS1DATABAR_S_O"] = 137] = "CMP_BCS_GS1DATABAR_S_O";
-  ESCPOSConst[ESCPOSConst["CMP_BM_ASIS"] = -11] = "CMP_BM_ASIS";
-  ESCPOSConst[ESCPOSConst["CMP_BM_MODE_CMD_RASTER"] = 1] = "CMP_BM_MODE_CMD_RASTER";
-  ESCPOSConst[ESCPOSConst["CMP_BM_MODE_CMD_BITIMAGE"] = 2] = "CMP_BM_MODE_CMD_BITIMAGE";
-  ESCPOSConst[ESCPOSConst["CMP_BM_MODE_CMD_GRAY16DOWNLOAD"] = 4] = "CMP_BM_MODE_CMD_GRAY16DOWNLOAD";
-  ESCPOSConst[ESCPOSConst["CMP_BM_MODE_CMD_MONO"] = 8] = "CMP_BM_MODE_CMD_MONO";
-  ESCPOSConst[ESCPOSConst["CMP_BM_MODE_CMD_GRAY16"] = 8] = "CMP_BM_MODE_CMD_GRAY16";
-  ESCPOSConst[ESCPOSConst["CMP_BM_MODE_HT_THRESHOLD"] = 16] = "CMP_BM_MODE_HT_THRESHOLD";
-  ESCPOSConst[ESCPOSConst["CMP_BM_MODE_HT_DITHER"] = 32] = "CMP_BM_MODE_HT_DITHER";
-  ESCPOSConst[ESCPOSConst["CMP_CHECKSUM_ERROR"] = 33] = "CMP_CHECKSUM_ERROR";
-  ESCPOSConst[ESCPOSConst["CMP_CUT_FULL"] = -1] = "CMP_CUT_FULL";
-  ESCPOSConst[ESCPOSConst["CMP_CUT_PARTIAL"] = -2] = "CMP_CUT_PARTIAL";
-  ESCPOSConst[ESCPOSConst["CMP_CUT_FULL_PREFEED"] = -3] = "CMP_CUT_FULL_PREFEED";
-  ESCPOSConst[ESCPOSConst["CMP_CUT_PARTIAL_PREFEED"] = -4] = "CMP_CUT_PARTIAL_PREFEED";
-  ESCPOSConst[ESCPOSConst["CMP_DRAWER_1"] = 1] = "CMP_DRAWER_1";
-  ESCPOSConst[ESCPOSConst["CMP_DRAWER_2"] = 2] = "CMP_DRAWER_2";
-  ESCPOSConst[ESCPOSConst["CMP_E_BT_DISABLE"] = 3] = "CMP_E_BT_DISABLE";
-  ESCPOSConst[ESCPOSConst["CMP_E_BT_NODEVICE"] = 4] = "CMP_E_BT_NODEVICE";
-  ESCPOSConst[ESCPOSConst["CMP_E_CONNECTED"] = 1001] = "CMP_E_CONNECTED";
-  ESCPOSConst[ESCPOSConst["CMP_E_DISCONNECT"] = 1002] = "CMP_E_DISCONNECT";
-  ESCPOSConst[ESCPOSConst["CMP_E_NOTCONNECT"] = 1003] = "CMP_E_NOTCONNECT";
-  ESCPOSConst[ESCPOSConst["CMP_E_CONNECT_NOTFOUND"] = 1004] = "CMP_E_CONNECT_NOTFOUND";
-  ESCPOSConst[ESCPOSConst["CMP_E_CONNECT_OFFLINE"] = 1005] = "CMP_E_CONNECT_OFFLINE";
-  ESCPOSConst[ESCPOSConst["CMP_E_NOCONTEXT"] = 1006] = "CMP_E_NOCONTEXT";
-  ESCPOSConst[ESCPOSConst["CMP_E_ILLEGAL"] = 1101] = "CMP_E_ILLEGAL";
-  ESCPOSConst[ESCPOSConst["CMP_E_OFFLINE"] = 1102] = "CMP_E_OFFLINE";
-  ESCPOSConst[ESCPOSConst["CMP_E_NOEXIST"] = 1103] = "CMP_E_NOEXIST";
-  ESCPOSConst[ESCPOSConst["CMP_E_FAILURE"] = 1104] = "CMP_E_FAILURE";
-  ESCPOSConst[ESCPOSConst["CMP_E_TIMEOUT"] = 1105] = "CMP_E_TIMEOUT";
-  ESCPOSConst[ESCPOSConst["CMP_E_NO_LIST"] = 1106] = "CMP_E_NO_LIST";
-  ESCPOSConst[ESCPOSConst["CMP_EPTR_COVER_OPEN"] = 1201] = "CMP_EPTR_COVER_OPEN";
-  ESCPOSConst[ESCPOSConst["CMP_EPTR_REC_EMPTY"] = 1202] = "CMP_EPTR_REC_EMPTY";
-  ESCPOSConst[ESCPOSConst["CMP_EPTR_BADFORMAT"] = 1203] = "CMP_EPTR_BADFORMAT";
-  ESCPOSConst[ESCPOSConst["CMP_EPTR_TOOBIG"] = 1204] = "CMP_EPTR_TOOBIG";
-  ESCPOSConst[ESCPOSConst["CMP_FNT_DEFAULT"] = 0] = "CMP_FNT_DEFAULT";
-  ESCPOSConst[ESCPOSConst["CMP_FNT_FONTB"] = 1] = "CMP_FNT_FONTB";
-  ESCPOSConst[ESCPOSConst["CMP_FNT_FONTC"] = 2] = "CMP_FNT_FONTC";
-  ESCPOSConst[ESCPOSConst["CMP_FNT_BOLD"] = 4] = "CMP_FNT_BOLD";
-  ESCPOSConst[ESCPOSConst["CMP_FNT_REVERSE"] = 8] = "CMP_FNT_REVERSE";
-  ESCPOSConst[ESCPOSConst["CMP_FNT_UNDERLINE"] = 16] = "CMP_FNT_UNDERLINE";
-  ESCPOSConst[ESCPOSConst["CMP_FNT_ITALIC"] = 32] = "CMP_FNT_ITALIC";
-  ESCPOSConst[ESCPOSConst["CMP_FNT_STRIKEOUT"] = 64] = "CMP_FNT_STRIKEOUT";
-  ESCPOSConst[ESCPOSConst["CMP_HRI_TEXT_NONE"] = 0] = "CMP_HRI_TEXT_NONE";
-  ESCPOSConst[ESCPOSConst["CMP_HRI_TEXT_ABOVE"] = 1] = "CMP_HRI_TEXT_ABOVE";
-  ESCPOSConst[ESCPOSConst["CMP_HRI_TEXT_BELOW"] = 2] = "CMP_HRI_TEXT_BELOW";
-  ESCPOSConst[ESCPOSConst["CMP_MF_TO_CUTTER"] = 2] = "CMP_MF_TO_CUTTER";
-  ESCPOSConst[ESCPOSConst["CMP_MF_TO_NEXT_TOF"] = 8] = "CMP_MF_TO_NEXT_TOF";
-  ESCPOSConst[ESCPOSConst["CMP_MM_DOTS"] = 1] = "CMP_MM_DOTS";
-  ESCPOSConst[ESCPOSConst["CMP_MM_TWIPS"] = 2] = "CMP_MM_TWIPS";
-  ESCPOSConst[ESCPOSConst["CMP_MM_ENGLISH"] = 3] = "CMP_MM_ENGLISH";
-  ESCPOSConst[ESCPOSConst["CMP_MM_METRIC"] = 4] = "CMP_MM_METRIC";
-  ESCPOSConst[ESCPOSConst["CMP_PD_LEFT_TO_RIGHT"] = 1] = "CMP_PD_LEFT_TO_RIGHT";
-  ESCPOSConst[ESCPOSConst["CMP_PD_BOTTOM_TO_TOP"] = 2] = "CMP_PD_BOTTOM_TO_TOP";
-  ESCPOSConst[ESCPOSConst["CMP_PD_RIGHT_TO_LEFT"] = 3] = "CMP_PD_RIGHT_TO_LEFT";
-  ESCPOSConst[ESCPOSConst["CMP_PD_TOP_TO_BOTTOM"] = 4] = "CMP_PD_TOP_TO_BOTTOM";
-  ESCPOSConst[ESCPOSConst["CMP_PDF417_EC_LEVEL_0"] = 48] = "CMP_PDF417_EC_LEVEL_0";
-  ESCPOSConst[ESCPOSConst["CMP_PDF417_EC_LEVEL_1"] = 49] = "CMP_PDF417_EC_LEVEL_1";
-  ESCPOSConst[ESCPOSConst["CMP_PDF417_EC_LEVEL_2"] = 50] = "CMP_PDF417_EC_LEVEL_2";
-  ESCPOSConst[ESCPOSConst["CMP_PDF417_EC_LEVEL_3"] = 51] = "CMP_PDF417_EC_LEVEL_3";
-  ESCPOSConst[ESCPOSConst["CMP_PDF417_EC_LEVEL_4"] = 52] = "CMP_PDF417_EC_LEVEL_4";
-  ESCPOSConst[ESCPOSConst["CMP_PDF417_EC_LEVEL_5"] = 53] = "CMP_PDF417_EC_LEVEL_5";
-  ESCPOSConst[ESCPOSConst["CMP_PDF417_EC_LEVEL_6"] = 54] = "CMP_PDF417_EC_LEVEL_6";
-  ESCPOSConst[ESCPOSConst["CMP_PDF417_EC_LEVEL_7"] = 55] = "CMP_PDF417_EC_LEVEL_7";
-  ESCPOSConst[ESCPOSConst["CMP_PDF417_EC_LEVEL_8"] = 56] = "CMP_PDF417_EC_LEVEL_8";
-  ESCPOSConst[ESCPOSConst["CMP_PM_BITMAP"] = 1] = "CMP_PM_BITMAP";
-  ESCPOSConst[ESCPOSConst["CMP_PM_BARCODE"] = 2] = "CMP_PM_BARCODE";
-  ESCPOSConst[ESCPOSConst["CMP_PM_BM_ROTATE"] = 4] = "CMP_PM_BM_ROTATE";
-  ESCPOSConst[ESCPOSConst["CMP_PM_BC_ROTATE"] = 8] = "CMP_PM_BC_ROTATE";
-  ESCPOSConst[ESCPOSConst["CMP_PM_OPAQUE"] = 16] = "CMP_PM_OPAQUE";
-  ESCPOSConst[ESCPOSConst["CMP_PM_PAGE_MODE"] = 1] = "CMP_PM_PAGE_MODE";
-  ESCPOSConst[ESCPOSConst["CMP_PM_PRINT_SAVE"] = 2] = "CMP_PM_PRINT_SAVE";
-  ESCPOSConst[ESCPOSConst["CMP_PM_NORMAL"] = 3] = "CMP_PM_NORMAL";
-  ESCPOSConst[ESCPOSConst["CMP_PM_CANCEL"] = 4] = "CMP_PM_CANCEL";
-  ESCPOSConst[ESCPOSConst["CMP_PORT_Bluetooth"] = 1] = "CMP_PORT_Bluetooth";
-  ESCPOSConst[ESCPOSConst["CMP_PORT_Bluetooth_Insecure"] = 2] = "CMP_PORT_Bluetooth_Insecure";
-  ESCPOSConst[ESCPOSConst["CMP_PORT_WiFi"] = 0] = "CMP_PORT_WiFi";
-  ESCPOSConst[ESCPOSConst["CMP_PORT_USB"] = 3] = "CMP_PORT_USB";
-  ESCPOSConst[ESCPOSConst["CMP_PORT_SNMP"] = 6] = "CMP_PORT_SNMP";
-  ESCPOSConst[ESCPOSConst["CMP_QRCODE_EC_LEVEL_L"] = 48] = "CMP_QRCODE_EC_LEVEL_L";
-  ESCPOSConst[ESCPOSConst["CMP_QRCODE_EC_LEVEL_M"] = 49] = "CMP_QRCODE_EC_LEVEL_M";
-  ESCPOSConst[ESCPOSConst["CMP_QRCODE_EC_LEVEL_Q"] = 50] = "CMP_QRCODE_EC_LEVEL_Q";
-  ESCPOSConst[ESCPOSConst["CMP_QRCODE_EC_LEVEL_H"] = 51] = "CMP_QRCODE_EC_LEVEL_H";
-  ESCPOSConst[ESCPOSConst["CMP_RT_NORMAL"] = 1] = "CMP_RT_NORMAL";
-  ESCPOSConst[ESCPOSConst["CMP_RT_ROTATE180"] = 259] = "CMP_RT_ROTATE180";
-  ESCPOSConst[ESCPOSConst["CMP_RP_BARCODE"] = 4096] = "CMP_RP_BARCODE";
-  ESCPOSConst[ESCPOSConst["CMP_RP_BITMAP"] = 8192] = "CMP_RP_BITMAP";
-  ESCPOSConst[ESCPOSConst["CMP_RP_NORMAL"] = 1] = "CMP_RP_NORMAL";
-  ESCPOSConst[ESCPOSConst["CMP_RP_RIGHT90"] = 257] = "CMP_RP_RIGHT90";
-  ESCPOSConst[ESCPOSConst["CMP_RP_LEFT90"] = 258] = "CMP_RP_LEFT90";
-  ESCPOSConst[ESCPOSConst["CMP_RP_ROTATE180"] = 259] = "CMP_RP_ROTATE180";
-  ESCPOSConst[ESCPOSConst["CMP_SIDE_RIGHT"] = 0] = "CMP_SIDE_RIGHT";
-  ESCPOSConst[ESCPOSConst["CMP_SIDE_LEFT"] = 1] = "CMP_SIDE_LEFT";
-  ESCPOSConst[ESCPOSConst["CMP_STATUS_ONLINE"] = 2001] = "CMP_STATUS_ONLINE";
-  ESCPOSConst[ESCPOSConst["CMP_STATUS_OFFLINE"] = 2002] = "CMP_STATUS_OFFLINE";
-  ESCPOSConst[ESCPOSConst["CMP_STS_NORMAL"] = 0] = "CMP_STS_NORMAL";
-  ESCPOSConst[ESCPOSConst["CMP_STS_PAPER_ONPRESENTER"] = 1] = "CMP_STS_PAPER_ONPRESENTER";
-  ESCPOSConst[ESCPOSConst["CMP_STS_DRAWER_LEVEL_H"] = 2] = "CMP_STS_DRAWER_LEVEL_H";
-  ESCPOSConst[ESCPOSConst["CMP_STS_PAPER_NEAREMPTY"] = 4] = "CMP_STS_PAPER_NEAREMPTY";
-  ESCPOSConst[ESCPOSConst["CMP_STS_BATTERY_LOW"] = 8] = "CMP_STS_BATTERY_LOW";
-  ESCPOSConst[ESCPOSConst["CMP_STS_COVER_OPEN"] = 16] = "CMP_STS_COVER_OPEN";
-  ESCPOSConst[ESCPOSConst["CMP_STS_PAPER_EMPTY"] = 32] = "CMP_STS_PAPER_EMPTY";
-  ESCPOSConst[ESCPOSConst["CMP_STS_MSR_READ"] = 64] = "CMP_STS_MSR_READ";
-  ESCPOSConst[ESCPOSConst["CMP_STS_PRINTEROFF"] = 128] = "CMP_STS_PRINTEROFF";
-  ESCPOSConst[ESCPOSConst["CMP_SUCCESS"] = 0] = "CMP_SUCCESS";
-  ESCPOSConst[ESCPOSConst["CMP_TIMEOUT_ERROR"] = 1] = "CMP_TIMEOUT_ERROR";
-  ESCPOSConst[ESCPOSConst["CMP_TP_TRANSACTION"] = 11] = "CMP_TP_TRANSACTION";
-  ESCPOSConst[ESCPOSConst["CMP_TP_NORMAL"] = 12] = "CMP_TP_NORMAL";
-  ESCPOSConst[ESCPOSConst["CMP_TXT_1WIDTH"] = 0] = "CMP_TXT_1WIDTH";
-  ESCPOSConst[ESCPOSConst["CMP_TXT_2WIDTH"] = 16] = "CMP_TXT_2WIDTH";
-  ESCPOSConst[ESCPOSConst["CMP_TXT_3WIDTH"] = 32] = "CMP_TXT_3WIDTH";
-  ESCPOSConst[ESCPOSConst["CMP_TXT_4WIDTH"] = 48] = "CMP_TXT_4WIDTH";
-  ESCPOSConst[ESCPOSConst["CMP_TXT_5WIDTH"] = 64] = "CMP_TXT_5WIDTH";
-  ESCPOSConst[ESCPOSConst["CMP_TXT_6WIDTH"] = 80] = "CMP_TXT_6WIDTH";
-  ESCPOSConst[ESCPOSConst["CMP_TXT_7WIDTH"] = 96] = "CMP_TXT_7WIDTH";
-  ESCPOSConst[ESCPOSConst["CMP_TXT_8WIDTH"] = 112] = "CMP_TXT_8WIDTH";
-  ESCPOSConst[ESCPOSConst["CMP_TXT_1HEIGHT"] = 0] = "CMP_TXT_1HEIGHT";
-  ESCPOSConst[ESCPOSConst["CMP_TXT_2HEIGHT"] = 1] = "CMP_TXT_2HEIGHT";
-  ESCPOSConst[ESCPOSConst["CMP_TXT_3HEIGHT"] = 2] = "CMP_TXT_3HEIGHT";
-  ESCPOSConst[ESCPOSConst["CMP_TXT_4HEIGHT"] = 3] = "CMP_TXT_4HEIGHT";
-  ESCPOSConst[ESCPOSConst["CMP_TXT_5HEIGHT"] = 4] = "CMP_TXT_5HEIGHT";
-  ESCPOSConst[ESCPOSConst["CMP_TXT_6HEIGHT"] = 5] = "CMP_TXT_6HEIGHT";
-  ESCPOSConst[ESCPOSConst["CMP_TXT_7HEIGHT"] = 6] = "CMP_TXT_7HEIGHT";
-  ESCPOSConst[ESCPOSConst["CMP_TXT_8HEIGHT"] = 7] = "CMP_TXT_8HEIGHT";
-  ESCPOSConst[ESCPOSConst["CMP_WM_STOP"] = 0] = "CMP_WM_STOP";
-  ESCPOSConst[ESCPOSConst["CMP_WM_START"] = 1] = "CMP_WM_START";
-})(ESCPOSConst || (ESCPOSConst = {}));
-export function multiply(a, b) {
-  return CitizenEscposprinter.multiply(a, b);
+export { ESCPOSConst };
+export function test() {
+  return CitizenEscposprinter.test();
 }
-export function searchESCPOSPrinter(ifType, timeout) {
-  return CitizenEscposprinter.searchESCPOSPrinter(ifType, timeout);
+
+/**
+ * This method is used to connect the printer. Please specify the type and
+ * address/UsbDevice of the printer connection.
+ *
+ * Bluetooth device address letters, please specify in uppercase.
+ *
+ * If the Bluetooth Device name is specified, the device that was paired is
+ * detected automatically. If you omit the Device name, the supported model
+ * device that was paired is detected automatically.
+ *
+ * If you want to use the Bluetooth device insecure communications provided
+ * by the Android 2.3.3 or later, please specify the connection type
+ * CMP_PORT_Bluetooth_Insecure.
+ *
+ * If you want to use the USB device, must execute the setContext method before
+ * the execution of this method.
+ *
+ * Connection port number is valid only if you specify the connection type
+ * CMP_PORT_WiFi. If it is omitted, you connected with number 9100.
+ *
+ * Timeout is gives the maximum number of milliseconds to connect printer.
+ * Timeout is invalid if you specify the connection type CMP_PORT_USB. If it is
+ * omitted, you connected with 4000 milliseconds when using WiFi and connected
+ * with 8000 milliseconds when using Bluetooth.
+ *
+ * When connecting to the printer, this SDK also checks the status of the
+ * printer and the supporting models.
+ *
+ * When communication with the printer is not necessary, must execute the
+ * dissconnect method to disconnect the printer connection. When not disconnect,
+ * the next connection will be an error.
+ *
+ * Note:
+ * When you first connect with USB, a dialog asking permission to access the USB
+ * device on the Android terminal will be displayed, please tap the OK button.
+ */
+export function connect(connectType, address) {
+  let port = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+  let timeout = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+  return CitizenEscposprinter.connect(connectType, address, port, timeout);
 }
+
+/**
+ * This method is used to disconnect the printer connection.
+ *
+ * When the end of the print or some kind of errors occurs, please disconnect
+ * the connection by the execution of this method.
+ */
+export function disconnect() {
+  return CitizenEscposprinter.disconnect();
+}
+
+/**
+ * This method is used to set the encoding of the send data to the printer.
+ *
+ * When you create an instance, it is initialized to the default character set
+ * of the OS.
+ *
+ * Please set the encoding by the setting of the memory switch of the printer.
+ * (Please refer to "1.4 Supported models (Printers)")
+ *
+ * This SDK supports printing UTF-8 encoded characters. Please refer to "2.5.2
+ * About printing UTF-8 encode characters" for the detail.
+ */
+export function setEncoding(encoding) {
+  return CitizenEscposprinter.setEncoding(encoding);
+}
+
+/**
+ * This method is used to send the command to get the status of the printer.
+ *
+ * If the result of this method is successful, you can get the status of the
+ * printer by status method.
+ *
+ * If the result of this method is failure, there is a possibility that the
+ * connection or the printer abnormality has occurred. In this case, please
+ * reconnect using the disconnect method and the connect method.
+ *
+ * If you want to print after the connected and some time passed, please
+ * check the status of the printer bythe execution of this method and the
+ * status method beforehand.
+ *
+ * In the case of network connection, it is automatically disconnected when
+ * passed a long time. If you want to keep a connection, please execute this
+ * method regularly.
+ */
+export function printerCheck() {
+  return CitizenEscposprinter.printerCheck();
+}
+
+/**
+ * This method is used to get the status of the printer obtained by the
+ * printerCheck method.
+ *
+ * Before the execution of this method, you must run the printerCheck method.
+ *
+ * When there is not a parameter, return the logical sum of the status
+ * (CMP_STS_COVER_OPEN, CMP_STS_PAPER_EMPTY, CMP_STS_PRINTEROFF) indicating
+ * the error of the printer.
+ *
+ * When the status type is specified, return the status that matches. Status
+ * type can be specified in combination. If you want to combine, please specify
+ * the logical sum.
+ */
+export function status() {
+  let type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+  return CitizenEscposprinter.status(type);
+}
+
+/**
+ * This method is used to print text which specifies alignment and attribute
+ * and size.
+ *
+ * Text attribute can be specified in combination font B, font C, bold, reverse,
+ * and underline. If you want to combine, please specify the logical sum.
+ *
+ * Text size can be specified in combination with the width and height. If you
+ * want to combine, please specify the logical sum.
+ */
+export function printText(data) {
+  let alignment = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ESCPOSConst.CMP_ALIGNMENT_LEFT;
+  let attribute = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : ESCPOSConst.CMP_FNT_DEFAULT;
+  let textSize = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : ESCPOSConst.CMP_TXT_1WIDTH | ESCPOSConst.CMP_TXT_1HEIGHT;
+  return CitizenEscposprinter.printText(data, alignment, attribute, textSize);
+}
+
+/**
+ * This method is used to print text with space padding which specifies
+ * attribute and size and length of the single-byte character equivalent and
+ * side where space is added.
+ *
+ * Cannot use the combining characters in the text data.
+ *
+ * Text attribute can be specified in combination font B, font C, bold, reverse,
+ * and underline. If you want to combine, please specify the logical sum.
+ *
+ * Text size can be specified in combination with the width and height. If you
+ * want to combine, please specify the logical sum.
+ */
+export function printPaddingText(data, /** ESCPOSPrinterTextAttribute */
+attribute, /** ESCPOSPrinterTextSize */
+textSize, length, side) {
+  return CitizenEscposprinter.printPaddingText(data, attribute, textSize, length, side);
+}
+
+/**
+ * This method is used to print text by using a font installed in the computer,
+ * which specifies alignment, font, size, style, and ratio.
+ *
+ * What this method does internally is to generate a graphic image based on the
+ * given parameters, to print the graphic image.
+ *
+ * Font style can be specified in combination bold, reverse, underline, italic
+ * and strikeout. If you want to combine, please specify the logical sum.
+ */
+export function printTextLocalFont(data, alignment, fontType, point, /** ESCPOSPrinterFontStyle */
+style, /** 1-1000 */
+hRatio, /** 1-1000 */
+vRatio) {
+  return CitizenEscposprinter.printTextLocalFont(data, alignment, fontType, point, style, hRatio, vRatio);
+}
+
+/**
+ * This method is used to print bitmap which specifies base64 encoded bitmap
+ * data, along with width, alignment and mode.
+ */
+export function printBitmap( /** base64 encoded bitmap data */
+data) {
+  let width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ESCPOSConst.CMP_BM_ASIS;
+  let alignment = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : ESCPOSConst.CMP_ALIGNMENT_CENTER;
+  let mode = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : ESCPOSConst.CMP_BM_MODE_HT_THRESHOLD | ESCPOSConst.CMP_BM_MODE_CMD_RASTER;
+  return CitizenEscposprinter.printBitmap(data, width, alignment, mode);
+}
+
+/**
+ * **THIS METHOD IS NOT IMPLEMENTED**
+ *
+ * This method is used to store bitmap which specifies number and file name and
+ * width and mode. The stored bitmap can print using printNVBitmap method or
+ * watermarkPrint method.
+ *
+ * The fileName parameter sets the full path of the bitmap file to store.
+ *
+ * The bitmap formats that can be stored are BMP / JPG / PNG / GIF.
+ *
+ * If the width parameter is omitted, it is in CMP_BM_ASIS to store.
+ *
+ * The mode parameter can be specified in combination with the halftone and
+ * store method. To use of the combination, please specify the logical sum.
+ * If the mode parameter is omitted, it is in `CMP_BM_MODE_HT_THRESHOLD` |
+ * `CMP_BM_MODE_CMD_MONO` to store.
+ *
+ * For more information on the mode parameter is as follows.
+ */
+export function setNVBitmap() {
+  // /** 1 - 20 */
+  // nvImageNumber: number,
+  // fileName: string,
+  // /**
+  //  * Bitmap width expressed. Expressed in the unit of measure given by MapMode
+  //  * (default dots).
+  //  */
+  // width: number = ESCPOSConst.CMP_BM_ASIS,
+  // /**
+  //  * **[CT-S281, PMU3300, CMP-20/30 Series]**
+  //  *
+  //  * It is necessary that the bitmap numbers are contiguous from number 1. If
+  //  * you register a new bitmap after the connection, the bitmap that was
+  //  * previously registered will be erased. The CMP-20/30 series, please register
+  //  * with a USB connection. The CMP-20 series is automatically disconnected
+  //  * because the printer is reset when the registration is completed.
+  //  *
+  //  * **[CT-D101/150/151, CT-E301/351/601/651, CT-S251/281II/310II/601/651/801/851/601II/651II/801II/851II/2000/4000 Series]**
+  //  *
+  //  * It is not necessary that the bitmap numbers are contiguous. And it is
+  //  * possible to remove a registered image by assigning the fileName parameter
+  //  * as an empty string.
+  //  */
+  // mode: ESCPOSPrinterNVImageMode = ESCPOSConst.CMP_BM_MODE_HT_THRESHOLD |
+  //   ESCPOSConst.CMP_BM_MODE_CMD_MONO,
+  throw new Error("Not implemented");
+}
+
+/**
+ * This method is used to print bitmap image (Logo) that is stored in the flash
+ * memory of the printer.
+ *
+ * To use this method, you need to register of the logo in advance. Logo
+ * registration, please store it using `setNVBitmap` method or use the
+ * "POS Printer utility" of utility software for the printer.
+ *
+ * Registration mode varies among the model of the printer. Please register as follows.
+ *
+ * **[CT-S281, PMU3300, CMP-20/30 Series]**
+ *
+ * Please register the logo with "Unused key code mode".
+ *
+ * To the image number to use, it is necessary to register the logo sequentially.
+ *
+ *
+ * **[CT-D101/150/151, CT-E301/351/601/651, CT-S251/281II/310II/601/651/801/851/601II/651II/801II/851II/751/2000/4000/4500 Series]**
+ *
+ * Please register the logo with "Key code mode".
+ *
+ * To the image number to use, it is necessary to register the logo that
+ * specifies the key code.
+ */
+export function printNVBitmap( /** 1 - 20 */
+nvImageNumber) {
+  return CitizenEscposprinter.printNVBitmap(nvImageNumber);
+}
+
+/**
+ * This method is used to print one-dimensional barcode.
+ *
+ * GS1 DataBar (CMP_BCS_GS1DATABAR, CMP_BCS_GS1DATABAR_E, CMP_BCS_GS1DATABAR_T,
+ * CMP_BCS_GS1DATABAR_L) can use only the printers of CT-D101/150/151,
+ * CT-E301/351/601/651, CT-S251/310II/601/651/801/851/601II/651II/801II/851II/751/4500
+ * series.
+ *
+ * The designation of CMP_ALIGNMENT_CENTER and CMP_ALIGNMENT_RIGHT of the
+ * Barcode alignment on the page mode is ignored.
+ */
+export function printBarCode(data, symbology,
+/**
+ * 1 - 255 (dots)
+ *
+ * Expressed in the unit of measure given by MapMode (default dots).
+ */
+height,
+/**
+ * 2 - 6 (dots)
+ *
+ * Expressed in the unit of measure given by MapMode (default dots).
+ */
+width, alignment, textPosition) {
+  return CitizenEscposprinter.printBarCode(data, symbology, height, width, alignment, textPosition);
+}
+
+/**
+ * This method is used to print PDF-417 barcode.
+ *
+ * Please refer to the Command Reference of the printer for details on each
+ * parameter.
+ *
+ * The designation of CMP_ALIGNMENT_CENTER and CMP_ALIGNMENT_RIGHT of the
+ * Barcode alignment on the page mode is ignored.
+ */
+export function printPDF417(data, /** 1 - 30, 0 = automatic */
+digits, /** 3 - 90, 0 = automatic */
+steps,
+/**
+ * 2 - 8 (dots)
+ *
+ * Expressed in the unit of measure given by MapMode (default dots).
+ */
+moduleWidth, /** 2 - 8 */
+stepHeight, ECLevel, alignment) {
+  return CitizenEscposprinter.printPDF417(data, digits, steps, moduleWidth, stepHeight, ECLevel, alignment);
+}
+
+/**
+ * This method is used to print QRCode barcode.
+ *
+ * Please refer to the Command Reference of the printer for details on each
+ * parameter.
+ *
+ * The designation of CMP_ALIGNMENT_CENTER and CMP_ALIGNMENT_RIGHT of the
+ * Barcode alignment on the page mode is ignored.
+ */
+export function printQRCode(data,
+/**
+ * 1 - 16 (dots)
+ *
+ * Expressed in the unit of measure given by MapMode (default dots).
+ */
+moduleSize, ECLevel) {
+  let alignment = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : ESCPOSConst.CMP_ALIGNMENT_CENTER;
+  return CitizenEscposprinter.printQRCode(data, moduleSize, ECLevel, alignment);
+}
+
+/**
+ * This method is used to print 2-dimensional GS1 DataBar barcode.
+ *
+ * This method can use only the printers of CT-D101/150/151, CT-E301/351/601/651,
+ * CT-S251/310II/601/651/801/851/601II/651II/801II/851II/751/4500 series.
+ *
+ * Please refer to the Command Reference of the printer for details on each
+ * parameter.
+ *
+ * The designation of CMP_ALIGNMENT_CENTER and CMP_ALIGNMENT_RIGHT of the
+ * Barcode alignment on the page mode is ignored.
+ */
+export function printGS1DataBarStacked(data, symbology,
+/**
+ * 2 - 8 (dots)
+ *
+ * Expressed in the unit of measure given by MapMode (default dots).
+ */
+moduleSize,
+/**
+ * 106 - 39528 (dots)
+ *
+ * Expressed in the unit of measure given by MapMode (default dots).
+ */
+maxSize, alignment) {
+  return CitizenEscposprinter.printGS1DataBarStacked(data, symbology, moduleSize, maxSize, alignment);
+}
+
+/** This method is used to cut the paper. */
+export function cutPaper(type) {
+  return CitizenEscposprinter.cutPaper(type);
+}
+
+/** This method is used to feed the paper in dot units. */
+export function unitFeed( /** Expressed in the unit of measure given by MapMode (default dots). */
+ufCount) {
+  return CitizenEscposprinter.unitFeed(ufCount);
+}
+
+/** This method is used to utilize label paper and black mark paper. */
+export function markFeed(type) {
+  return CitizenEscposprinter.markFeed(type);
+}
+
+/** This method is used to open the cash drawer is connected to the printer. */
+export function openDrawer(drawer, /** 1 - 8 (x 100) msec */
+pulseLen) {
+  return CitizenEscposprinter.openDrawer(drawer, pulseLen);
+}
+
+/**
+ * This method is used to start or end a transaction mode.
+ *
+ * If control is CMP_TP_TRANSACTION, then transaction mode is entered.
+ * Subsequent methods calls will buffer the print data. The methods applied to a
+ * transaction mode are as follows.
+ * - printText
+ * - printBitmap
+ * - printNVBitmap
+ * - printBarCode
+ * - printPDF417
+ * - printQRCode
+ * - printGS1DataBarStacked
+ * - cutPaper
+ * - unitFeed
+ * - markFeed
+ * - openDrawer
+ * - rotatePrint
+ * - pageModePrint
+ * - clearePrintArea
+ * - printData
+ * - printNormal
+ *
+ * If control is CMP_TP_NORMAL, then transaction mode is exited. If some data
+ * was buffered, then the buffered data is printed. The entire transaction is
+ * treated as one message.
+ *
+ * Calling the clearOutput method cancels transaction mode. Any buffered print
+ * lines are also cleared.
+ */
+export function transactionPrint(control) {
+  return CitizenEscposprinter.transactionPrint(control);
+}
+
+/**
+ * This method is used to start or end a rotation print mode.
+ *
+ * If rotation includes `CMP_RP_ROTATE180`, then upside-down print mode is
+ * entered. The methods applied to a rotation print mode are as follows.
+ * - printText
+ * - printNormal
+ *
+ * If rotation includes `CMP_RP_BARCODE` and/or `CMP_RP_BITMAP`, the following
+ * methods are printed also rotated.
+ * - printBarcod
+ * - printPDF417
+ * - printQRCode
+ * - printGS1DataBarStacked
+ * - printBitmap
+ *
+ * If rotation is `CMP_RP_NORMAL`, then rotation mode is exited.
+ */
+export function rotatePrint(rotation) {
+  return CitizenEscposprinter.rotatePrint(rotation);
+}
+
+/**
+ * This method is used to start or end a Page Mode.
+ *
+ * If control is `CMP_PM_PAGE_MODE`, then Page Mode is entered. Subsequent methods
+ * calls will buffer the print data. The methods applied to a Page Mode are as
+ * follows.
+ * - printText
+ * - printBitmap
+ * - printBarCode
+ * - printPDF417
+ * - printQRCode
+ * - printGS1DataBarStacked
+ * - printNormal
+ *
+ * If control is `CMP_PM_PRINT_SAVE`, then Page Mode is not exited. If some data
+ * is buffered, then the buffered data is saved and printed. This control is
+ * used to print the same page layout with additional print items inside of the
+ * page.
+ *
+ * If control is `CMP_PM_NORMAL`, then Page Mode is exited. If some data is
+ * buffered, then the buffered data is printed. The buffered data will not be
+ * saved.
+ *
+ * If control is `CMP_PM_CANCEL`, then Page Mode is exited. If some data is
+ * buffered, then the buffered data is not printed and is not saved.
+ *
+ * Note that when the `pageModePrint` method is called, all of the data that
+ * is to be printed in the PageModePrintArea will be printed and the paper is
+ * fed to the end of the PageModePrintArea. If more than one PageModePrintArea
+ * is defined, then after the pageModePrint method is called, all of the data
+ * that is to be printed in the respective PageModePrintArea(s) will be printed
+ * and the paper will be fed to the end of the PageModePrintArea located the
+ * farthest “down” the sheet of paper.
+ *
+ * The entire Page Mode transaction is treated as one message. Calling the
+ * `clearOutput` method cancels Page Mode. Any buffered print lines are also
+ * cleared.
+ */
+export function pageModePrint(control) {
+  return CitizenEscposprinter.pageModePrint(control);
+}
+
+/** This method is used to clear the area defined by the PageModePrintArea property. */
+export function clearPrintArea() {
+  return CitizenEscposprinter.clearPrintArea();
+}
+
+/**
+ * This method is used to clear all buffered output data by tranzactionPrint
+ * method and `pageModePrint` method.
+ *
+ * Also, when possible, halts outputs that are in progress. At the same time,
+ * the command to clear print data on the printer is sent.
+ */
+export function clearOutput() {
+  return CitizenEscposprinter.clearOutput();
+}
+
+/**
+ * This method is used to send data bytes to the printer directly.
+ *
+ * It is usually not necessary, please use if you want to send ESC commands
+ * directly to the printer.
+ *
+ * If you want to use, please be careful so as not to affect the other methods.
+ */
+export function printData(data) {
+  return CitizenEscposprinter.printData(data);
+}
+
+/**
+ * This method is used to print using the escape sequences that are defined in
+ * the OPOS.
+ *
+ * Please refer to "Programming Manual" for more information.
+ */
+export function printNormal(data) {
+  return CitizenEscposprinter.printNormal(data);
+}
+
+/**
+ * **THIS METHOD IS NOT IMPLEMENTED YET.**
+ *
+ * This method is used to print watermark.
+ *
+ * This is available with a printer of the CT-D151, CT-E601/651,
+ * CT-S251/601II/651II/801II/851II/751 series.
+ *
+ * The bitmap image stored in the flash memory of the printer is printed out as
+ * watermark.
+ *
+ * To use this method, you need to register of the logo in advance. Logo
+ * registration, please store it using `setNVBitmap` method or use the
+ * "POS Printer utility" of utility software for the printer.
+ *
+ * When the printing of watermark was stopped in `CMP_WM_STOP`, all other
+ * arguments are ignored.
+ */
+export function watermarkPrint() {
+  // start: ESCPOSPrinterWatermarkStart,
+  // /** 1 - 20 */
+  // nvImageNumber: number,
+  // /**
+  //  * 0 - 65,535 (dots)
+  //  *
+  //  * Expressed in the unit of measure given by MapMode (default dots).
+  //  */
+  // pass: number,
+  // /**
+  //  * 0 - 65,535 (dots)
+  //  *
+  //  * Expressed in the unit of measure given by MapMode (default dots).
+  //  */
+  // feed: number,
+  // /**
+  //  * 0: Infinite repetition
+  //  *
+  //  * 1 - 65,535: The repetition number of times
+  //  */
+  // repeat: number,
+  throw new Error("Not implemented yet");
+  // return CitizenEscposprinter.watermarkPrint(
+  //   start,
+  //   nvImageNumber,
+  //   pass,
+  //   feed,
+  //   repeat,
+  // );
+}
+
+/**
+ * This method is used to search the printer. Please specify the type of the
+ * printer connection and the search time. Before the execution of this method,
+ * must execute the setContext method. This method cannot be used on the
+ * simulator.
+ *
+ * After search time passed, set a result to the result parameter and return the
+ * information of the found printers as array type.
+ *
+ * In the case of CMP_PORT_WiFi for the connection type, you can search only
+ * the printers of CT-D101/150/151, CT-E301/351/601/651,
+ * CT-S251/310II/601/651/801/851/601II/651II/801II/851II/751/4500 series.
+ * Recommended value of search time is more than 3 seconds. When the search time
+ * is shorter than the second, a search may fail by the network situation.
+ *
+ * In the case of CMP_PORT_Bluetooth or CMP_PORT_Bluetooth_Insecure for the
+ * connection type, you can get the paired address when specifying 0 for the
+ * search time. When specifying 1 - 30 for the search time you can get the
+ * connectable address. Recommended value of search time is more than 10 seconds.
+ *
+ * When the search time is shorter than the second, a search may fail by the
+ * Bluetooth situation.
+ */
+export function searchCitizenPrinter(connectType, timeout) {
+  return CitizenEscposprinter.searchCitizenPrinter(connectType, timeout);
+}
+
+/**
+ * This method is used to search the printer. Please specify the type of the
+ * printer connection and the search time. Before the execution of this method,
+ * must execute the setContext method. This method cannot be used on the
+ * simulator.
+ *
+ * After search time passed, set a result to the result parameter and return the
+ * information of the found printers as String array type.
+ *
+ * In the case of CMP_PORT_WiFi for the connection type, you can search only the
+ * printers of CT-D101/150/151, CT-E301/351/601/651,
+ * CT-S251/310II/601/651/801/851/601II/651II/801II/851II/751/4500 series.
+ * Recommended value of search time is more than 3 seconds. When the search time
+ * is shorter than the second, a search may fail by the network situation.
+ *
+ * In the case of CMP_PORT_Bluetooth or CMP_PORT_Bluetooth_Insecure for the
+ * connection type, you can get the paired address when specifying 0 for the
+ * search time. When specifying 1 - 30 for the search time you can get the
+ * connectable address. Recommended value of search time is more than 10 seconds.
+ *
+ * When the search time is shorter than the second, a search may fail by the
+ * Bluetooth situation.
+ */
+export function searchESCPOSPrinter(connectType, timeout) {
+  if (connectType === ESCPOSConst.CMP_PORT_WiFi) {
+    timeout ??= 5;
+  } else {
+    timeout ??= 10;
+  }
+  return CitizenEscposprinter.searchESCPOSPrinter(connectType, timeout);
+}
+
+/**
+ * This method is used to connect printer and get the status of the printer.
+ * After the process is complete, disconnect the connection. (except
+ * connection type `CMP_PORT_SNMP`)
+ *
+ * The `CMP_PORT_SNMP` in the connect type can be used with printers connected
+ * to the network. By using this connection type, you can get the status
+ * regardless of other connections. In order to use this connection type, the
+ * printer supported with this function.
+ */
+export function printerCheckEx(connectType,
+/**
+ * WiFi:
+ * - 0.0.0.0 ~ 255.255.255.255
+ *
+ * Bluetooth:
+ * - 00:00:00:00:00:00 ~ FF:FF:FF:FF:FF:FF
+ * - Device name (Automatic detection)
+ */
+address, port, timeout) {
+  return CitizenEscposprinter.printerCheckEx(connectType, address, port, timeout);
+}
+
+/**
+ * This method is used to connect printer and open the cash drawer is connected
+ * to the printer. After the process is complete, disconnect the connection.
+ *
+ * This method can execute even if the printer error (cover open or paper empty).
+ */
+export function openDrawerEx(drawer, /** 1 - 8 (x 100) msec */
+pulseLen, connectType,
+/**
+ * WiFi:
+ * - 0.0.0.0 ~ 255.255.255.255
+ *
+ * Bluetooth:
+ * - 00:00:00:00:00:00 ~ FF:FF:FF:FF:FF:FF
+ * - Device name (Automatic detection)
+ */
+address, port, timeout) {
+  return CitizenEscposprinter.openDrawerEx(drawer, pulseLen, connectType, address, port, timeout);
+}
+
+/**
+ * This method is used to set the timeout to check the print completion
+ * notification.
+ *
+ * When you create an instance, the timeout is initialized to 0.
+ *
+ * Please refer to "2.5.1. Function to detect the completion of printing"
+ * for details of the function to detect the completion of printing.
+ */
+export function setPrintCompletedTimeout(
+/**
+ * 0: Automatically adjusts the timeout.
+ *
+ * Other Values: Specify the timeout. Expressed in milliseconds.
+ */
+timeout) {
+  return CitizenEscposprinter.setPrintCompletedTimeout(timeout);
+}
+
+/** Sets the logging function. See "3.2 Logging function" for more details */
+export function setLog(
+/**
+ * 0: None
+ *
+ * 1: Access logs
+ *
+ * 2: Error logs
+ */
+mode, /** The folder of the external storage path */
+path,
+/**
+ * Maximum size (MB)
+ *
+ * 0: Unlimited
+ */
+maxSize) {
+  return CitizenEscposprinter.setLog(mode, path, maxSize);
+}
+
+/**
+ * This method is used to get a numerical value for the version number of this SDK.
+ *
+ * @returns Return a numerical value for the version number of this SDK. (Ver1.00 is 100)
+ */
+export function getVersionCode() {
+  return CitizenEscposprinter.getVersionCode();
+}
+
+/**
+ * This method is used to get a string for the version number of this SDK.
+ *
+ * @returns Return a string for the version number of this SDK. (Ver1.00 is "1.00")
+ */
+export function getVersionName() {
+  return CitizenEscposprinter.getVersionName();
+}
+
+// TODO: Try catch to reject promises in Java
+// TODO: Rewrite CONTRIBUTING.md, telling them to implement a function in oldarch, newarch and ios in PRs
+// TODO: Connect UsbDevice
 //# sourceMappingURL=index.js.map
