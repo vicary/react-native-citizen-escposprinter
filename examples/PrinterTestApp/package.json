@@ -9,6 +9,30 @@
     "start": "react-native start",
     "test": "jest"
   },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@react-native-community",
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:react/jsx-runtime"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "rules": {
+      "quotes": [
+        "warn",
+        "double"
+      ]
+    }
+  },
+  "eslintIgnore": [
+    "*.js",
+    "node_modules/",
+    "lib/"
+  ],
   "jest": {
     "preset": "react-native"
   },
@@ -24,6 +48,7 @@
     "useTabs": false
   },
   "dependencies": {
+    "nativewind": "^2.0.11",
     "react": "18.2.0",
     "react-native": "^0.71.1",
     "react-native-citizen-escposprinter": "workspace:^"
@@ -49,6 +74,7 @@
     "prettier": "^2.4.1",
     "react-native-gradle-plugin": "^0.71.12",
     "react-test-renderer": "18.2.0",
+    "tailwindcss": "^3.2.4",
     "typescript": "^4.9.4"
   },
   "packageManager": "yarn@4.0.0-rc.35"
