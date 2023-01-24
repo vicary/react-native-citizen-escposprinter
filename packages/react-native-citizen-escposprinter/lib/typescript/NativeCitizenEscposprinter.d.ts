@@ -2,7 +2,7 @@ import type { TurboModule } from "react-native";
 export interface Spec extends TurboModule {
     connect(
     /** @type ESCPOSPrinterConnectType */
-    type: number, address: string, port?: number, timeout?: number): Promise<boolean>;
+    type: number, address: string, port?: number, timeout?: number): Promise<void>;
     disconnect(): Promise<void>;
     setEncoding(encoding: string): Promise<void>;
     printerCheck(): Promise<void>;
@@ -84,6 +84,7 @@ export interface Spec extends TurboModule {
     clearOutput(): Promise<void>;
     printData(data: string): Promise<void>;
     printNormal(data: string): Promise<void>;
+    watermarkPrint(start: number, nvImageNumber: number, pass: number, feed: number, repeat: number): Promise<void>;
     printNVBitmap(nvImageNumber: number): Promise<void>;
     searchCitizenPrinter(
     /** @type ESCPOSPrinterSearchType */
@@ -93,7 +94,7 @@ export interface Spec extends TurboModule {
     connectType: number, timeout: number): Promise<string[]>;
     printerCheckEx(
     /** @type ESCPOSPrinterConnectType */
-    connectType: number, address: string, port?: number, timeout?: number): Promise<void>;
+    connectType: number, address: string, port?: number, timeout?: number): Promise<number>;
     openDrawerEx(
     /** @type ESCPOSPrinterDrawer */
     drawer: number, pulseLen: number, 

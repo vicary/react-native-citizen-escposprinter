@@ -504,6 +504,33 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
   }
 
   @ReactMethod
+  override fun watermarkPrint(
+      start: Double,
+      nvImageNumber: Double,
+      pass: Double,
+      feed: Double,
+      repeat: Double,
+      promise: Promise
+  ) {
+    coroutineScope.launch {
+      val ret =
+          printer.watermarkPrint(
+              start.toInt(),
+              nvImageNumber.toInt(),
+              pass.toInt(),
+              feed.toInt(),
+              repeat.toInt()
+          )
+
+      if (ret == ESCPOSConst.CMP_SUCCESS) {
+        promise.resolve(null)
+      } else {
+        handleRejection(promise, ret)
+      }
+    }
+  }
+
+  @ReactMethod
   override fun printNVBitmap(nvImageNumber: Double, promise: Promise) {
     coroutineScope.launch {
       val ret = printer.printNVBitmap(nvImageNumber.toInt())

@@ -1,4 +1,4 @@
-import { CitizenPrinerInfo, ESCPOSConst, ESCPOSPrinterBarcodeType, ESCPOSPrinterConnectType, ESCPOSPrinterCutType, ESCPOSPrinterDrawer, ESCPOSPrinterGS1DatabarType, ESCPOSPrinterMarkFeedType, ESCPOSPrinterPageModeControl, ESCPOSPrinterPDF417ECLevel, ESCPOSPrinterPrintAlignment, ESCPOSPrinterQRCodeECLevel, ESCPOSPrinterRotation, ESCPOSPrinterSearchType, ESCPOSPrinterTextPosition, ESCPOSPrinterTransactionControl, ESCPOSPrinterTypeface } from "./ESCPOSConst";
+import { CitizenPrinerInfo, ESCPOSConst, ESCPOSPrinterBarcodeType, ESCPOSPrinterConnectType, ESCPOSPrinterCutType, ESCPOSPrinterDrawer, ESCPOSPrinterGS1DatabarType, ESCPOSPrinterMarkFeedType, ESCPOSPrinterPageModeControl, ESCPOSPrinterPDF417ECLevel, ESCPOSPrinterPrintAlignment, ESCPOSPrinterQRCodeECLevel, ESCPOSPrinterRotation, ESCPOSPrinterSearchType, ESCPOSPrinterSide, ESCPOSPrinterTextPosition, ESCPOSPrinterTransactionControl, ESCPOSPrinterTypeface, ESCPOSPrinterWatermarkStart } from "./ESCPOSConst";
 export { ESCPOSConst };
 /**
  * This method is used to connect the printer. Please specify the type and
@@ -104,9 +104,9 @@ type?: number): Promise<number>;
  * want to combine, please specify the logical sum.
  */
 export declare function printText(data: string, alignment?: ESCPOSPrinterPrintAlignment, 
-/** ESCPOSPrinterTextAttribute */
-attribute?: ESCPOSConst, 
-/** ESCPOSPrinterTextSize */
+/** @type import("./ESCPOSConst").ESCPOSPrinterTextAttribute */
+attribute?: number, 
+/** @type import("./ESCPOSConst").ESCPOSPrinterTextSize */
 textSize?: number): Promise<void>;
 /**
  * This method is used to print text with space padding which specifies
@@ -122,10 +122,10 @@ textSize?: number): Promise<void>;
  * want to combine, please specify the logical sum.
  */
 export declare function printPaddingText(data: string, 
-/** ESCPOSPrinterTextAttribute */
+/** @type import("./ESCPOSConst").ESCPOSPrinterTextAttribute */
 attribute: number, 
-/** ESCPOSPrinterTextSize */
-textSize: number, length: number, side: ESCPOSConst.CMP_SIDE_RIGHT | ESCPOSConst.CMP_SIDE_LEFT): Promise<void>;
+/** @type import("./ESCPOSConst").ESCPOSPrinterTextSize */
+textSize: number, length: number, side: ESCPOSPrinterSide): Promise<void>;
 /**
  * This method is used to print text by using a font installed in the computer,
  * which specifies alignment, font, size, style, and ratio.
@@ -137,7 +137,7 @@ textSize: number, length: number, side: ESCPOSConst.CMP_SIDE_RIGHT | ESCPOSConst
  * and strikeout. If you want to combine, please specify the logical sum.
  */
 export declare function printTextLocalFont(data: string, alignment: ESCPOSPrinterPrintAlignment, fontType: ESCPOSPrinterTypeface, point: number, 
-/** ESCPOSPrinterFontStyle */
+/** @type import("./ESCPOSConst").ESCPOSPrinterFontStyle */
 style: number, 
 /** 1-1000 */
 hRatio: number, 
@@ -150,7 +150,7 @@ vRatio: number): Promise<void>;
 export declare function printBitmap(
 /** base64 encoded bitmap data */
 data: string, width?: number, alignment?: ESCPOSPrinterPrintAlignment, 
-/** ESCPOSPrinterBitmapMode */
+/** @type import("./ESCPOSConst").ESCPOSPrinterBitmapMode */
 mode?: number): Promise<void>;
 /**
  * **THIS METHOD IS NOT IMPLEMENTED**
@@ -432,7 +432,27 @@ export declare function printNormal(data: string): Promise<void>;
  * When the printing of watermark was stopped in `CMP_WM_STOP`, all other
  * arguments are ignored.
  */
-export declare function watermarkPrint(): Promise<void>;
+export declare function watermarkPrint(start: ESCPOSPrinterWatermarkStart, 
+/** 1 - 20 */
+nvImageNumber: number, 
+/**
+ * 0 - 65,535 (dots)
+ *
+ * Expressed in the unit of measure given by MapMode (default dots).
+ */
+pass: number, 
+/**
+ * 0 - 65,535 (dots)
+ *
+ * Expressed in the unit of measure given by MapMode (default dots).
+ */
+feed: number, 
+/**
+ * 0: Infinite repetition
+ *
+ * 1 - 65,535: The repetition number of times
+ */
+repeat: number): Promise<void>;
 /**
  * This method is used to search the printer. Please specify the type of the
  * printer connection and the search time. Before the execution of this method,
@@ -456,7 +476,7 @@ export declare function watermarkPrint(): Promise<void>;
  * When the search time is shorter than the second, a search may fail by the
  * Bluetooth situation.
  */
-export declare function searchCitizenPrinter(connectType: ESCPOSPrinterSearchType, timeout: number): Promise<CitizenPrinerInfo[]>;
+export declare function searchCitizenPrinter(connectType: ESCPOSPrinterSearchType, timeout?: number): Promise<CitizenPrinerInfo[]>;
 /**
  * This method is used to search the printer. Please specify the type of the
  * printer connection and the search time. Before the execution of this method,
@@ -500,7 +520,7 @@ export declare function printerCheckEx(connectType: ESCPOSPrinterConnectType,
  * - 00:00:00:00:00:00 ~ FF:FF:FF:FF:FF:FF
  * - Device name (Automatic detection)
  */
-address: string, port?: number, timeout?: number): Promise<void>;
+address: string, port?: number, timeout?: number): Promise<number>;
 /**
  * This method is used to connect printer and open the cash drawer is connected
  * to the printer. After the process is complete, disconnect the connection.

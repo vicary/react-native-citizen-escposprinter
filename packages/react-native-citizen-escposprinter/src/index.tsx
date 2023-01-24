@@ -1,4 +1,5 @@
 import { NativeModules, Platform } from "react-native";
+import { getPrintError } from "./errors";
 import {
   CitizenPrinerInfo,
   ESCPOSConst,
@@ -14,10 +15,13 @@ import {
   ESCPOSPrinterQRCodeECLevel,
   ESCPOSPrinterRotation,
   ESCPOSPrinterSearchType,
+  ESCPOSPrinterSide,
   ESCPOSPrinterTextPosition,
   ESCPOSPrinterTransactionControl,
   ESCPOSPrinterTypeface,
+  ESCPOSPrinterWatermarkStart,
 } from "./ESCPOSConst";
+import type { Spec } from "./NativeCitizenEscposprinter";
 
 const LINKING_ERROR =
   "The package 'react-native-citizen-escposprinter' doesn't seem to be linked. Make sure: \n\n" +
@@ -28,10 +32,9 @@ const LINKING_ERROR =
 // @ts-expect-error ts(7017)
 const isTurboModuleEnabled = global.__turboModuleProxy != null;
 
-const CitizenEscposprinter =
+const CitizenEscposprinter: Spec =
   (isTurboModuleEnabled
-    ? // eslint-disable-next-line @typescript-eslint/no-var-requires
-      require("./NativeCitizenEscposprinter").default
+    ? require("./NativeCitizenEscposprinter").default
     : NativeModules.CitizenEscposprinter) ??
   new Proxy(
     {},
@@ -41,6 +44,10 @@ const CitizenEscposprinter =
       },
     },
   );
+
+const handleRejection = (error: unknown) => {
+  throw (error instanceof Error && getPrintError(+error.message)) || error;
+};
 
 export { ESCPOSConst };
 
@@ -80,13 +87,22 @@ export { ESCPOSConst };
  * When you first connect with USB, a dialog asking permission to access the USB
  * device on the Android terminal will be displayed, please tap the OK button.
  */
-export function connect(
+export async function connect(
   connectType: ESCPOSPrinterConnectType,
   address: string,
   port = 0,
   timeout = 0,
-): Promise<void> {
-  return CitizenEscposprinter.connect(connectType, address, port, timeout);
+) {
+  try {
+    return await CitizenEscposprinter.connect(
+      connectType,
+      address,
+      port,
+      timeout,
+    );
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -95,8 +111,12 @@ export function connect(
  * When the end of the print or some kind of errors occurs, please disconnect
  * the connection by the execution of this method.
  */
-export function disconnect(): Promise<void> {
-  return CitizenEscposprinter.disconnect();
+export async function disconnect() {
+  try {
+    return await CitizenEscposprinter.disconnect();
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -111,8 +131,12 @@ export function disconnect(): Promise<void> {
  * This SDK supports printing UTF-8 encoded characters. Please refer to "2.5.2
  * About printing UTF-8 encode characters" for the detail.
  */
-export function setEncoding(encoding: string): Promise<void> {
-  return CitizenEscposprinter.setEncoding(encoding);
+export async function setEncoding(encoding: string) {
+  try {
+    return await CitizenEscposprinter.setEncoding(encoding);
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -133,8 +157,12 @@ export function setEncoding(encoding: string): Promise<void> {
  * passed a long time. If you want to keep a connection, please execute this
  * method regularly.
  */
-export function printerCheck(): Promise<void> {
-  return CitizenEscposprinter.printerCheck();
+export async function printerCheck() {
+  try {
+    return await CitizenEscposprinter.printerCheck();
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -151,11 +179,15 @@ export function printerCheck(): Promise<void> {
  * type can be specified in combination. If you want to combine, please specify
  * the logical sum.
  */
-export function status(
+export async function status(
   /** ESCPOSPrinterStatus */
   type = 0,
-): Promise<number> {
-  return CitizenEscposprinter.status(type);
+) {
+  try {
+    return await CitizenEscposprinter.status(type);
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -168,15 +200,24 @@ export function status(
  * Text size can be specified in combination with the width and height. If you
  * want to combine, please specify the logical sum.
  */
-export function printText(
+export async function printText(
   data: string,
   alignment: ESCPOSPrinterPrintAlignment = ESCPOSConst.CMP_ALIGNMENT_LEFT,
-  /** ESCPOSPrinterTextAttribute */
-  attribute = ESCPOSConst.CMP_FNT_DEFAULT,
-  /** ESCPOSPrinterTextSize */
-  textSize = ESCPOSConst.CMP_TXT_1WIDTH | ESCPOSConst.CMP_TXT_1HEIGHT,
-): Promise<void> {
-  return CitizenEscposprinter.printText(data, alignment, attribute, textSize);
+  /** @type import("./ESCPOSConst").ESCPOSPrinterTextAttribute */
+  attribute: number = ESCPOSConst.CMP_FNT_DEFAULT,
+  /** @type import("./ESCPOSConst").ESCPOSPrinterTextSize */
+  textSize: number = ESCPOSConst.CMP_TXT_1WIDTH | ESCPOSConst.CMP_TXT_1HEIGHT,
+) {
+  try {
+    return await CitizenEscposprinter.printText(
+      data,
+      alignment,
+      attribute,
+      textSize,
+    );
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -192,22 +233,26 @@ export function printText(
  * Text size can be specified in combination with the width and height. If you
  * want to combine, please specify the logical sum.
  */
-export function printPaddingText(
+export async function printPaddingText(
   data: string,
-  /** ESCPOSPrinterTextAttribute */
+  /** @type import("./ESCPOSConst").ESCPOSPrinterTextAttribute */
   attribute: number,
-  /** ESCPOSPrinterTextSize */
+  /** @type import("./ESCPOSConst").ESCPOSPrinterTextSize */
   textSize: number,
   length: number,
-  side: ESCPOSConst.CMP_SIDE_RIGHT | ESCPOSConst.CMP_SIDE_LEFT,
-): Promise<void> {
-  return CitizenEscposprinter.printPaddingText(
-    data,
-    attribute,
-    textSize,
-    length,
-    side,
-  );
+  side: ESCPOSPrinterSide,
+) {
+  try {
+    return await CitizenEscposprinter.printPaddingText(
+      data,
+      attribute,
+      textSize,
+      length,
+      side,
+    );
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -220,43 +265,51 @@ export function printPaddingText(
  * Font style can be specified in combination bold, reverse, underline, italic
  * and strikeout. If you want to combine, please specify the logical sum.
  */
-export function printTextLocalFont(
+export async function printTextLocalFont(
   data: string,
   alignment: ESCPOSPrinterPrintAlignment,
   fontType: ESCPOSPrinterTypeface,
   point: number,
-  /** ESCPOSPrinterFontStyle */
+  /** @type import("./ESCPOSConst").ESCPOSPrinterFontStyle */
   style: number,
   /** 1-1000 */
   hRatio: number,
   /** 1-1000 */
   vRatio: number,
-): Promise<void> {
-  return CitizenEscposprinter.printTextLocalFont(
-    data,
-    alignment,
-    fontType,
-    point,
-    style,
-    hRatio,
-    vRatio,
-  );
+) {
+  try {
+    return await CitizenEscposprinter.printTextLocalFont(
+      data,
+      alignment,
+      fontType,
+      point,
+      style,
+      hRatio,
+      vRatio,
+    );
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
  * This method is used to print bitmap which specifies base64 encoded bitmap
  * data, along with width, alignment and mode.
  */
-export function printBitmap(
+export async function printBitmap(
   /** base64 encoded bitmap data */
   data: string,
   width: number = ESCPOSConst.CMP_BM_ASIS,
   alignment: ESCPOSPrinterPrintAlignment = ESCPOSConst.CMP_ALIGNMENT_CENTER,
-  /** ESCPOSPrinterBitmapMode */
-  mode = ESCPOSConst.CMP_BM_MODE_HT_THRESHOLD |
+  /** @type import("./ESCPOSConst").ESCPOSPrinterBitmapMode */
+  mode: number = ESCPOSConst.CMP_BM_MODE_HT_THRESHOLD |
     ESCPOSConst.CMP_BM_MODE_CMD_RASTER,
-): Promise<void> {
-  return CitizenEscposprinter.printBitmap(data, width, alignment, mode);
+) {
+  try {
+    return await CitizenEscposprinter.printBitmap(data, width, alignment, mode);
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -279,7 +332,7 @@ export function printBitmap(
  *
  * For more information on the mode parameter is as follows.
  */
-export function setNVBitmap(): Promise<void> {
+export async function setNVBitmap() {
   // /** 1 - 20 */
   // nvImageNumber: number,
   // fileName: string,
@@ -332,11 +385,15 @@ export function setNVBitmap(): Promise<void> {
  * To the image number to use, it is necessary to register the logo that
  * specifies the key code.
  */
-export function printNVBitmap(
+export async function printNVBitmap(
   /** 1 - 20 */
   nvImageNumber: number,
-): Promise<void> {
-  return CitizenEscposprinter.printNVBitmap(nvImageNumber);
+) {
+  try {
+    return await CitizenEscposprinter.printNVBitmap(nvImageNumber);
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -350,7 +407,7 @@ export function printNVBitmap(
  * The designation of CMP_ALIGNMENT_CENTER and CMP_ALIGNMENT_RIGHT of the
  * Barcode alignment on the page mode is ignored.
  */
-export function printBarCode(
+export async function printBarCode(
   data: string,
   symbology: ESCPOSPrinterBarcodeType,
   /**
@@ -367,15 +424,19 @@ export function printBarCode(
   width: number,
   alignment: ESCPOSPrinterPrintAlignment,
   textPosition: ESCPOSPrinterTextPosition,
-): Promise<void> {
-  return CitizenEscposprinter.printBarCode(
-    data,
-    symbology,
-    height,
-    width,
-    alignment,
-    textPosition,
-  );
+) {
+  try {
+    return await CitizenEscposprinter.printBarCode(
+      data,
+      symbology,
+      height,
+      width,
+      alignment,
+      textPosition,
+    );
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -387,7 +448,7 @@ export function printBarCode(
  * The designation of CMP_ALIGNMENT_CENTER and CMP_ALIGNMENT_RIGHT of the
  * Barcode alignment on the page mode is ignored.
  */
-export function printPDF417(
+export async function printPDF417(
   data: string,
   /** 1 - 30, 0 = automatic */
   digits: number,
@@ -403,16 +464,20 @@ export function printPDF417(
   stepHeight: number,
   ECLevel: ESCPOSPrinterPDF417ECLevel,
   alignment: ESCPOSPrinterPrintAlignment,
-): Promise<void> {
-  return CitizenEscposprinter.printPDF417(
-    data,
-    digits,
-    steps,
-    moduleWidth,
-    stepHeight,
-    ECLevel,
-    alignment,
-  );
+) {
+  try {
+    return await CitizenEscposprinter.printPDF417(
+      data,
+      digits,
+      steps,
+      moduleWidth,
+      stepHeight,
+      ECLevel,
+      alignment,
+    );
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -424,7 +489,7 @@ export function printPDF417(
  * The designation of CMP_ALIGNMENT_CENTER and CMP_ALIGNMENT_RIGHT of the
  * Barcode alignment on the page mode is ignored.
  */
-export function printQRCode(
+export async function printQRCode(
   data: string,
   /**
    * 1 - 16 (dots)
@@ -434,8 +499,17 @@ export function printQRCode(
   moduleSize: number,
   ECLevel: ESCPOSPrinterQRCodeECLevel,
   alignment: ESCPOSPrinterPrintAlignment = ESCPOSConst.CMP_ALIGNMENT_CENTER,
-): Promise<void> {
-  return CitizenEscposprinter.printQRCode(data, moduleSize, ECLevel, alignment);
+) {
+  try {
+    return await CitizenEscposprinter.printQRCode(
+      data,
+      moduleSize,
+      ECLevel,
+      alignment,
+    );
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -450,7 +524,7 @@ export function printQRCode(
  * The designation of CMP_ALIGNMENT_CENTER and CMP_ALIGNMENT_RIGHT of the
  * Barcode alignment on the page mode is ignored.
  */
-export function printGS1DataBarStacked(
+export async function printGS1DataBarStacked(
   data: string,
   symbology: ESCPOSPrinterGS1DatabarType,
   /**
@@ -466,41 +540,61 @@ export function printGS1DataBarStacked(
    */
   maxSize: number,
   alignment: ESCPOSPrinterPrintAlignment,
-): Promise<void> {
-  return CitizenEscposprinter.printGS1DataBarStacked(
-    data,
-    symbology,
-    moduleSize,
-    maxSize,
-    alignment,
-  );
+) {
+  try {
+    return await CitizenEscposprinter.printGS1DataBarStacked(
+      data,
+      symbology,
+      moduleSize,
+      maxSize,
+      alignment,
+    );
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /** This method is used to cut the paper. */
-export function cutPaper(type: ESCPOSPrinterCutType): Promise<void> {
-  return CitizenEscposprinter.cutPaper(type);
+export async function cutPaper(type: ESCPOSPrinterCutType) {
+  try {
+    return await CitizenEscposprinter.cutPaper(type);
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /** This method is used to feed the paper in dot units. */
-export function unitFeed(
+export async function unitFeed(
   /** Expressed in the unit of measure given by MapMode (default dots). */
   ufCount: number,
-): Promise<void> {
-  return CitizenEscposprinter.unitFeed(ufCount);
+) {
+  try {
+    return await CitizenEscposprinter.unitFeed(ufCount);
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /** This method is used to utilize label paper and black mark paper. */
-export function markFeed(type: ESCPOSPrinterMarkFeedType): Promise<void> {
-  return CitizenEscposprinter.markFeed(type);
+export async function markFeed(type: ESCPOSPrinterMarkFeedType) {
+  try {
+    return await CitizenEscposprinter.markFeed(type);
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /** This method is used to open the cash drawer is connected to the printer. */
-export function openDrawer(
+export async function openDrawer(
   drawer: ESCPOSPrinterDrawer,
   /** 1 - 8 (x 100) msec */
   pulseLen: number,
-): Promise<void> {
-  return CitizenEscposprinter.openDrawer(drawer, pulseLen);
+) {
+  try {
+    return await CitizenEscposprinter.openDrawer(drawer, pulseLen);
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -533,10 +627,14 @@ export function openDrawer(
  * Calling the clearOutput method cancels transaction mode. Any buffered print
  * lines are also cleared.
  */
-export function transactionPrint(
+export async function transactionPrint(
   control: ESCPOSPrinterTransactionControl,
-): Promise<void> {
-  return CitizenEscposprinter.transactionPrint(control);
+) {
+  try {
+    return await CitizenEscposprinter.transactionPrint(control);
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -557,8 +655,12 @@ export function transactionPrint(
  *
  * If rotation is `CMP_RP_NORMAL`, then rotation mode is exited.
  */
-export function rotatePrint(rotation: ESCPOSPrinterRotation): Promise<void> {
-  return CitizenEscposprinter.rotatePrint(rotation);
+export async function rotatePrint(rotation: ESCPOSPrinterRotation) {
+  try {
+    return await CitizenEscposprinter.rotatePrint(rotation);
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -599,15 +701,21 @@ export function rotatePrint(rotation: ESCPOSPrinterRotation): Promise<void> {
  * `clearOutput` method cancels Page Mode. Any buffered print lines are also
  * cleared.
  */
-export function pageModePrint(
-  control: ESCPOSPrinterPageModeControl,
-): Promise<void> {
-  return CitizenEscposprinter.pageModePrint(control);
+export async function pageModePrint(control: ESCPOSPrinterPageModeControl) {
+  try {
+    return await CitizenEscposprinter.pageModePrint(control);
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /** This method is used to clear the area defined by the PageModePrintArea property. */
-export function clearPrintArea(): Promise<void> {
-  return CitizenEscposprinter.clearPrintArea();
+export async function clearPrintArea() {
+  try {
+    return await CitizenEscposprinter.clearPrintArea();
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -617,8 +725,12 @@ export function clearPrintArea(): Promise<void> {
  * Also, when possible, halts outputs that are in progress. At the same time,
  * the command to clear print data on the printer is sent.
  */
-export function clearOutput(): Promise<void> {
-  return CitizenEscposprinter.clearOutput();
+export async function clearOutput() {
+  try {
+    return await CitizenEscposprinter.clearOutput();
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -629,8 +741,12 @@ export function clearOutput(): Promise<void> {
  *
  * If you want to use, please be careful so as not to affect the other methods.
  */
-export function printData(data: string): Promise<void> {
-  return CitizenEscposprinter.printData(data);
+export async function printData(data: string) {
+  try {
+    return await CitizenEscposprinter.printData(data);
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -639,8 +755,12 @@ export function printData(data: string): Promise<void> {
  *
  * Please refer to "Programming Manual" for more information.
  */
-export function printNormal(data: string): Promise<void> {
-  return CitizenEscposprinter.printNormal(data);
+export async function printNormal(data: string) {
+  try {
+    return await CitizenEscposprinter.printNormal(data);
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -661,36 +781,40 @@ export function printNormal(data: string): Promise<void> {
  * When the printing of watermark was stopped in `CMP_WM_STOP`, all other
  * arguments are ignored.
  */
-export function watermarkPrint(): Promise<void> {
-  // start: ESCPOSPrinterWatermarkStart,
-  // /** 1 - 20 */
-  // nvImageNumber: number,
-  // /**
-  //  * 0 - 65,535 (dots)
-  //  *
-  //  * Expressed in the unit of measure given by MapMode (default dots).
-  //  */
-  // pass: number,
-  // /**
-  //  * 0 - 65,535 (dots)
-  //  *
-  //  * Expressed in the unit of measure given by MapMode (default dots).
-  //  */
-  // feed: number,
-  // /**
-  //  * 0: Infinite repetition
-  //  *
-  //  * 1 - 65,535: The repetition number of times
-  //  */
-  // repeat: number,
-  throw new Error("Not implemented yet");
-  // return CitizenEscposprinter.watermarkPrint(
-  //   start,
-  //   nvImageNumber,
-  //   pass,
-  //   feed,
-  //   repeat,
-  // );
+export async function watermarkPrint(
+  start: ESCPOSPrinterWatermarkStart,
+  /** 1 - 20 */
+  nvImageNumber: number,
+  /**
+   * 0 - 65,535 (dots)
+   *
+   * Expressed in the unit of measure given by MapMode (default dots).
+   */
+  pass: number,
+  /**
+   * 0 - 65,535 (dots)
+   *
+   * Expressed in the unit of measure given by MapMode (default dots).
+   */
+  feed: number,
+  /**
+   * 0: Infinite repetition
+   *
+   * 1 - 65,535: The repetition number of times
+   */
+  repeat: number,
+) {
+  try {
+    return await CitizenEscposprinter.watermarkPrint(
+      start,
+      nvImageNumber,
+      pass,
+      feed,
+      repeat,
+    );
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -716,11 +840,20 @@ export function watermarkPrint(): Promise<void> {
  * When the search time is shorter than the second, a search may fail by the
  * Bluetooth situation.
  */
-export function searchCitizenPrinter(
+export async function searchCitizenPrinter(
   connectType: ESCPOSPrinterSearchType,
-  timeout: number,
-): Promise<CitizenPrinerInfo[]> {
-  return CitizenEscposprinter.searchCitizenPrinter(connectType, timeout);
+  timeout?: number,
+) {
+  try {
+    const printers = await CitizenEscposprinter.searchCitizenPrinter(
+      connectType,
+      timeout ?? (connectType === ESCPOSConst.CMP_PORT_WiFi ? 5 : 10),
+    );
+
+    return printers as CitizenPrinerInfo[];
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -746,17 +879,18 @@ export function searchCitizenPrinter(
  * When the search time is shorter than the second, a search may fail by the
  * Bluetooth situation.
  */
-export function searchESCPOSPrinter(
+export async function searchESCPOSPrinter(
   connectType: ESCPOSPrinterSearchType,
   timeout?: number,
-): Promise<string[]> {
-  if (connectType === ESCPOSConst.CMP_PORT_WiFi) {
-    timeout ??= 5;
-  } else {
-    timeout ??= 10;
+) {
+  try {
+    return await CitizenEscposprinter.searchESCPOSPrinter(
+      connectType,
+      timeout ?? (connectType === ESCPOSConst.CMP_PORT_WiFi ? 5 : 10),
+    );
+  } catch (error) {
+    return handleRejection(error);
   }
-
-  return CitizenEscposprinter.searchESCPOSPrinter(connectType, timeout);
 }
 
 /**
@@ -769,7 +903,7 @@ export function searchESCPOSPrinter(
  * regardless of other connections. In order to use this connection type, the
  * printer supported with this function.
  */
-export function printerCheckEx(
+export async function printerCheckEx(
   connectType: ESCPOSPrinterConnectType,
   /**
    * WiFi:
@@ -782,13 +916,17 @@ export function printerCheckEx(
   address: string,
   port?: number,
   timeout?: number,
-): Promise<void> {
-  return CitizenEscposprinter.printerCheckEx(
-    connectType,
-    address,
-    port,
-    timeout,
-  );
+) {
+  try {
+    return await CitizenEscposprinter.printerCheckEx(
+      connectType,
+      address,
+      port,
+      timeout,
+    );
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -813,15 +951,19 @@ export function openDrawerEx(
   address: string,
   port?: number,
   timeout?: number,
-): Promise<void> {
-  return CitizenEscposprinter.openDrawerEx(
-    drawer,
-    pulseLen,
-    connectType,
-    address,
-    port,
-    timeout,
-  );
+) {
+  try {
+    return CitizenEscposprinter.openDrawerEx(
+      drawer,
+      pulseLen,
+      connectType,
+      address,
+      port,
+      timeout,
+    );
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -833,19 +975,23 @@ export function openDrawerEx(
  * Please refer to "2.5.1. Function to detect the completion of printing"
  * for details of the function to detect the completion of printing.
  */
-export function setPrintCompletedTimeout(
+export async function setPrintCompletedTimeout(
   /**
    * 0: Automatically adjusts the timeout.
    *
    * Other Values: Specify the timeout. Expressed in milliseconds.
    */
   timeout: number,
-): Promise<void> {
-  return CitizenEscposprinter.setPrintCompletedTimeout(timeout);
+) {
+  try {
+    return await CitizenEscposprinter.setPrintCompletedTimeout(timeout);
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /** Sets the logging function. See "3.2 Logging function" for more details */
-export function setLog(
+export async function setLog(
   /**
    * 0: None
    *
@@ -862,8 +1008,12 @@ export function setLog(
    * 0: Unlimited
    */
   maxSize: number,
-): Promise<void> {
-  return CitizenEscposprinter.setLog(mode, path, maxSize);
+) {
+  try {
+    return await CitizenEscposprinter.setLog(mode, path, maxSize);
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -871,7 +1021,7 @@ export function setLog(
  *
  * @returns Return a numerical value for the version number of this SDK. (Ver1.00 is 100)
  */
-export function getVersionCode(): Promise<number> {
+export function getVersionCode() {
   return CitizenEscposprinter.getVersionCode();
 }
 
@@ -880,10 +1030,9 @@ export function getVersionCode(): Promise<number> {
  *
  * @returns Return a string for the version number of this SDK. (Ver1.00 is "1.00")
  */
-export function getVersionName(): Promise<string> {
+export function getVersionName() {
   return CitizenEscposprinter.getVersionName();
 }
 
-// TODO: Try catch to reject promises in Java
 // TODO: Rewrite CONTRIBUTING.md, telling them to implement a function in oldarch, newarch and ios in PRs
 // TODO: Connect UsbDevice

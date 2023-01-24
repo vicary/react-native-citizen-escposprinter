@@ -8,7 +8,7 @@ export interface Spec extends TurboModule {
     address: string,
     port?: number,
     timeout?: number,
-  ): Promise<boolean>;
+  ): Promise<void>;
 
   disconnect(): Promise<void>;
 
@@ -150,6 +150,14 @@ export interface Spec extends TurboModule {
 
   printNormal(data: string): Promise<void>;
 
+  watermarkPrint(
+    start: number,
+    nvImageNumber: number,
+    pass: number,
+    feed: number,
+    repeat: number,
+  ): Promise<void>;
+
   printNVBitmap(nvImageNumber: number): Promise<void>;
 
   searchCitizenPrinter(
@@ -170,7 +178,7 @@ export interface Spec extends TurboModule {
     address: string,
     port?: number,
     timeout?: number,
-  ): Promise<void>;
+  ): Promise<number>;
 
   openDrawerEx(
     /** @type ESCPOSPrinterDrawer */

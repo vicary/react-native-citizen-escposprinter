@@ -12,7 +12,7 @@ abstract class CitizenEscposprinterSpec internal constructor(context: ReactAppli
   // import android.hardware.usb.UsbDevice
   // abstract fun connect(connectType: Int, device: UsbDevice)
   abstract fun connect(
-      connectType: Double,
+      type: Double,
       address: String,
       port: Double = -1.0,
       timeout: Double = -1.0,
@@ -99,6 +99,14 @@ abstract class CitizenEscposprinterSpec internal constructor(context: ReactAppli
   abstract fun clearOutput(promise: Promise)
   abstract fun printData(data: String, promise: Promise)
   abstract fun printNormal(data: String, promise: Promise)
+  abstract fun watermarkPrint(
+    start: Double,
+    nvImageNumber: Double,
+    pass: Double,
+    feed: Double,
+    repeat: Double,
+    promise: Promise
+  )
   abstract fun printNVBitmap(nvImageNumber: Double, promise: Promise)
   abstract fun searchCitizenPrinter(connectType: Double, timeout: Double, promise: Promise)
   abstract fun searchESCPOSPrinter(connectType: Double, timeout: Double, promise: Promise)

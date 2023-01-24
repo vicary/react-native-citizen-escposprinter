@@ -196,6 +196,10 @@ export type ESCPOSPrinterTextSize =
   | ESCPOSConst.CMP_TXT_7HEIGHT
   | ESCPOSConst.CMP_TXT_8HEIGHT;
 
+export type ESCPOSPrinterSide =
+  | ESCPOSConst.CMP_SIDE_LEFT
+  | ESCPOSConst.CMP_SIDE_RIGHT;
+
 export type ESCPOSPrinterTypeface =
   | "DEFAULT"
   | "DEFAULT_BOLD"
