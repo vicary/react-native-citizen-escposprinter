@@ -12,6 +12,7 @@ import {
   searchCitizenPrinter,
 } from "react-native-citizen-escposprinter";
 import { Colors } from "react-native/Libraries/NewAppScreen";
+import type { JsonValue } from "type-fest";
 
 const App: FunctionComponent = () => {
   const isDarkMode = useColorScheme() === "dark";
@@ -20,7 +21,8 @@ const App: FunctionComponent = () => {
   };
 
   const [counter, setCounter] = useState<number>(0);
-  const [answer, setAnswer] = useState<unknown>();
+  const [answer, setAnswer] = useState<JsonValue>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const intId = setInterval(() => {
@@ -65,11 +67,15 @@ const App: FunctionComponent = () => {
         </Text>
         <Button
           title="Click Me"
+          disabled={loading}
           onPress={async () => {
+            setLoading(true);
+
             const addresses = await searchCitizenPrinter(
               ESCPOSConst.CMP_PORT_WiFi,
             );
-            console.log("addresses", addresses);
+            setAnswer(addresses);
+
             // const address = "192.168.1.108";
             // await connect(ESCPOSConst.CMP_PORT_WiFi, address);
             // console.log("✅ connected:", address);
@@ -131,6 +137,8 @@ const App: FunctionComponent = () => {
             // console.log("✅ cutPaper");
             // await disconnect();
             // console.log("✅ disconnect");
+
+            setLoading(false);
           }}
         />
       </ScrollView>

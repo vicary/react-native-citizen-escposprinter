@@ -5,6 +5,7 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "clean": "rm -rf android/build ios/build",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest"
@@ -75,6 +76,7 @@
     "react-native-gradle-plugin": "^0.71.12",
     "react-test-renderer": "18.2.0",
     "tailwindcss": "^3.2.4",
+    "type-fest": "^3.5.3",
     "typescript": "^4.9.4"
   },
   "packageManager": "yarn@4.0.0-rc.35"

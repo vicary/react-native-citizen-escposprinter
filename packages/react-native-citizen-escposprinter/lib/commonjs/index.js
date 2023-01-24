@@ -707,7 +707,11 @@ feed,
  * 1 - 65,535: The repetition number of times
  */
 repeat) {
-  return CitizenEscposprinter.watermarkPrint(start, nvImageNumber, pass, feed, repeat);
+  try {
+    return await CitizenEscposprinter.watermarkPrint(start, nvImageNumber, pass, feed, repeat);
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**

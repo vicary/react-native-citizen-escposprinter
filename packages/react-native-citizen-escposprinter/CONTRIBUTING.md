@@ -66,19 +66,19 @@ Note the `"fabric":true` and `"concurrentRoot":true` properties.
 Make sure your code passes TypeScript and ESLint. Run the following to verify:
 
 ```sh
-yarn lint
+yarn workspace react-native-citizen-escposprinter lint
 ```
 
 To fix formatting errors, run the following:
 
 ```sh
-yarn lint --fix
+yarn workspace react-native-citizen-escposprinter lint --fix
 ```
 
 Remember to add tests for your change if possible. Run the unit tests by:
 
 ```sh
-yarn test
+yarn workspace react-native-citizen-escposprinter test
 ```
 
 To edit the Objective-C or Swift files, open `examples/PrinterTestApp/ios/CitizenEscposprinterExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > react-native-citizen-escposprinter`.
@@ -97,14 +97,9 @@ To edit the Java or Kotlin files, open `examples/PrinterTestApp/android` in Andr
 
 We follow the [conventional commits specification](https://www.conventionalcommits.org/en) for our commit messages:
 
-- `fix`: bug fixes, e.g. fix crash due to deprecated method.
-- `feat`: new features, e.g. add new method to the module.
-- `refactor`: code refactor, e.g. migrate from class components to hooks.
-- `docs`: changes into documentation, e.g. add usage example for the module..
-- `test`: adding or updating tests, e.g. add integration tests using detox.
-- `chore`: tooling changes, e.g. change CI config.
-
-Our pre-commit hooks verify that your commit message matches this format when committing.
+- `fix`: bug fixes (PATCH), e.g. fix crash due to deprecated method.
+- `feat`: new features (MAJOR/MINOR), e.g. add new method to the module.
+- `chore`: any non semver changes, e.g. CI/CD configs, docs, tests... etc.
 
 ### Linting and tests
 
@@ -114,27 +109,11 @@ We use [TypeScript](https://www.typescriptlang.org/) for type checking, [ESLint]
 
 Our pre-commit hooks verify that the linter and tests pass when committing.
 
-### Publishing to npm
+### Publishing
 
-We use [release-it](https://github.com/release-it/release-it) to make it easier to publish new versions. It handles common tasks like bumping version based on semver, creating tags and releases etc.
+Can't bother with it right now, the default `release-it` is not exactly easy to setup in monorepo.
 
-To publish new versions, run the following:
-
-```sh
-yarn release
-```
-
-### Scripts
-
-The `package.json` file contains various scripts for common tasks:
-
-- `yarn bootstrap`: setup project by installing all dependencies and pods.
-- `yarn typecheck`: type-check files with TypeScript.
-- `yarn lint`: lint files with ESLint.
-- `yarn test`: run unit tests with Jest.
-- `yarn workspace PrinterTestApp start`: start the Metro server for the example app.
-- `yarn workspace PrinterTestApp android`: run the example app on Android.
-- `yarn workspace PrinterTestApp ios`: run the example app on iOS.
+Just ask me.
 
 ### Sending a pull request
 

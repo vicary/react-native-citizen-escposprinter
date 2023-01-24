@@ -12,20 +12,33 @@ npm install react-native-citizen-escposprinter
 
 ## Usage
 
-```tsx
-// TODO: Explain the methods, redirect them to the SDK PDF.
+Most of the methods are wrapped directly from the native SDK. For a complete list of methods and their details, you may refer to the PDF manual inside the [Citizen SDK](https://www.citizen-systems.co.jp/en/printer/download).
 
-import {} from "react-native-citizen-escposprinter";
+```tsx
+import {
+  ESCPOSConst,
+  connect,
+  cutPaper,
+  disconnect,
+  printText,
+  searchCitizenPrinters,
+} from "react-native-citizen-escposprinter";
+
+const main = async () => {
+  const printers: CitizenPrinerInfo = await searchCitizenPrinters(
+    ESCPOSConst.CMP_PORT_WiFi,
+  );
+  console.info("Found printers:", printers);
+
+  await connect(printers[0].ipAddress);
+  await printText("Hello World!\n");
+  await cutPaper(ESCPOSConst.CMP_CUT_FULL_PREFEED);
+  await disconnect();
+};
 ```
 
 ## Contributing
 
 See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
 
-## License
-
-MIT
-
----
-
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
+If you use this library at work, consider [sponsoring](https://github.com/sponsors/vicary) for a first-class technical support.
