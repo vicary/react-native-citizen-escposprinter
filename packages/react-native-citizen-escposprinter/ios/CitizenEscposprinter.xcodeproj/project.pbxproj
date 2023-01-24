@@ -24,6 +24,8 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libCitizenEscposprinter.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCitizenEscposprinter.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D77B334298050070037C8D8 /* ESCPOSPrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESCPOSPrinter.h; sourceTree = "<group>"; };
+		3D77B335298050070037C8D8 /* libCSJTSOLib_iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libCSJTSOLib_iOS.a; sourceTree = "<group>"; };
 		3DA255FF297B1C3A00FA42BA /* libCSJTSOLib_iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libCSJTSOLib_iOS.a; sourceTree = "<group>"; };
 		3DA25601297B1C4100FA42BA /* ESCPOSPrinter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ESCPOSPrinter.h; sourceTree = "<group>"; };
 		B3E7B5881CC2AC0600A0062D /* CitizenEscposprinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CitizenEscposprinter.h; sourceTree = "<group>"; };
@@ -50,6 +52,39 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		3D77B330298050070037C8D8 /* CITIZEN-Library */ = {
+			isa = PBXGroup;
+			children = (
+				3D77B331298050070037C8D8 /* user */,
+				3D77B335298050070037C8D8 /* libCSJTSOLib_iOS.a */,
+			);
+			path = "CITIZEN-Library";
+			sourceTree = "<group>";
+		};
+		3D77B331298050070037C8D8 /* user */ = {
+			isa = PBXGroup;
+			children = (
+				3D77B332298050070037C8D8 /* local */,
+			);
+			path = user;
+			sourceTree = "<group>";
+		};
+		3D77B332298050070037C8D8 /* local */ = {
+			isa = PBXGroup;
+			children = (
+				3D77B333298050070037C8D8 /* include */,
+			);
+			path = local;
+			sourceTree = "<group>";
+		};
+		3D77B333298050070037C8D8 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				3D77B334298050070037C8D8 /* ESCPOSPrinter.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
@@ -58,6 +93,7 @@
 				B3E7B5881CC2AC0600A0062D /* CitizenEscposprinter.h */,
 				B3E7B5891CC2AC0600A0062D /* CitizenEscposprinter.mm */,
 				134814211AA4EA7D00B7C361 /* Products */,
+				3D77B330298050070037C8D8 /* CITIZEN-Library */,
 			);
 			sourceTree = "<group>";
 		};
@@ -97,10 +133,9 @@
 			};
 			buildConfigurationList = 58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "CitizenEscposprinter" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 			);
 			mainGroup = 58B511D21A9E6C8500147676;
@@ -231,6 +266,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/CITIZEN-Library",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = CitizenEscposprinter;
@@ -250,6 +286,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/CITIZEN-Library",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = CitizenEscposprinter;

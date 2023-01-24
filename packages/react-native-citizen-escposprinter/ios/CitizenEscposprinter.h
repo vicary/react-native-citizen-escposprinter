@@ -9,4 +9,7 @@
 @interface CitizenEscposprinter : NSObject <RCTBridgeModule>
 #endif
 
+- (void)getVersionCode:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+- (void)getVersionName:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+
 @end

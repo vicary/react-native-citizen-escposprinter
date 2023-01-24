@@ -8,8 +8,8 @@ import {
   useColorScheme,
 } from "react-native";
 import {
-  ESCPOSConst,
-  searchCitizenPrinter,
+  getVersionCode,
+  getVersionName,
 } from "react-native-citizen-escposprinter";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import type { JsonValue } from "type-fest";
@@ -71,10 +71,12 @@ const App: FunctionComponent = () => {
           onPress={async () => {
             setLoading(true);
 
-            const addresses = await searchCitizenPrinter(
-              ESCPOSConst.CMP_PORT_WiFi,
-            );
-            setAnswer(addresses);
+            setAnswer(await Promise.all([getVersionCode(), getVersionName()]));
+
+            // const addresses = await searchCitizenPrinter(
+            //   ESCPOSConst.CMP_PORT_WiFi,
+            // );
+            // setAnswer(addresses);
 
             // const address = "192.168.1.108";
             // await connect(ESCPOSConst.CMP_PORT_WiFi, address);

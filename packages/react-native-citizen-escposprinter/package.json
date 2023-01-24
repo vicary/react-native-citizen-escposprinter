@@ -36,7 +36,7 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/vicary/react-native-citizen-escposprinter",
+  "repository": "https://github.com/vicary/react-native-citizen-escposprinter.git",
   "author": "Vicary A. <vicary.archangel@member.mensa.org> (https://github.com/vicary)",
   "license": "MIT",
   "bugs": {

@@ -18,12 +18,25 @@
 @implementation CitizenEscposprinter
 RCT_EXPORT_MODULE()
 
+RCT_EXPORT_METHOD(getVersionCode
+                 :(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject)
+{
+    resolve(@([[ESCPOSPrinter alloc] getVersionCode]));
+}
+
+RCT_EXPORT_METHOD(getVersionName
+                 :(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject)
+{
+    resolve([[ESCPOSPrinter alloc] getVersionName]);
+}
+
 // Example method
 // See // https://reactnative.dev/docs/native-modules-ios
-RCT_REMAP_METHOD(multiply,
-                 multiplyWithA:(double)a withB:(double)b
-                 withResolver:(RCTPromiseResolveBlock)resolve
-                 withRejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(multiply:(double)a withB:(double)b
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
 {
     NSNumber *result = @(a * b);
 
