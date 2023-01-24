@@ -14,24 +14,24 @@ yarn
 
 > While it's possible to use [`npm`](https://github.com/npm/cli), the tooling is built around [`yarn`](https://classic.yarnpkg.com/), so you'll have an easier time if you use `yarn` for development.
 
-While developing, you can run the [example app](/example/) to test your changes. Any changes you make in your library's JavaScript code will be reflected in the example app without a rebuild. If you change any native code, then you'll need to rebuild the example app.
+While developing, you can run the [example app](/examples/PrinterTestApp/) to test your changes. Any changes you make in your library's JavaScript code will be reflected in the example app without a rebuild. If you change any native code, then you'll need to rebuild the example app.
 
 To start the packager:
 
 ```sh
-yarn example start
+yarn workspace PrinterTestApp start
 ```
 
 To run the example app on Android:
 
 ```sh
-yarn example android
+yarn workspace PrinterTestApp android
 ```
 
 To run the example app on iOS:
 
 ```sh
-yarn example ios
+yarn workspace PrinterTestApp ios
 ```
 
 By default, the example is configured to build with the old architecture. To run the example with the new architecture, you can do the following:
@@ -39,14 +39,14 @@ By default, the example is configured to build with the old architecture. To run
 1. For Android, run:
 
    ```sh
-   ORG_GRADLE_PROJECT_newArchEnabled=true yarn example android
+   ORG_GRADLE_PROJECT_newArchEnabled=true yarn workspace PrinterTestApp android
    ```
 
 2. For iOS, run:
 
    ```sh
-   RCT_NEW_ARCH_ENABLED=1 yarn example pods
-   yarn example ios
+   RCT_NEW_ARCH_ENABLED=1 yarn workspace PrinterTestApp pods
+   yarn workspace PrinterTestApp ios
    ```
 
 If you are building for a different architecture than your previous build, make sure to remove the build folders first. You can run the following command to cleanup all build folders:
@@ -66,39 +66,40 @@ Note the `"fabric":true` and `"concurrentRoot":true` properties.
 Make sure your code passes TypeScript and ESLint. Run the following to verify:
 
 ```sh
-yarn typecheck
-yarn lint
+yarn workspace react-native-citizen-escposprinter lint
 ```
 
 To fix formatting errors, run the following:
 
 ```sh
-yarn lint --fix
+yarn workspace react-native-citizen-escposprinter lint --fix
 ```
 
 Remember to add tests for your change if possible. Run the unit tests by:
 
 ```sh
-yarn test
+yarn workspace react-native-citizen-escposprinter test
 ```
 
-To edit the Objective-C or Swift files, open `example/ios/CitizenEscposprinterExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > react-native-citizen-escposprinter`.
+To edit the Objective-C or Swift files, open `examples/PrinterTestApp/ios/CitizenEscposprinterExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > react-native-citizen-escposprinter`.
 
-To edit the Java or Kotlin files, open `example/android` in Android studio and find the source files at `react-native-citizen-escposprinter` under `Android`.
+To edit the Java or Kotlin files, open `examples/PrinterTestApp/android` in Android studio and find the source files at `react-native-citizen-escposprinter` under `Android`.
 
+### Create a new function
+
+1. Expose the function in `src/index.tsx`
+1. Implement it in Native Module
+   1. (oldarch) Add an abstract method in `android/src/oldarch/CitizenEscposprinterSpec.java`
+   1. (newarch) Add JNI interface in `src/NativeCitizenEscposprinter.ts`
+   1. (ios) Add the method in `ios/CitizenEscposprinter.mm`
 
 ### Commit message convention
 
 We follow the [conventional commits specification](https://www.conventionalcommits.org/en) for our commit messages:
 
-- `fix`: bug fixes, e.g. fix crash due to deprecated method.
-- `feat`: new features, e.g. add new method to the module.
-- `refactor`: code refactor, e.g. migrate from class components to hooks.
-- `docs`: changes into documentation, e.g. add usage example for the module..
-- `test`: adding or updating tests, e.g. add integration tests using detox.
-- `chore`: tooling changes, e.g. change CI config.
-
-Our pre-commit hooks verify that your commit message matches this format when committing.
+- `fix`: bug fixes (PATCH), e.g. fix crash due to deprecated method.
+- `feat`: new features (MAJOR/MINOR), e.g. add new method to the module.
+- `chore`: any non semver changes, e.g. CI/CD configs, docs, tests... etc.
 
 ### Linting and tests
 
@@ -108,27 +109,11 @@ We use [TypeScript](https://www.typescriptlang.org/) for type checking, [ESLint]
 
 Our pre-commit hooks verify that the linter and tests pass when committing.
 
-### Publishing to npm
+### Publishing
 
-We use [release-it](https://github.com/release-it/release-it) to make it easier to publish new versions. It handles common tasks like bumping version based on semver, creating tags and releases etc.
+Can't bother with it right now, the default `release-it` is not exactly easy to setup in monorepo.
 
-To publish new versions, run the following:
-
-```sh
-yarn release
-```
-
-### Scripts
-
-The `package.json` file contains various scripts for common tasks:
-
-- `yarn bootstrap`: setup project by installing all dependencies and pods.
-- `yarn typecheck`: type-check files with TypeScript.
-- `yarn lint`: lint files with ESLint.
-- `yarn test`: run unit tests with Jest.
-- `yarn example start`: start the Metro server for the example app.
-- `yarn example android`: run the example app on Android.
-- `yarn example ios`: run the example app on iOS.
+Just ask me.
 
 ### Sending a pull request
 

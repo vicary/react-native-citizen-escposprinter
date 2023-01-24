@@ -1,4 +1,19 @@
 #import "CitizenEscposprinter.h"
+#import "ESCPOSPrinter.h"
+
+/* Argument types cheatsheet
+ * | NSString                                      | string, ?string    |
+ * |-----------------------------------------------|--------------------|
+ * | BOOL                                          | boolean            |
+ * | NSNumber                                      | ?boolean           |
+ * | double                                        | number             |
+ * | NSNumber                                      | ?number            |
+ * | NSArray                                       | Array, ?Array      |
+ * | NSDictionary                                  | Object, ?Object    |
+ * | RCTResponseSenderBlock                        | Function (success) |
+ * | RCTResponseSenderBlock, RCTResponseErrorBlock | Function (failure) |
+ * | RCTPromiseResolveBlock, RCTPromiseRejectBlock | Promise            |
+ */
 
 @implementation CitizenEscposprinter
 RCT_EXPORT_MODULE()

@@ -77,6 +77,7 @@ repositories {
 }
 
 def kotlin_version = getExtOrDefault("kotlinVersion")
+def coroutines_version = getExtOrDefault("kotlinCoroutinesVersion")
 
 dependencies {
   // For < 0.71, this will be from the local maven repo
@@ -84,6 +85,16 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+  // Coroutines
+  implementation "androidx.activity:activity-ktx:1.6.1"
+  // implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
+  implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+
+  // Dependency on local binaries
+  implementation fileTree(dir: "libs", include: ["*.jar"])
 }
 
 if (isNewArchitectureEnabled()) {
