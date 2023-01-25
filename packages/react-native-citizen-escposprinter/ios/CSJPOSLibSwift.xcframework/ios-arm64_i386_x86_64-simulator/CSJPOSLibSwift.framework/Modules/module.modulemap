@@ -1,0 +1,11 @@
+framework module CSJPOSLibSwift {
+  umbrella header "CSJPOSLibSwift.h"
+
+  export *
+  module * { export * }
+}
+
+module CSJPOSLibSwift.Swift {
+    header "CSJPOSLibSwift-Swift.h"
+    requires objc
+}
