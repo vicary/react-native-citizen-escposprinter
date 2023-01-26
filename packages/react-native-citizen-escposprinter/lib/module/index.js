@@ -833,8 +833,12 @@ maxSize) {
  *
  * @returns Return a numerical value for the version number of this SDK. (Ver1.00 is 100)
  */
-export function getVersionCode() {
-  return CitizenEscposprinter.getVersionCode();
+export async function getVersionCode() {
+  try {
+    return CitizenEscposprinter.getVersionCode();
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 /**
@@ -842,8 +846,12 @@ export function getVersionCode() {
  *
  * @returns Return a string for the version number of this SDK. (Ver1.00 is "1.00")
  */
-export function getVersionName() {
-  return CitizenEscposprinter.getVersionName();
+export async function getVersionName() {
+  try {
+    return CitizenEscposprinter.getVersionName();
+  } catch (error) {
+    return handleRejection(error);
+  }
 }
 
 // TODO: Rewrite CONTRIBUTING.md, telling them to implement a function in oldarch, newarch and ios in PRs

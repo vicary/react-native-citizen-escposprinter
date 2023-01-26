@@ -1,5 +1,6 @@
 import { FunctionComponent, useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Button,
   SafeAreaView,
   ScrollView,
@@ -75,93 +76,96 @@ const App: FunctionComponent = () => {
         <Text>
           Answer: {(answer ? JSON.stringify(answer, null, 2) : null) ?? "N/A"}
         </Text>
-        <Button
-          title="Click Me"
-          disabled={loading}
-          onPress={async () => {
-            setLoading(true);
+        {loading ? (
+          <ActivityIndicator size="large" />
+        ) : (
+          <Button
+            title="Click Me"
+            onPress={async () => {
+              setLoading(true);
 
-            setAnswer(null);
+              setAnswer(null);
 
-            try {
-              setAnswer(
-                await Promise.all([
-                  getVersionCode(),
-                  getVersionName(),
-                  searchCitizenPrinter(ESCPOSConst.CMP_PORT_WiFi),
-                ]),
-              );
-            } catch (e) {
-              console.error(e);
-            }
+              try {
+                setAnswer(
+                  await Promise.all([
+                    getVersionCode(),
+                    getVersionName(),
+                    searchCitizenPrinter(ESCPOSConst.CMP_PORT_WiFi),
+                  ]),
+                );
+              } catch (e) {
+                console.error(e);
+              }
 
-            if (0) {
-              const address = "192.168.1.108";
-              await connect(ESCPOSConst.CMP_PORT_WiFi, address);
-              console.log("✅ connected:", address);
-              await printerCheck();
-              console.log("✅ printerCheck");
-              const printerStatus = await status();
-              await setEncoding("UTF-8");
-              console.log("✅ status", printerStatus);
-              await printText("Hello World!你好世界！\n");
-              await printText(
-                "Hello World!你好世界！\n",
-                ESCPOSConst.CMP_ALIGNMENT_LEFT,
-                ESCPOSConst.CMP_FNT_DEFAULT,
-                ESCPOSConst.CMP_TXT_2WIDTH | ESCPOSConst.CMP_TXT_2HEIGHT,
-              );
-              await printText(
-                "Hello World!你好世界！\n",
-                ESCPOSConst.CMP_ALIGNMENT_LEFT,
-                ESCPOSConst.CMP_FNT_DEFAULT,
-                ESCPOSConst.CMP_TXT_3WIDTH | ESCPOSConst.CMP_TXT_3HEIGHT,
-              );
-              await printText(
-                "Hello World!你好世界！\n",
-                ESCPOSConst.CMP_ALIGNMENT_LEFT,
-                ESCPOSConst.CMP_FNT_DEFAULT,
-                ESCPOSConst.CMP_TXT_4WIDTH | ESCPOSConst.CMP_TXT_4HEIGHT,
-              );
-              await printText(
-                "Hello World!你好世界！\n",
-                ESCPOSConst.CMP_ALIGNMENT_LEFT,
-                ESCPOSConst.CMP_FNT_DEFAULT,
-                ESCPOSConst.CMP_TXT_5WIDTH | ESCPOSConst.CMP_TXT_5HEIGHT,
-              );
-              await printText(
-                "Hello World!你好世界！\n",
-                ESCPOSConst.CMP_ALIGNMENT_LEFT,
-                ESCPOSConst.CMP_FNT_DEFAULT,
-                ESCPOSConst.CMP_TXT_6WIDTH | ESCPOSConst.CMP_TXT_6HEIGHT,
-              );
-              await printText(
-                "Hello World!你好世界！\n",
-                ESCPOSConst.CMP_ALIGNMENT_LEFT,
-                ESCPOSConst.CMP_FNT_DEFAULT,
-                ESCPOSConst.CMP_TXT_7WIDTH | ESCPOSConst.CMP_TXT_7HEIGHT,
-              );
-              await printText(
-                "Hello World!你好世界！\n",
-                ESCPOSConst.CMP_ALIGNMENT_LEFT,
-                ESCPOSConst.CMP_FNT_DEFAULT,
-                ESCPOSConst.CMP_TXT_8WIDTH | ESCPOSConst.CMP_TXT_8HEIGHT,
-              );
-              await printQRCode(
-                "https://www.google.com",
-                8,
-                ESCPOSConst.CMP_QRCODE_EC_LEVEL_H,
-              );
-              console.log("✅ printText");
-              await cutPaper(ESCPOSConst.CMP_CUT_FULL_PREFEED);
-              console.log("✅ cutPaper");
-              await disconnect();
-              console.log("✅ disconnect");
-            }
+              if (0) {
+                const address = "192.168.1.108";
+                await connect(ESCPOSConst.CMP_PORT_WiFi, address);
+                console.log("✅ connected:", address);
+                await printerCheck();
+                console.log("✅ printerCheck");
+                const printerStatus = await status();
+                await setEncoding("UTF-8");
+                console.log("✅ status", printerStatus);
+                await printText("Hello World!你好世界！\n");
+                await printText(
+                  "Hello World!你好世界！\n",
+                  ESCPOSConst.CMP_ALIGNMENT_LEFT,
+                  ESCPOSConst.CMP_FNT_DEFAULT,
+                  ESCPOSConst.CMP_TXT_2WIDTH | ESCPOSConst.CMP_TXT_2HEIGHT,
+                );
+                await printText(
+                  "Hello World!你好世界！\n",
+                  ESCPOSConst.CMP_ALIGNMENT_LEFT,
+                  ESCPOSConst.CMP_FNT_DEFAULT,
+                  ESCPOSConst.CMP_TXT_3WIDTH | ESCPOSConst.CMP_TXT_3HEIGHT,
+                );
+                await printText(
+                  "Hello World!你好世界！\n",
+                  ESCPOSConst.CMP_ALIGNMENT_LEFT,
+                  ESCPOSConst.CMP_FNT_DEFAULT,
+                  ESCPOSConst.CMP_TXT_4WIDTH | ESCPOSConst.CMP_TXT_4HEIGHT,
+                );
+                await printText(
+                  "Hello World!你好世界！\n",
+                  ESCPOSConst.CMP_ALIGNMENT_LEFT,
+                  ESCPOSConst.CMP_FNT_DEFAULT,
+                  ESCPOSConst.CMP_TXT_5WIDTH | ESCPOSConst.CMP_TXT_5HEIGHT,
+                );
+                await printText(
+                  "Hello World!你好世界！\n",
+                  ESCPOSConst.CMP_ALIGNMENT_LEFT,
+                  ESCPOSConst.CMP_FNT_DEFAULT,
+                  ESCPOSConst.CMP_TXT_6WIDTH | ESCPOSConst.CMP_TXT_6HEIGHT,
+                );
+                await printText(
+                  "Hello World!你好世界！\n",
+                  ESCPOSConst.CMP_ALIGNMENT_LEFT,
+                  ESCPOSConst.CMP_FNT_DEFAULT,
+                  ESCPOSConst.CMP_TXT_7WIDTH | ESCPOSConst.CMP_TXT_7HEIGHT,
+                );
+                await printText(
+                  "Hello World!你好世界！\n",
+                  ESCPOSConst.CMP_ALIGNMENT_LEFT,
+                  ESCPOSConst.CMP_FNT_DEFAULT,
+                  ESCPOSConst.CMP_TXT_8WIDTH | ESCPOSConst.CMP_TXT_8HEIGHT,
+                );
+                await printQRCode(
+                  "https://www.google.com",
+                  8,
+                  ESCPOSConst.CMP_QRCODE_EC_LEVEL_H,
+                );
+                console.log("✅ printText");
+                await cutPaper(ESCPOSConst.CMP_CUT_FULL_PREFEED);
+                console.log("✅ cutPaper");
+                await disconnect();
+                console.log("✅ disconnect");
+              }
 
-            setLoading(false);
-          }}
-        />
+              setLoading(false);
+            }}
+          />
+        )}
       </ScrollView>
     </SafeAreaView>
   );
