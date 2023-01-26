@@ -1,6 +1,6 @@
 {
   "name": "react-native-citizen-escposprinter",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A Turbo Module wrapper for the Citizen ESC POS Printer SDK.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -34,7 +34,19 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "kotlin",
+    "swift",
+    "citizen",
+    "ESC",
+    "POS",
+    "escpos",
+    "opos",
+    "wifi",
+    "bluetooth",
+    "printer",
+    "receipt",
+    "thermal"
   ],
   "repository": "https://github.com/vicary/react-native-citizen-escposprinter.git",
   "author": "Vicary A. <vicary.archangel@member.mensa.org> (https://github.com/vicary)",
