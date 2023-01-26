@@ -178,7 +178,11 @@ export async function status(
   type = 0,
 ) {
   try {
-    return await CitizenEscposprinter.status(type);
+    return await CitizenEscposprinter.status(
+      Platform.select({
+        android: type,
+      }),
+    );
   } catch (error) {
     return handleRejection(error);
   }

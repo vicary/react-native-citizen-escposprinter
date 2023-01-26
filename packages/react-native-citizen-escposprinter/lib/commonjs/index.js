@@ -182,7 +182,9 @@ async function printerCheck() {
 async function status() {
   let type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
   try {
-    return await CitizenEscposprinter.status(type);
+    return await CitizenEscposprinter.status(_reactNative.Platform.select({
+      android: type
+    }));
   } catch (error) {
     return handleRejection(error);
   }

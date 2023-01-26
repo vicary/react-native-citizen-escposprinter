@@ -138,7 +138,9 @@ export async function printerCheck() {
 export async function status() {
   let type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
   try {
-    return await CitizenEscposprinter.status(type);
+    return await CitizenEscposprinter.status(Platform.select({
+      android: type
+    }));
   } catch (error) {
     return handleRejection(error);
   }
