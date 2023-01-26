@@ -47,18 +47,15 @@ exports.watermarkPrint = watermarkPrint;
 var _reactNative = require("react-native");
 var _errors = require("./errors");
 var _ESCPOSConst = require("./ESCPOSConst");
-const LINKING_ERROR = "The package 'react-native-citizen-escposprinter' doesn't seem to be linked. Make sure: \n\n" + _reactNative.Platform.select({
-  ios: "- You have run 'pod install'\n",
-  default: ""
-}) + "- You rebuilt the app after installing the package\n" + "- You are not using Expo Go\n";
-
 // @ts-expect-error ts(7017)
 const isTurboModuleEnabled = global.__turboModuleProxy != null;
-const CitizenEscposprinter = (isTurboModuleEnabled ? require("./NativeCitizenEscposprinter").default : _reactNative.NativeModules.CitizenEscposprinter) ?? new Proxy({}, {
-  get() {
-    throw new Error(LINKING_ERROR);
-  }
-});
+const CitizenEscposprinter = isTurboModuleEnabled ? require("./NativeCitizenEscposprinter").default : _reactNative.NativeModules.CitizenEscposprinter;
+if (!CitizenEscposprinter) {
+  throw new Error("The package 'react-native-citizen-escposprinter' doesn't seem to be linked. Make sure: \n\n" + _reactNative.Platform.select({
+    ios: "- You have run 'pod install'\n",
+    default: ""
+  }) + "- You rebuilt the app after installing the package\n" + "- You are not using Expo Go\n");
+}
 const handleRejection = error => {
   throw error instanceof Error && (0, _errors.getPrintError)(+error.message) || error;
 };
