@@ -2856,6 +2856,7 @@ __metadata:
     "@types/react-test-renderer": ^18.0.0
     babel-jest: ^29.2.1
     eslint: ^8.19.0
+    ios-deploy: ^1.12.1
     jest: ^29.2.1
     metro-config: ^0.74.1
     metro-react-native-babel-preset: ^0.74.1
@@ -5844,6 +5845,16 @@ __metadata:
   dependencies:
     loose-envify: "npm:^1.0.0"
   checksum: cc3182d793aad82a8d1f0af697b462939cb46066ec48bbf1707c150ad5fad6406137e91a262022c269702e01621f35ef60269f6c0d7fd178487959809acdfb14
+  languageName: node
+  linkType: hard
+
+"ios-deploy@npm:^1.12.1":
+  version: 1.12.1
+  resolution: "ios-deploy@npm:1.12.1"
+  bin:
+    ios-deploy: build/Release/ios-deploy
+  checksum: 017b7e34ec36826d6cda4a445bfd605c83ebae79606b2fa75a08b1f30c0c77114d7495870c4f6b323a3e13c5af5f59a6b28b679f826547684b355052a70dcd94
+  conditions: os=darwin
   languageName: node
   linkType: hard
 

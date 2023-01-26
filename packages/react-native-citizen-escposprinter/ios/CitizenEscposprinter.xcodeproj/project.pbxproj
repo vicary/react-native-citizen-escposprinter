@@ -3,11 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3DA25600297B1C3A00FA42BA /* libCSJTSOLib_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DA255FF297B1C3A00FA42BA /* libCSJTSOLib_iOS.a */; };
+		3D526B9D298061ED00A8C567 /* CSJPOSLibSwift.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D526B9C298061ED00A8C567 /* CSJPOSLibSwift.xcframework */; };
+		3D77B33A298054E90037C8D8 /* CitizenEscposprinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D77B339298054E90037C8D8 /* CitizenEscposprinter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,10 +25,11 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libCitizenEscposprinter.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCitizenEscposprinter.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		3DA255FF297B1C3A00FA42BA /* libCSJTSOLib_iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libCSJTSOLib_iOS.a; sourceTree = "<group>"; };
-		3DA25601297B1C4100FA42BA /* ESCPOSPrinter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ESCPOSPrinter.h; sourceTree = "<group>"; };
-		B3E7B5881CC2AC0600A0062D /* CitizenEscposprinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CitizenEscposprinter.h; sourceTree = "<group>"; };
-		B3E7B5891CC2AC0600A0062D /* CitizenEscposprinter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CitizenEscposprinter.mm; sourceTree = "<group>"; };
+		3D526B9C298061ED00A8C567 /* CSJPOSLibSwift.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = CSJPOSLibSwift.xcframework; sourceTree = "<group>"; };
+		3D77B338298054E80037C8D8 /* CitizenEscposprinter-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CitizenEscposprinter-Bridging-Header.h"; sourceTree = "<group>"; };
+		3D77B339298054E90037C8D8 /* CitizenEscposprinter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitizenEscposprinter.swift; sourceTree = "<group>"; };
+		3D77B33E298056720037C8D8 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.1.sdk/System/Library/Frameworks/ExternalAccessory.framework; sourceTree = DEVELOPER_DIR; };
+		B3E7B5881CC2AC0600A0062D /* CitizenEscposprinter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CitizenEscposprinter.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3DA25600297B1C3A00FA42BA /* libCSJTSOLib_iOS.a in Frameworks */,
+				3D526B9D298061ED00A8C567 /* CSJPOSLibSwift.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -50,14 +52,23 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		3D77B33B298056580037C8D8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3D77B33E298056720037C8D8 /* ExternalAccessory.framework */,
+				3D526B9C298061ED00A8C567 /* CSJPOSLibSwift.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				3DA255FF297B1C3A00FA42BA /* libCSJTSOLib_iOS.a */,
-				3DA25601297B1C4100FA42BA /* ESCPOSPrinter.h */,
-				B3E7B5881CC2AC0600A0062D /* CitizenEscposprinter.h */,
-				B3E7B5891CC2AC0600A0062D /* CitizenEscposprinter.mm */,
+				B3E7B5881CC2AC0600A0062D /* CitizenEscposprinter.m */,
+				3D77B339298054E90037C8D8 /* CitizenEscposprinter.swift */,
+				3D77B338298054E80037C8D8 /* CitizenEscposprinter-Bridging-Header.h */,
 				134814211AA4EA7D00B7C361 /* Products */,
+				3D77B33B298056580037C8D8 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -92,15 +103,15 @@
 				TargetAttributes = {
 					58B511DA1A9E6C8500147676 = {
 						CreatedOnToolsVersion = 6.1.1;
+						LastSwiftMigration = 1420;
 					};
 				};
 			};
 			buildConfigurationList = 58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "CitizenEscposprinter" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 			);
 			mainGroup = 58B511D21A9E6C8500147676;
@@ -118,6 +129,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D77B33A298054E90037C8D8 /* CitizenEscposprinter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -222,38 +234,63 @@
 		58B511F01A9E6C8500147676 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
+					"$(SRCROOT)/../node_modules/react-native/React/**",
+				);
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-lc++",
+				);
 				PRODUCT_NAME = CitizenEscposprinter;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "CitizenEscposprinter-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
 		58B511F11A9E6C8500147676 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
+					"$(SRCROOT)/../node_modules/react-native/React/**",
+				);
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-lc++",
+				);
 				PRODUCT_NAME = CitizenEscposprinter;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "CitizenEscposprinter-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};

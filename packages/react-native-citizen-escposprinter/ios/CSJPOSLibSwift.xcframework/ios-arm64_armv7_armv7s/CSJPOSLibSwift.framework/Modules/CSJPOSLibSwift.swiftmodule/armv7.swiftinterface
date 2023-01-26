@@ -1,0 +1,426 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)
+// swift-module-flags: -target armv7-apple-ios8.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name CSJPOSLibSwift
+@_exported import CSJPOSLibSwift
+import Foundation
+import Swift
+import UIKit
+@objc @_inheritsConvenienceInitializers open class ScannerConst : ObjectiveC.NSObject {
+  public static let CSC_SUCCESS: Swift.Int32
+  public static let CSC_E_CONNECTED: Swift.Int32
+  public static let CSC_E_DISCONNECT: Swift.Int32
+  public static let CSC_E_NOTCONNECT: Swift.Int32
+  public static let CSC_E_CONNECT_NOTFOUND: Swift.Int32
+  public static let CSC_E_CONNECT_OFFLINE: Swift.Int32
+  public static let CSC_E_ILLEGAL: Swift.Int32
+  public static let CSC_E_OFFLINE: Swift.Int32
+  public static let CSC_E_NOEXIST: Swift.Int32
+  public static let CSC_E_FAILURE: Swift.Int32
+  public static let CSC_E_TIMEOUT: Swift.Int32
+  public static let CSC_E_NO_LIST: Swift.Int32
+  public static let CSC_EPTR_COVER_OPEN: Swift.Int32
+  public static let CSC_EPTR_REC_EMPTY: Swift.Int32
+  public static let CSC_EPTR_BADFORMAT: Swift.Int32
+  public static let CSC_EPTR_TOOBIG: Swift.Int32
+  public static let CSC_PORT_WiFi: Swift.Int32
+  public static let CSC_PORT_BLUETOOTH: Swift.Int32
+  public static let CSC_PORT_USB: Swift.Int32
+  public static let CSC_SUE_POWER_ONLINE: Swift.Int32
+  public static let CSC_SUE_POWER_OFF: Swift.Int32
+  @objc deinit
+  @objc override dynamic public init()
+}
+@objc @_inheritsConvenienceInitializers open class ESCPOSPrinter : ObjectiveC.NSObject {
+  @objc override dynamic public init()
+  @objc deinit
+  open func connect(_ connectType: Swift.Int32, withAddrress addr: Swift.String?) -> Swift.Int32
+  open func connect(_ connectType: Swift.Int32, withAddrress addr: Swift.String?, withPort port: Swift.Int32) -> Swift.Int32
+  open func connect(_ connectType: Swift.Int32, withAddrress addr: Swift.String?, withPort port: Swift.Int32, withTimeout timeout: Swift.Int32) -> Swift.Int32
+  open func disconnect() -> Swift.Int32
+  open func setEncoding(_ charset: Swift.String.Encoding) -> Swift.Int32
+  open func setEncoding2(_ encode: Swift.String?) -> Swift.Int32
+  open func setPrintCompletedTimeout(_ timeout: Swift.Int32) -> Swift.Int32
+  open func printerCheck() -> Swift.Int32
+  open func status() -> Swift.Int32
+  open func printText(_ data: Swift.String?, withAlignment alignment: Swift.Int32, withAttribute attribute: Swift.Int32, withTextSize textSize: Swift.Int32) -> Swift.Int32
+  open func printPaddingText(_ data: Swift.String?, withAttribute attribute: Swift.Int32, withTextSize textSize: Swift.Int32, withLength length: Swift.Int32, withSide side: Swift.Int32) -> Swift.Int32
+  open func printTextLocalFont(_ data: Swift.String?, withAlignment alignment: Swift.Int32, withFontName fontName: Swift.String?, withPoint point: Swift.Int32, withStyle style: Swift.Int32, withHRatio hRatio: Swift.Int32, withVRatio vRatio: Swift.Int32) -> Swift.Int32
+  open func printBitmap(_ fileName: Swift.String?, withAlignment alignment: Swift.Int32) -> Swift.Int32
+  open func printBitmap(_ fileName: Swift.String?, withWidth width: Swift.Int32, withAlignment alignment: Swift.Int32) -> Swift.Int32
+  open func printBitmap(_ fileName: Swift.String?, withWidth width: Swift.Int32, withAlignment alignment: Swift.Int32, withMode mode: Swift.Int32) -> Swift.Int32
+  open func printBitmapData(_ imageData: UIKit.UIImage?, withAlignment alignment: Swift.Int32) -> Swift.Int32
+  open func printBitmapData(_ imageData: UIKit.UIImage?, withWidth width: Swift.Int32, withAlignment alignment: Swift.Int32) -> Swift.Int32
+  open func printBitmapData(_ imageData: UIKit.UIImage?, withWidth width: Swift.Int32, withAlignment alignment: Swift.Int32, withMode mode: Swift.Int32) -> Swift.Int32
+  open func printNVBitmap(_ nvImageNumber: Swift.Int32) -> Swift.Int32
+  open func setNVBitmap(_ number: Swift.Int32, withFileName fileName: Swift.String?, withWidth width: Swift.Int32) -> Swift.Int32
+  open func setNVBitmap(_ number: Swift.Int32, withFileName fileName: Swift.String?, withWidth width: Swift.Int32, withMode mode: Swift.Int32) -> Swift.Int32
+  open func printBarCode(_ data: Swift.String?, withSymbology symbology: Swift.Int32, withHeight height: Swift.Int32, withWidth width: Swift.Int32, withAlignment alignment: Swift.Int32, withTextPosition textPosition: Swift.Int32) -> Swift.Int32
+  open func printPDF417(_ data: Swift.String?, withDigits digits: Swift.Int32, withSteps steps: Swift.Int32, withModuleWidth moduleWidth: Swift.Int32, withStepHeight stepHeight: Swift.Int32, withECLevel ECLevel: Swift.Int32, withAlignment alignment: Swift.Int32) -> Swift.Int32
+  open func printQRCode(_ data: Swift.String?, withModuleSize moduleSize: Swift.Int32, withECLevel ECLevel: Swift.Int32, withAlignment alignment: Swift.Int32) -> Swift.Int32
+  open func printGS1DataBarStacked(_ data: Swift.String?, withSymbology symbology: Swift.Int32, withModuleSize moduleSize: Swift.Int32, withMaxWidth maxWidth: Swift.Int32, withAlignment alignment: Swift.Int32) -> Swift.Int32
+  open func cutPaper(_ percentage: Swift.Int32) -> Swift.Int32
+  open func unitFeed(_ lfConunt: Swift.Int32) -> Swift.Int32
+  open func markFeed(_ type_: Swift.Int32) -> Swift.Int32
+  open func openDrawer(_ drawer: Swift.Int32, withPulseLength pulsLen: Swift.Int32) -> Swift.Int32
+  open func transactionPrint(_ control: Swift.Int32) -> Swift.Int32
+  open func rotatePrint(_ rotation: Swift.Int32) -> Swift.Int32
+  open func pageModePrint(_ control: Swift.Int32) -> Swift.Int32
+  open func clearPrintArea() -> Swift.Int32
+  open func clearOutput() -> Swift.Int32
+  open func getVersionCode() -> Swift.Int32
+  open func getVersionName() -> Swift.String?
+  open func printData(_ data: Swift.UnsafeMutablePointer<Swift.Int8>) -> Swift.Int32
+  open func printData(_ data: Swift.UnsafeMutablePointer<Swift.Int8>, withLength length: Swift.UInt) -> Swift.Int32
+  open func printByteData(_ data: Foundation.Data!) -> Swift.Int32
+  open func printByteData(_ data: Foundation.Data!, withLength length: Swift.UInt) -> Swift.Int32
+  open func printNormal(_ data: Swift.String?) -> Swift.Int32
+  open func watermarkPrint(_ start: Swift.Int32, withNVImageNumber nvImageNumber: Swift.Int32, withPass pass: Swift.Int32, withFeed feed: Swift.Int32, withRepeat repeats: Swift.Int32) -> Swift.Int32
+  open func getPageModeArea() -> Swift.String?
+  open func getPageModePrintArea() -> Swift.String?
+  open func setPageModePrintArea(_ area: Swift.String?) -> Swift.Int32
+  open func getPageModePrintDirection() -> Swift.Int32
+  open func setPageModePrintDirection(_ direction: Swift.Int32) -> Swift.Int32
+  open func getPageModeHorizontalPosition() -> Swift.Int32
+  open func setPageModeHorizontalPosition(_ position: Swift.Int32) -> Swift.Int32
+  open func getPageModeVerticalPosition() -> Swift.Int32
+  open func setPageModeVerticalPosition(_ position: Swift.Int32) -> Swift.Int32
+  open func getRecLineSpacing() -> Swift.Int32
+  open func setRecLineSpacing(_ spacing: Swift.Int32) -> Swift.Int32
+  open func getMapMode() -> Swift.Int32
+  open func setMapMode(_ number: Swift.Int32) -> Swift.Int32
+  open class func searchESCPOSPrinter(_ ifType: Swift.Int32, withSearchTime searchTime: Swift.Int32, result: Swift.UnsafeMutablePointer<Swift.Int32>) -> [Swift.AnyObject]?
+  open class func searchCitizenPrinter(_ ifType: Swift.Int32, withSearchTime searchTime: Swift.Int32, result: Swift.UnsafeMutablePointer<Swift.Int32>) -> [Swift.AnyObject]?
+  open func searchESCPOSPrinter(_ ifType: Swift.Int32, withSearchTime searchTime: Swift.Int32, result: Swift.UnsafeMutablePointer<Swift.Int32>) -> [Swift.AnyObject]?
+  open func searchCitizenPrinter(_ ifType: Swift.Int32, withSearchTime searchTime: Swift.Int32, result: Swift.UnsafeMutablePointer<Swift.Int32>) -> [Swift.AnyObject]?
+  open class func isMoveBonjour_IF1_ES01() -> Swift.Bool
+  open class func setMoveBonjour_IF1_ES01(_ mode: Swift.Bool)
+  open func isMoveBonjour_IF1_ES01() -> Swift.Bool
+  open func setMoveBonjour_IF1_ES01(_ mode: Swift.Bool)
+  open class func searchCitizenPrinterEx1(_ ifType: Swift.Int32, withSearchTime searchTime: Swift.Int32, result: Swift.UnsafeMutablePointer<Swift.Int32>) -> [Swift.AnyObject]?
+  open func writeData(_ data: Swift.UnsafeMutablePointer<Swift.UInt8>, withLength length: Swift.UInt) -> Swift.Int32
+  open func readData(_ timeout: Swift.UInt, result: Swift.UnsafeMutablePointer<Swift.Int32>) -> Swift.Array<Swift.UInt8>
+  open func setLog(_ mode: Swift.Int32, withPath path: Swift.String?, withMaxSize maxSize: Swift.Int32) -> Swift.Int32
+}
+@objc @_inheritsConvenienceInitializers open class ESCPOSConst : ObjectiveC.NSObject {
+  public static let CMP_SUCCESS: Swift.Int32
+  public static let CMP_E_CONNECTED: Swift.Int32
+  public static let CMP_E_DISCONNECT: Swift.Int32
+  public static let CMP_E_NOTCONNECT: Swift.Int32
+  public static let CMP_E_CONNECT_NOTFOUND: Swift.Int32
+  public static let CMP_E_CONNECT_OFFLINE: Swift.Int32
+  public static let CMP_E_ILLEGAL: Swift.Int32
+  public static let CMP_E_OFFLINE: Swift.Int32
+  public static let CMP_E_NOEXIST: Swift.Int32
+  public static let CMP_E_FAILURE: Swift.Int32
+  public static let CMP_E_TIMEOUT: Swift.Int32
+  public static let CMP_E_NO_LIST: Swift.Int32
+  public static let CMP_EPTR_COVER_OPEN: Swift.Int32
+  public static let CMP_EPTR_REC_EMPTY: Swift.Int32
+  public static let CMP_EPTR_BADFORMAT: Swift.Int32
+  public static let CMP_EPTR_TOOBIG: Swift.Int32
+  public static let CMP_PORT_WiFi: Swift.Int32
+  public static let CMP_PORT_BLUETOOTH: Swift.Int32
+  public static let CMP_PORT_USB: Swift.Int32
+  public static let CMP_STS_NORMAL: Swift.Int32
+  public static let CMP_STS_BATTERY_LOW: Swift.Int32
+  public static let CMP_STS_COVER_OPEN: Swift.Int32
+  public static let CMP_STS_PAPER_EMPTY: Swift.Int32
+  public static let CMP_STS_MSR_READ: Swift.Int32
+  public static let CMP_STS_PRINTEROFF: Swift.Int32
+  public static let CMP_ALIGNMENT_LEFT: Swift.Int32
+  public static let CMP_ALIGNMENT_CENTER: Swift.Int32
+  public static let CMP_ALIGNMENT_RIGHT: Swift.Int32
+  public static let CMP_FNT_DEFAULT: Swift.Int32
+  public static let CMP_FNT_FONTB: Swift.Int32
+  public static let CMP_FNT_FONTC: Swift.Int32
+  public static let CMP_FNT_BOLD: Swift.Int32
+  public static let CMP_FNT_REVERSE: Swift.Int32
+  public static let CMP_FNT_UNDERLINE: Swift.Int32
+  public static let CMP_FNT_ITALIC: Swift.Int32
+  public static let CMP_FNT_STRIKEOUT: Swift.Int32
+  public static let CMP_TXT_1WIDTH: Swift.Int32
+  public static let CMP_TXT_2WIDTH: Swift.Int32
+  public static let CMP_TXT_3WIDTH: Swift.Int32
+  public static let CMP_TXT_4WIDTH: Swift.Int32
+  public static let CMP_TXT_5WIDTH: Swift.Int32
+  public static let CMP_TXT_6WIDTH: Swift.Int32
+  public static let CMP_TXT_7WIDTH: Swift.Int32
+  public static let CMP_TXT_8WIDTH: Swift.Int32
+  public static let CMP_TXT_1HEIGHT: Swift.Int32
+  public static let CMP_TXT_2HEIGHT: Swift.Int32
+  public static let CMP_TXT_3HEIGHT: Swift.Int32
+  public static let CMP_TXT_4HEIGHT: Swift.Int32
+  public static let CMP_TXT_5HEIGHT: Swift.Int32
+  public static let CMP_TXT_6HEIGHT: Swift.Int32
+  public static let CMP_TXT_7HEIGHT: Swift.Int32
+  public static let CMP_TXT_8HEIGHT: Swift.Int32
+  public static let CMP_SIDE_RIGHT: Swift.Int32
+  public static let CMP_SIDE_LEFT: Swift.Int32
+  public static let CMP_BM_ASIS: (Swift.Int32)
+  public static let CMP_BM_MODE_HT_THRESHOLD: Swift.Int32
+  public static let CMP_BM_MODE_HT_DITHER: Swift.Int32
+  public static let CMP_BM_MODE_CMD_RASTER: Swift.Int32
+  public static let CMP_BM_MODE_CMD_BITIMAGE: Swift.Int32
+  public static let CMP_BM_MODE_CMD_MONO: Swift.Int32
+  public static let CMP_BM_MODE_CMD_GRAY16: Swift.Int32
+  public static let CMP_BM_MODE_CMD_GRAY16DOWNLOAD: Swift.Int32
+  public static let CMP_BCS_UPCA: Swift.Int32
+  public static let CMP_BCS_UPCE: Swift.Int32
+  public static let CMP_BCS_EAN8: Swift.Int32
+  public static let CMP_BCS_EAN13: Swift.Int32
+  public static let CMP_BCS_JAN8: Swift.Int32
+  public static let CMP_BCS_JAN13: Swift.Int32
+  public static let CMP_BCS_ITF: Swift.Int32
+  public static let CMP_BCS_Codabar: Swift.Int32
+  public static let CMP_BCS_Code39: Swift.Int32
+  public static let CMP_BCS_Code93: Swift.Int32
+  public static let CMP_BCS_Code128: Swift.Int32
+  public static let CMP_BCS_Code128_Parsed: Swift.Int32
+  public static let CMP_BCS_RSS14: Swift.Int32
+  public static let CMP_BCS_RSS_EXPANDED: Swift.Int32
+  public static let CMP_BCS_GS1DATABAR: Swift.Int32
+  public static let CMP_BCS_GS1DATABAR_E: Swift.Int32
+  public static let CMP_BCS_GS1DATABAR_S: Swift.Int32
+  public static let CMP_BCS_GS1DATABAR_E_S: Swift.Int32
+  public static let CMP_BCS_GS1DATABAR_T: Swift.Int32
+  public static let CMP_BCS_GS1DATABAR_L: Swift.Int32
+  public static let CMP_BCS_GS1DATABAR_S_O: Swift.Int32
+  public static let CMP_HRI_TEXT_NONE: Swift.Int32
+  public static let CMP_HRI_TEXT_ABOVE: Swift.Int32
+  public static let CMP_HRI_TEXT_BELOW: Swift.Int32
+  public static let CMP_PDF417_EC_LEVEL_0: Swift.Int32
+  public static let CMP_PDF417_EC_LEVEL_1: Swift.Int32
+  public static let CMP_PDF417_EC_LEVEL_2: Swift.Int32
+  public static let CMP_PDF417_EC_LEVEL_3: Swift.Int32
+  public static let CMP_PDF417_EC_LEVEL_4: Swift.Int32
+  public static let CMP_PDF417_EC_LEVEL_5: Swift.Int32
+  public static let CMP_PDF417_EC_LEVEL_6: Swift.Int32
+  public static let CMP_PDF417_EC_LEVEL_7: Swift.Int32
+  public static let CMP_PDF417_EC_LEVEL_8: Swift.Int32
+  public static let CMP_QRCODE_EC_LEVEL_L: Swift.Int32
+  public static let CMP_QRCODE_EC_LEVEL_M: Swift.Int32
+  public static let CMP_QRCODE_EC_LEVEL_Q: Swift.Int32
+  public static let CMP_QRCODE_EC_LEVEL_H: Swift.Int32
+  public static let CMP_CUT_FULL: (Swift.Int32)
+  public static let CMP_CUT_PARTIAL: (Swift.Int32)
+  public static let CMP_CUT_FULL_PREFEED: (Swift.Int32)
+  public static let CMP_CUT_PARTIAL_PREFEED: (Swift.Int32)
+  public static let CMP_MF_TO_CUTTER: Swift.Int32
+  public static let CMP_MF_TO_NEXT_TOF: Swift.Int32
+  public static let CMP_MM_DOTS: Swift.Int32
+  public static let CMP_MM_TWIPS: Swift.Int32
+  public static let CMP_MM_ENGLISH: Swift.Int32
+  public static let CMP_MM_METRIC: Swift.Int32
+  public static let CMP_DRAWER_1: Swift.Int32
+  public static let CMP_DRAWER_2: Swift.Int32
+  public static let CMP_TP_TRANSACTION: Swift.Int32
+  public static let CMP_TP_NORMAL: Swift.Int32
+  public static let CMP_RP_NORMAL: Swift.Int32
+  public static let CMP_RP_ROTATE180: Swift.Int32
+  public static let CMP_RP_BARCODE: Swift.Int32
+  public static let CMP_RP_BITMAP: Swift.Int32
+  public static let CMP_PM_PAGE_MODE: Swift.Int32
+  public static let CMP_PM_PRINT_SAVE: Swift.Int32
+  public static let CMP_PM_NORMAL: Swift.Int32
+  public static let CMP_PM_CANCEL: Swift.Int32
+  public static let CMP_PD_LEFT_TO_RIGHT: Swift.Int32
+  public static let CMP_PD_BOTTOM_TO_TOP: Swift.Int32
+  public static let CMP_PD_RIGHT_TO_LEFT: Swift.Int32
+  public static let CMP_PD_TOP_TO_BOTTOM: Swift.Int32
+  public static let CMP_WM_STOP: Swift.Int32
+  public static let CMP_WM_START: Swift.Int32
+  @objc deinit
+  @objc override dynamic public init()
+}
+@objc @_inheritsConvenienceInitializers open class LineDisplayConst : ObjectiveC.NSObject {
+  public static let CDP_SUCCESS: Swift.Int32
+  public static let CDP_E_CONNECTED: Swift.Int32
+  public static let CDP_E_DISCONNECT: Swift.Int32
+  public static let CDP_E_NOTCONNECT: Swift.Int32
+  public static let CDP_E_CONNECT_NOTFOUND: Swift.Int32
+  public static let CDP_E_CONNECT_OFFLINE: Swift.Int32
+  public static let CDP_E_ILLEGAL: Swift.Int32
+  public static let CDP_E_OFFLINE: Swift.Int32
+  public static let CDP_E_NOEXIST: Swift.Int32
+  public static let CDP_E_FAILURE: Swift.Int32
+  public static let CDP_E_TIMEOUT: Swift.Int32
+  public static let CDP_E_NO_LIST: Swift.Int32
+  public static let CDP_EPTR_COVER_OPEN: Swift.Int32
+  public static let CDP_EPTR_REC_EMPTY: Swift.Int32
+  public static let CDP_EPTR_BADFORMAT: Swift.Int32
+  public static let CDP_EPTR_TOOBIG: Swift.Int32
+  public static let CDP_PORT_WiFi: Swift.Int32
+  public static let CDP_PORT_BLUETOOTH: Swift.Int32
+  public static let CDP_PORT_USB: Swift.Int32
+  public static let CDP_AREA_ALL: Swift.Int32
+  public static let CDP_AREA_CURSORLINE: Swift.Int32
+  public static let CDP_OVERWRITE: Swift.Int32
+  public static let CDP_VERTICALSCROLL: Swift.Int32
+  public static let CDP_HORIZONTALSCROLL: Swift.Int32
+  public static let CDP_TYPE_NONE: Swift.Int32
+  public static let CDP_TYPE_UNDERLINE: Swift.Int32
+  @objc deinit
+  @objc override dynamic public init()
+}
+@objc @_inheritsConvenienceInitializers open class CashChangerConst : ObjectiveC.NSObject {
+  public static let CCH_PORT_WiFi: Swift.Int
+  public static let CCH_PORT_Bluetooth: Swift.Int
+  public static let CCH_PORT_USB: Swift.Int
+  public static let CCH_SUCCESS: Swift.Int
+  public static let CCH_E_CONNECTED: Swift.Int
+  public static let CCH_E_DISCONNECT: Swift.Int
+  public static let CCH_E_NOTCONNECT: Swift.Int
+  public static let CCH_E_CONNECT_NOTFOUND: Swift.Int
+  public static let CCH_E_CONNECT_OFFLINE: Swift.Int
+  public static let CCH_E_BT_DISABLE: Swift.Int
+  public static let CCH_E_BT_NODEVICE: Swift.Int
+  public static let CCH_E_ILLEGAL: Swift.Int
+  public static let CCH_E_OFFLINE: Swift.Int
+  public static let CCH_E_FAILURE: Swift.Int
+  public static let CCH_E_TIMEOUT: Swift.Int
+  public static let CCH_ECHAN_ERROR: Swift.Int
+  public static let CCH_ECHAN_IMPOSSIBLE: Swift.Int
+  public static let CCH_ECHAN_OVERDISPENSE: Swift.Int
+  public static let CCH_ECHAN_CASSETTEWAIT: Swift.Int
+  public static let CCH_ECHAN_SETERROR: Swift.Int
+  public static let CCH_SUE_POWER_ONLINE: Swift.Int
+  public static let CCH_SUE_POWER_OFF: Swift.Int
+  public static let CCH_SUE_POWER_OFFLINE: Swift.Int
+  public static let CCH_CHAN_STATUS_OK: Swift.Int
+  public static let CCH_CHAN_STATUS_EMPTY: Swift.Int
+  public static let CCH_CHAN_STATUS_NEAREMPTY: Swift.Int
+  public static let CCH_CHAN_STATUS_EMPTYOK: Swift.Int
+  public static let CCH_CHAN_STATUS_FULL: Swift.Int
+  public static let CCH_CHAN_STATUS_NEARFULL: Swift.Int
+  public static let CCH_CHAN_STATUS_FULLOK: Swift.Int
+  public static let CCH_CHAN_STATUS_JAM: Swift.Int
+  public static let CCH_CHAN_STATUS_JAMOK: Swift.Int
+  public static let CCH_CHAN_STATUS_CASSETTEWAIT: Swift.Int
+  public static let CCH_CHAN_STATUS_PULLOUT: Swift.Int
+  public static let CCH_CHAN_STATUS_DEPOSIT_START: Swift.Int
+  public static let CCH_CHAN_STATUS_DEPOSIT_END: Swift.Int
+  public static let CCH_CHAN_STATUS_DEPOSIT_PAUSE: Swift.Int
+  public static let CCH_CHAN_STATUS_DEPOSIT_COUNT: Swift.Int
+  public static let CCH_CHAN_STATUS_DEPOSIT_JAM: Swift.Int
+  public static let CCH_CHAN_DEPOSIT_CHANGE: Swift.Int
+  public static let CCH_CHAN_DEPOSIT_NOCHANGE: Swift.Int
+  public static let CCH_CHAN_DEPOSIT_REPAY: Swift.Int
+  @objc deinit
+  @objc override dynamic public init()
+}
+public protocol CashChangerEventDelegate : CSJPOSLibSwift.CSJCashChangerEventDelegate {
+  func dataEventCallbackCashChanger(_ amount: Swift.Int32, counts: Swift.String)
+  func statusUpdateEventCallback(_ status: Swift.Int32)
+}
+public typealias DataListenerCashChanger = (Swift.Int32, Swift.String?) -> Swift.Void
+@objc @_inheritsConvenienceInitializers open class CashChanger : ObjectiveC.NSObject {
+  @objc override dynamic public init()
+  @objc deinit
+  open func getVersionCode() -> Swift.Int32
+  open func getVersionName() -> Swift.String
+  open func connect(_ connectType: Swift.Int32, withAddrress addr: Swift.String?) -> Swift.Int32
+  open func connect(_ connectType: Swift.Int32, withAddrress addr: Swift.String?, withPort port: Swift.Int32) -> Swift.Int32
+  open func connect(_ connectType: Swift.Int32, withAddrress addr: Swift.String?, withPort port: Swift.Int32, withTimeout timeout: Swift.Int32) -> Swift.Int32
+  open func connect(_ connectType: Swift.Int32, withAddrress addr: Swift.String?, withPort port: Swift.Int32, withTimeout timeout: Swift.Int32, withVcomPort vcomport: Swift.Int32) -> Swift.Int32
+  open func disconnect() -> Swift.Int32
+  open func beginDeposit() -> Swift.Int32
+  open func fixDeposit() -> Swift.Int32
+  open func pauseDeposit() -> Swift.Int32
+  open func endDeposit() -> Swift.Int32
+  open func endDeposit(_ success: Swift.Int32) -> Swift.Int32
+  open func restartDeposit() -> Swift.Int32
+  open func readCashCounts(_ cashCounts: Swift.AutoreleasingUnsafeMutablePointer<Foundation.NSString?>?, _ discrepancy: Swift.UnsafeMutablePointer<ObjectiveC.ObjCBool>) -> Swift.Int32
+  open func readCashCounts(_ cashCounts: Swift.AutoreleasingUnsafeMutablePointer<Foundation.NSString?>?, _ cashCounts2: Swift.AutoreleasingUnsafeMutablePointer<Foundation.NSString?>?, _ discrepancy: Swift.UnsafeMutablePointer<ObjectiveC.ObjCBool>) -> Swift.Int32
+  open func dispenseCash(_ cashCounts: Swift.String?) -> Swift.Int32
+  open func dispenseChange(_ Amount: Swift.Int32) -> Swift.Int32
+  open func reset() -> Swift.Int32
+  open func memoryClear(_ mode: Swift.Int32) -> Swift.Int32
+  open func changeMode(_ mode: Swift.Int32) -> Swift.Int32
+  open func timeSet(_ DateTime: Swift.String?) -> Swift.Int32
+  open func collect(_ siheimode: Swift.Int32, _ koukamode: Swift.Int32) -> Swift.Int32
+  open func collectCount(_ cashCounts: Swift.String?) -> Swift.Int32
+  open func depositDataRead(_ depositCounts: Swift.AutoreleasingUnsafeMutablePointer<Foundation.NSString?>?) -> Swift.Int32
+  open func setDepositMode(_ mode: Swift.Int32) -> Swift.Int32
+  open func readDepositMode(_ mode: Swift.UnsafeMutablePointer<Swift.Int32>) -> Swift.Int32
+  open func childLock(_ mode: Swift.Int32) -> Swift.Int32
+  open func openDrawer(_ mode: Swift.Int32) -> Swift.Int32
+  open func supply() -> Swift.Int32
+  open func beginDepositOutside() -> Swift.Int32
+  open func dispenseChangeOutside(_ Amount: Swift.Int32) -> Swift.Int32
+  open func dispenseCashOutside(_ cashCounts: Swift.String?) -> Swift.Int32
+  open func beginCashReturn() -> Swift.Int32
+  open func supplyCounts(_ mode: Swift.Int32, _ counts: Swift.AutoreleasingUnsafeMutablePointer<Foundation.NSString?>?) -> Swift.Int32
+  open func close(_ mode: Swift.Int32, _ ID: Swift.Int32, _ recvData: Swift.UnsafeMutablePointer<Swift.UInt8>, _ receiveLength: Swift.UnsafeMutablePointer<Swift.UInt>) -> Swift.Int32
+  open func closeDataRead(_ dataNo: Swift.Int32, _ recvData: Swift.UnsafeMutablePointer<Swift.UInt8>, _ receiveLength: Swift.UnsafeMutablePointer<Swift.UInt>) -> Swift.Int32
+  open func sswSet(_ mode: Swift.Int32, _ sswNo: Swift.Int32, _ setData: Swift.Int32) -> Swift.Int32
+  open func salesRegister(_ Amount: Swift.Int32) -> Swift.Int32
+  open func sendCommand(_ sendData: Swift.UnsafeMutablePointer<Swift.UInt8>, _ length: Swift.UInt, _ receiveData: Swift.UnsafeMutablePointer<Swift.UInt8>, _ receiveLength: Swift.UnsafeMutablePointer<Swift.UInt>) -> Swift.Int32
+  open func setDataEventCallback(_ callback: Any!) -> Swift.Int32
+  open func setDataEventCallback2(_ listener: CSJPOSLibSwift.DataListenerCashChanger!) -> Swift.Int32
+  open func setStatusUpdateEventCallback(_ callback: Any!) -> Swift.Int32
+  open func setStatusUpdateEventCallback2(_ listener: CSJPOSLibSwift.StatusUpdateListener!) -> Swift.Int32
+  open func getPowerState() -> Swift.Int32
+  open func getDepositAmount() -> Swift.Int32
+  open func getDepositCounts() -> Swift.String?
+  open func getDepositStatus() -> Swift.Int32
+  open func getDeviceStatus() -> Swift.Int32
+  open func getFullStatus() -> Swift.Int32
+  open func getCassetteWait() -> Swift.Bool
+  open func getDeviceFunction() -> Swift.Int32
+  open func setDeviceFunction(_ function: Swift.Int32) -> Swift.Int32
+  open func getChangeSetting() -> Swift.Int32
+  open func setChangeSetting(_ change: Swift.Int32) -> Swift.Int32
+  open func setLog(_ mode: Swift.Int32, withPath path: Swift.String?, withMaxSize maxSize: Swift.Int32) -> Swift.Int32
+}
+@objc @_inheritsConvenienceInitializers open class LineDisplay : ObjectiveC.NSObject {
+  @objc override dynamic public init()
+  @objc deinit
+  open func connect(_ connectType: Swift.Int32, withAddrress addr: Swift.String?) -> Swift.Int32
+  open func connect(_ connectType: Swift.Int32, withAddrress addr: Swift.String?, withPort port: Swift.Int32) -> Swift.Int32
+  open func connect(_ connectType: Swift.Int32, withAddrress addr: Swift.String?, withPort port: Swift.Int32, withTimeout timeout: Swift.Int32) -> Swift.Int32
+  open func disconnect() -> Swift.Int32
+  open func displayText(_ data: Swift.String?) -> Swift.Int32
+  open func displayText(_ data: Swift.String?, reverseFlag flag: Swift.Bool) -> Swift.Int32
+  open func clearDisplay(_ displayArea: Swift.Int32) -> Swift.Int32
+  open func blinkDisplay(_ intervalBlinkg: Swift.UInt32) -> Swift.Int32
+  open func setDisplayMode(_ displayMode: Swift.Int32) -> Swift.Int32
+  open func setDisplayConfig(_ brightness: Swift.UInt32) -> Swift.Int32
+  open func setCursorPosition(_ x: Swift.UInt32, y: Swift.UInt32) -> Swift.Int32
+  open func moveCursor(_ dx: Swift.Int32, y dy: Swift.Int32) -> Swift.Int32
+  open func setCursorType() -> Swift.Int32
+  open func setCursorType(_ sursorType: Swift.UInt32) -> Swift.Int32
+  open func initializeDisplay() -> Swift.Int32
+  open func displayData(_ data: Swift.UnsafeMutablePointer<Swift.UInt8>, withLength length: Swift.UInt) -> Swift.Int32
+  open func displayByteData(_ data: Foundation.Data!, withLength length: Swift.UInt) -> Swift.Int32
+  open func setEncoding(_ charset: Swift.String.Encoding) -> Swift.Int32
+  open func setEncoding2(_ encode: Swift.String?) -> Swift.Int32
+  open func setCodePage(_ codePage: Swift.UInt32) -> Swift.Int32
+  open func setInternationalCharacterset(_ characterset: Swift.UInt32) -> Swift.Int32
+  open func getVersionCode() -> Swift.Int32
+  open func getVersionName() -> Swift.String?
+  open func displayCheck() -> Swift.Int32
+  open func setLog(_ mode: Swift.Int32, withPath path: Swift.String?, withMaxSize maxSize: Swift.Int32) -> Swift.Int32
+}
+public protocol ScannerEventDelegate : CSJPOSLibSwift.CSJScannerEventDelegate {
+  func dataEventCallback(_ data: Foundation.Data!)
+  func statusUpdateEventCallback(_ status: Swift.Int32)
+}
+public typealias DataListener = (Foundation.Data?) -> Swift.Void
+public typealias StatusUpdateListener = (Swift.Int32) -> Swift.Void
+@objc @_inheritsConvenienceInitializers open class Scanner : ObjectiveC.NSObject {
+  @objc override dynamic public init()
+  @objc deinit
+  open func connect(_ connectType: Swift.Int32, withAddrress addr: Swift.String?) -> Swift.Int32
+  open func connect(_ connectType: Swift.Int32, withAddrress addr: Swift.String?, withPort port: Swift.Int32) -> Swift.Int32
+  open func connect(_ connectType: Swift.Int32, withAddrress addr: Swift.String?, withPort port: Swift.Int32, withTimeout timeout: Swift.Int32) -> Swift.Int32
+  open func disconnect() -> Swift.Int32
+  open func setDataEventCallback(_ callback: Any!) -> Swift.Int32
+  open func setDataEventCallback(_ callback: Any!, terminator: Swift.String?) -> Swift.Int32
+  open func setDataEventCallback2(listener: CSJPOSLibSwift.DataListener!) -> Swift.Int32
+  open func setDataEventCallback2(listener: CSJPOSLibSwift.DataListener!, terminator: Swift.String?) -> Swift.Int32
+  open func setStatusUpdateEventCallback(_ callback: Any!) -> Swift.Int32
+  open func setStatusUpdateEventCallback2(listener: CSJPOSLibSwift.StatusUpdateListener!) -> Swift.Int32
+  open func getVersionCode() -> Swift.Int32
+  open func getVersionName() -> Swift.String?
+  open func setLog(_ mode: Swift.Int32, withPath path: Swift.String?, withMaxSize maxSize: Swift.Int32) -> Swift.Int32
+}

@@ -91,7 +91,7 @@ To edit the Java or Kotlin files, open `examples/PrinterTestApp/android` in Andr
 1. Implement it in Native Module
    1. (oldarch) Add an abstract method in `android/src/oldarch/CitizenEscposprinterSpec.java`
    1. (newarch) Add JNI interface in `src/NativeCitizenEscposprinter.ts`
-   1. (ios) Add the method in `ios/CitizenEscposprinter.mm`
+   1. (ios) Add the method in `ios/CitizenEscposprinter.m` and `ios/CitizenEscposprinter.swift`
 
 ### Commit message convention
 
