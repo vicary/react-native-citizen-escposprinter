@@ -9,6 +9,8 @@
 import CSJPOSLibSwift
 import Foundation
 
+let queue = DispatchQueue(label: "CitizenESCPOSPrinter", qos: .userInitiated)
+
 @objc(CitizenEscposprinter)
 class CitizenEscposprinter: NSObject {
   var printer: ESCPOSPrinter? = ESCPOSPrinter()
@@ -31,42 +33,46 @@ class CitizenEscposprinter: NSObject {
   @objc
   func connect(
     _ type: Double,
-    toAddress address: NSString?,
-    withPort port: Double,
-    waitFor timeout: Double,
+    toAddress addr: NSString?,
+    withPort port: NSNumber?,
+    waitFor timeout: NSNumber?,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    var result: Int32 = 0
     let argType = Int32(type)
-    let argAddress = address as String?
-    let argPort = port == nil ? nil : Int32(port)
-    let argTimeout = timeout == nil ? nil : Int32(timeout)
+    let argAddr = addr as String?
+    let argPort = port == nil ? nil : Int32(truncating: port!)
+    let argTimeout = timeout == nil ? nil : Int32(truncating: timeout!)
 
-    if argPort == nil {
-      result = printer!.connect(
-        argType,
-        withAddrress: argAddress
-      )
-    } else if argTimeout == nil {
-      result = printer!.connect(
-        argType,
-        withAddrress: argAddress,
-        withPort: argPort!
-      )
-    } else {
-      result = printer!.connect(
-        argType,
-        withAddrress: argAddress,
-        withPort: argPort!,
-        withTimeout: argTimeout!
-      )
-    }
+    queue.async {
+      var result: Int32 = 0
 
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+      if argPort == nil {
+        result = self.printer!.connect(
+          argType,
+          withAddrress: argAddr
+        )
+      } else if argTimeout == nil {
+        result = self.printer!.connect(
+          argType,
+          withAddrress: argAddr,
+          withPort: argPort!
+        )
+      } else {
+        result = self.printer!.connect(
+          argType,
+          withAddrress: argAddr,
+          withPort: argPort!,
+          withTimeout: argTimeout!
+        )
+      }
+
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -75,31 +81,39 @@ class CitizenEscposprinter: NSObject {
     _ resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.disconnect()
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.disconnect()
+
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
   @objc
   func setEncoding(
-    _ encoding: NSString? = nil,
+    _ encoding: NSString?,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let cfEnc = CFStringConvertIANACharSetNameToEncoding(encoding as CFString?)
-    let nsEnc = CFStringConvertEncodingToNSStringEncoding(cfEnc)
-    if nsEnc == kCFStringEncodingInvalidId {
-      return handleRejection(reject: reject, message: "Invalid encoding")
-    }
+    queue.async {
+      let cfEnc = CFStringConvertIANACharSetNameToEncoding(encoding as CFString?)
+      let nsEnc = CFStringConvertEncodingToNSStringEncoding(cfEnc)
+      guard nsEnc != kCFStringEncodingInvalidId else {
+        self.handleRejection(reject: reject, message: "Invalid encoding")
+        return
+      }
 
-    let result = printer!.setEncoding(String.Encoding(rawValue: nsEnc))
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+      let result = self.printer!.setEncoding(String.Encoding(rawValue: nsEnc))
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -108,11 +122,14 @@ class CitizenEscposprinter: NSObject {
     _ resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.printerCheck()
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.printerCheck()
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -121,7 +138,9 @@ class CitizenEscposprinter: NSObject {
     _ resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    return resolve(printer!.status())
+    queue.async {
+      resolve(self.printer!.status())
+    }
   }
 
   @objc
@@ -133,16 +152,19 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.printText(
-      data as String?,
-      withAlignment: Int32(side),
-      withAttribute: Int32(attr),
-      withTextSize: Int32(size)
-    )
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.printText(
+        data as String?,
+        withAlignment: Int32(side),
+        withAttribute: Int32(attr),
+        withTextSize: Int32(size)
+      )
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -156,17 +178,20 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.printPaddingText(
-      data as String?,
-      withAttribute: Int32(attr),
-      withTextSize: Int32(size),
-      withLength: Int32(length),
-      withSide: Int32(side)
-    )
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.printPaddingText(
+        data as String?,
+        withAttribute: Int32(attr),
+        withTextSize: Int32(size),
+        withLength: Int32(length),
+        withSide: Int32(side)
+      )
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -182,19 +207,22 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.printTextLocalFont(
-      data as String?,
-      withAlignment: Int32(side),
-      withFontName: font as String,
-      withPoint: Int32(size),
-      withStyle: Int32(attr),
-      withHRatio: Int32(hRatio),
-      withVRatio: Int32(vRatio)
-    )
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.printTextLocalFont(
+        data as String?,
+        withAlignment: Int32(side),
+        withFontName: font as String,
+        withPoint: Int32(size),
+        withStyle: Int32(attr),
+        withHRatio: Int32(hRatio),
+        withVRatio: Int32(vRatio)
+      )
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -207,27 +235,27 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    if data == nil {
-      return handleRejection(reject: reject, message: "Expected image data.")
-    }
-    let imageData = Data(base64Encoded: data! as String, options: .ignoreUnknownCharacters)
-    if imageData == nil {
-      return handleRejection(reject: reject, message: "Expected image data.")
-    }
-    let image = UIImage(data: imageData!)
-    if image == nil {
-      return handleRejection(reject: reject, message: "Expected image data.")
-    }
-    let result = printer!.printBitmapData(
-      image!,
-      withWidth: Int32(size),
-      withAlignment: Int32(side),
-      withMode: Int32(mode)
-    )
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      guard data != nil,
+        let imageData = Data(base64Encoded: data! as String, options: .ignoreUnknownCharacters),
+        let image = UIImage(data: imageData)
+      else {
+        self.handleRejection(reject: reject, message: "Expected image data.")
+        return
+      }
+
+      let result = self.printer!.printBitmapData(
+        image,
+        withWidth: Int32(size),
+        withAlignment: Int32(side),
+        withMode: Int32(mode)
+      )
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -237,11 +265,14 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.printNVBitmap(Int32(imageId))
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.printNVBitmap(Int32(imageId))
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -256,20 +287,24 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.printBarCode(
-      data as String?,
-      withSymbology: Int32(symbology),
-      withHeight: Int32(height),
-      withWidth: Int32(width),
-      withAlignment: Int32(side),
-      withTextPosition: Int32(textPosition)
-    )
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.printBarCode(
+        data as String?,
+        withSymbology: Int32(symbology),
+        withHeight: Int32(height),
+        withWidth: Int32(width),
+        withAlignment: Int32(side),
+        withTextPosition: Int32(textPosition)
+      )
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
+
   @objc
   func printPDF417(
     _ data: NSString?,
@@ -282,19 +317,22 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.printPDF417(
-      data as String?,
-      withDigits: Int32(digits),
-      withSteps: Int32(steps),
-      withModuleWidth: Int32(width),
-      withStepHeight: Int32(height),
-      withECLevel: Int32(ecLevel),
-      withAlignment: Int32(side)
-    )
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.printPDF417(
+        data as String?,
+        withDigits: Int32(digits),
+        withSteps: Int32(steps),
+        withModuleWidth: Int32(width),
+        withStepHeight: Int32(height),
+        withECLevel: Int32(ecLevel),
+        withAlignment: Int32(side)
+      )
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -307,16 +345,19 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.printQRCode(
-      data as String?,
-      withModuleSize: Int32(size),
-      withECLevel: Int32(ecLevel),
-      withAlignment: Int32(side)
-    )
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.printQRCode(
+        data as String?,
+        withModuleSize: Int32(size),
+        withECLevel: Int32(ecLevel),
+        withAlignment: Int32(side)
+      )
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -330,17 +371,20 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.printGS1DataBarStacked(
-      data as String?,
-      withSymbology: Int32(symbology),
-      withModuleSize: Int32(size),
-      withMaxWidth: Int32(maxWidth),
-      withAlignment: Int32(side)
-    )
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.printGS1DataBarStacked(
+        data as String?,
+        withSymbology: Int32(symbology),
+        withModuleSize: Int32(size),
+        withMaxWidth: Int32(maxWidth),
+        withAlignment: Int32(side)
+      )
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -350,11 +394,14 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.cutPaper(Int32(percentage))
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.cutPaper(Int32(percentage))
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -364,11 +411,14 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.unitFeed(Int32(dots))
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.unitFeed(Int32(dots))
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -378,11 +428,14 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.markFeed(Int32(type))
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.markFeed(Int32(type))
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -393,11 +446,14 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.openDrawer(Int32(drawer), withPulseLength: Int32(pulseLength))
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.openDrawer(Int32(drawer), withPulseLength: Int32(pulseLength))
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -407,11 +463,14 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.transactionPrint(Int32(control))
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.transactionPrint(Int32(control))
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -421,11 +480,14 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.rotatePrint(Int32(rotation))
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.rotatePrint(Int32(rotation))
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -435,11 +497,14 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.pageModePrint(Int32(control))
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.pageModePrint(Int32(control))
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -448,11 +513,14 @@ class CitizenEscposprinter: NSObject {
     _ resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.clearPrintArea()
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.clearPrintArea()
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -461,11 +529,14 @@ class CitizenEscposprinter: NSObject {
     _ resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.clearOutput()
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.clearOutput()
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -476,25 +547,29 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    if data == nil {
-      return handleRejection(reject: reject, message: "Expected raw data.")
+    guard data != nil else {
+      self.handleRejection(reject: reject, message: "Expected raw data.")
+      return
     }
 
-    var rawData = Data(base64Encoded: data! as String, options: .ignoreUnknownCharacters)
-    if rawData == nil {
-      return handleRejection(reject: reject, message: "Expected raw data.")
-    }
-
-    rawData!.withUnsafeMutableBytes({ (bytes) -> Void in
-      let typedBuffer = bytes.bindMemory(to: Int8.self)
-      let result = printer!.printData(typedBuffer.baseAddress!, withLength: UInt(size))
-      if result != CMP_SUCCESS {
-        return handleRejection(reject: reject, errorCode: result)
-      } else {
-        return resolve(nil)
+    queue.async {
+      guard var rawData = Data(base64Encoded: data! as String, options: .ignoreUnknownCharacters)
+      else {
+        self.handleRejection(reject: reject, message: "Expected raw data.")
+        return
       }
-    })
 
+      rawData.withUnsafeMutableBytes({ (bytes) -> Void in
+        let typedBuffer = bytes.bindMemory(to: Int8.self)
+        let result = self.printer!.printData(typedBuffer.baseAddress!, withLength: UInt(size))
+        guard result == CMP_SUCCESS else {
+          self.handleRejection(reject: reject, errorCode: result)
+          return
+        }
+
+        resolve(nil)
+      })
+    }
   }
 
   @objc
@@ -503,15 +578,19 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    if data == nil {
-      return handleRejection(reject: reject, message: "Expected raw data.")
+    guard data != nil else {
+      self.handleRejection(reject: reject, message: "Expected raw data.")
+      return
     }
 
-    let result = printer!.printNormal(data! as String)
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.printNormal(data! as String)
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -525,17 +604,20 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.watermarkPrint(
-      Int32(start),
-      withNVImageNumber: Int32(imageId),
-      withPass: Int32(pass),
-      withFeed: Int32(feed),
-      withRepeat: Int32(reps)
-    )
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.watermarkPrint(
+        Int32(start),
+        withNVImageNumber: Int32(imageId),
+        withPass: Int32(pass),
+        withFeed: Int32(feed),
+        withRepeat: Int32(reps)
+      )
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -547,46 +629,52 @@ class CitizenEscposprinter: NSObject {
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     let type = Int32(connectType)
-    let result: UnsafeMutablePointer<Int32> = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
-    let printers =
-      printer!.searchCitizenPrinter(
-        Int32(connectType),
-        withSearchTime: Int32(time),
-        result: result
-      ) as? [CitizenPrinterInfo]
-    if printers == nil {
-      return handleRejection(reject: reject, errorCode: CMP_E_ILLEGAL)
-    }
 
-    let exitCode = result.pointee
-    if exitCode != CMP_SUCCESS && exitCode != CMP_E_NO_LIST {
-      return handleRejection(reject: reject, errorCode: exitCode)
-    }
+    queue.async {
+      let result: UnsafeMutablePointer<Int32> = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
+      guard
+        let printers =
+          self.printer!.searchCitizenPrinter(
+            Int32(connectType),
+            withSearchTime: Int32(time),
+            result: result
+          ) as? [CitizenPrinterInfo]
+      else {
+        self.handleRejection(reject: reject, errorCode: CMP_E_ILLEGAL)
+        return
+      }
 
-    let printerList =
-      type == CMP_PORT_WiFi
-      ? printers!.map({ (printer) -> NSDictionary in
-        return [
-          "ipAddress": printer.ipAddress!,
-          "macAddress": printer.macAddress!,
-        ]
-      })
-      : type == CMP_PORT_BLUETOOTH
-        ? printers!.map({ (printer) -> NSDictionary in
-          return [
-            "deviceName": printer.deviceName!,
-            "bdAddress": printer.bdAddress!,
+      let exitCode = result.pointee
+      guard exitCode == CMP_SUCCESS || exitCode == CMP_E_NO_LIST else {
+        self.handleRejection(reject: reject, errorCode: exitCode)
+        return
+      }
+
+      let printerList =
+        type == CMP_PORT_WiFi
+        ? printers.map({ (printer) -> NSDictionary in
+          [
+            "ipAddress": printer.ipAddress!,
+            "macAddress": printer.macAddress!,
           ]
         })
-        : type == CMP_PORT_USB
-          ? printers!.map({ (printer) -> NSDictionary in
-            return [
+        : type == CMP_PORT_BLUETOOTH
+          ? printers.map({ (printer) -> NSDictionary in
+            [
               "deviceName": printer.deviceName!,
-              "usbSerialNo": printer.usbSerialNo!,
+              "bdAddress": printer.bdAddress!,
             ]
-          }) : []
+          })
+          : type == CMP_PORT_USB
+            ? printers.map({ (printer) -> NSDictionary in
+              [
+                "deviceName": printer.deviceName!,
+                "usbSerialNo": printer.usbSerialNo!,
+              ]
+            }) : []
 
-    return resolve(printerList)
+      resolve(printerList)
+    }
   }
 
   @objc
@@ -596,23 +684,28 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result: UnsafeMutablePointer<Int32> = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
-    let printers =
-      printer!.searchESCPOSPrinter(
-        Int32(connectType),
-        withSearchTime: Int32(time),
-        result: result
-      ) as? [String]
-    if printers == nil {
-      return handleRejection(reject: reject, errorCode: CMP_E_ILLEGAL)
-    }
+    queue.async {
+      let result: UnsafeMutablePointer<Int32> = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
+      guard
+        let printers =
+          self.printer!.searchESCPOSPrinter(
+            Int32(connectType),
+            withSearchTime: Int32(time),
+            result: result
+          ) as? [String]
+      else {
+        self.handleRejection(reject: reject, errorCode: CMP_E_ILLEGAL)
+          return
+      }
 
-    let exitCode = result.pointee
-    if exitCode != CMP_SUCCESS && exitCode != CMP_E_NO_LIST {
-      return handleRejection(reject: reject, errorCode: exitCode)
-    }
+      let exitCode = result.pointee
+      guard exitCode == CMP_SUCCESS || exitCode == CMP_E_NO_LIST else {
+        self.handleRejection(reject: reject, errorCode: exitCode)
+        return
+      }
 
-    return resolve(printers)
+      resolve(printers)
+    }
   }
 
   @objc
@@ -621,11 +714,14 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.setPrintCompletedTimeout(Int32(timeout))
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.setPrintCompletedTimeout(Int32(timeout))
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -637,15 +733,18 @@ class CitizenEscposprinter: NSObject {
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    let result = printer!.setLog(
-      Int32(mode),
-      withPath: path,
-      withMaxSize: Int32(size)
-    )
-    if result != CMP_SUCCESS {
-      return handleRejection(reject: reject, errorCode: result)
-    } else {
-      return resolve(nil)
+    queue.async {
+      let result = self.printer!.setLog(
+        Int32(mode),
+        withPath: path,
+        withMaxSize: Int32(size)
+      )
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
     }
   }
 
@@ -654,7 +753,7 @@ class CitizenEscposprinter: NSObject {
     _ resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    return resolve(printer!.getVersionCode())
+    resolve(self.printer!.getVersionCode())
   }
 
   @objc
@@ -662,6 +761,6 @@ class CitizenEscposprinter: NSObject {
     _ resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    return resolve(printer!.getVersionName())
+    resolve(self.printer!.getVersionName())
   }
 }
