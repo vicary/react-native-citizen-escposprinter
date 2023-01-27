@@ -30,6 +30,12 @@ class CitizenEscposprinter: NSObject {
     reject("ESCSPOSPrinter", message, nil)
   }
 
+  internal func ipToNumber(_ ip: String) -> UInt32 {
+    return ip.split(separator: ".").reduce(0) { (result, part) -> UInt32 in
+      return result << 8 + UInt32(part)!
+    }
+  }
+
   @objc
   func connect(
     _ type: Double,
@@ -634,11 +640,42 @@ class CitizenEscposprinter: NSObject {
       let result: UnsafeMutablePointer<Int32> = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
       guard
         let printers =
-          self.printer!.searchCitizenPrinter(
+          (self.printer!.searchCitizenPrinter(
             Int32(connectType),
             withSearchTime: Int32(time),
             result: result
-          ) as? [CitizenPrinterInfo]
+          ) as? [CitizenPrinterInfo])?.sorted(by: {
+            (a: CitizenPrinterInfo, b: CitizenPrinterInfo) -> Bool in
+            switch (a, b) {
+            case let (a, b) where a.ipAddress != b.ipAddress:
+              return self.ipToNumber(a.ipAddress) < self.ipToNumber(b.ipAddress)
+            case let (a, b) where a.macAddress != b.macAddress:
+              return a.macAddress < b.macAddress
+            case let (a, b) where a.deviceName != b.deviceName:
+              return a.deviceName < b.deviceName
+            case let (a, b) where a.bdAddress != b.bdAddress:
+              return a.bdAddress < b.bdAddress
+            case let (a, b) where a.usbSerialNo != b.usbSerialNo:
+              return a.usbSerialNo < b.usbSerialNo
+            default:
+              return false
+            }
+          }).map({ (printer) -> NSDictionary in
+            type == CMP_PORT_WiFi
+              ? [
+                "ipAddress": printer.ipAddress!,
+                "macAddress": printer.macAddress!,
+              ]
+              : type == CMP_PORT_BLUETOOTH
+                ? [
+                  "bdAddress": printer.bdAddress!,
+                  "deviceName": printer.deviceName!,
+                ]
+                : [
+                  "deviceName": printer.deviceName!,
+                  "usbSerialNo": printer.usbSerialNo!,
+                ]
+          })
       else {
         self.handleRejection(reject: reject, errorCode: CMP_E_ILLEGAL)
         return
@@ -650,30 +687,7 @@ class CitizenEscposprinter: NSObject {
         return
       }
 
-      let printerList =
-        type == CMP_PORT_WiFi
-        ? printers.map({ (printer) -> NSDictionary in
-          [
-            "ipAddress": printer.ipAddress!,
-            "macAddress": printer.macAddress!,
-          ]
-        })
-        : type == CMP_PORT_BLUETOOTH
-          ? printers.map({ (printer) -> NSDictionary in
-            [
-              "deviceName": printer.deviceName!,
-              "bdAddress": printer.bdAddress!,
-            ]
-          })
-          : type == CMP_PORT_USB
-            ? printers.map({ (printer) -> NSDictionary in
-              [
-                "deviceName": printer.deviceName!,
-                "usbSerialNo": printer.usbSerialNo!,
-              ]
-            }) : []
-
-      resolve(printerList)
+      resolve(printers)
     }
   }
 
@@ -688,11 +702,11 @@ class CitizenEscposprinter: NSObject {
       let result: UnsafeMutablePointer<Int32> = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
       guard
         let printers =
-          self.printer!.searchESCPOSPrinter(
+          (self.printer!.searchESCPOSPrinter(
             Int32(connectType),
             withSearchTime: Int32(time),
             result: result
-          ) as? [String]
+          ) as? [String])?.sorted(by: { self.ipToNumber($0) < self.ipToNumber($1) })
       else {
         self.handleRejection(reject: reject, errorCode: CMP_E_ILLEGAL)
         return

@@ -1,12 +1,11 @@
 import { FunctionComponent, useState } from "react";
 import {
   ActivityIndicator,
-  Button,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StatusBar,
   Text,
-  TouchableOpacity,
   useColorScheme,
   View,
 } from "react-native";
@@ -19,6 +18,7 @@ import {
   printQRCode,
   printText,
   searchCitizenPrinter,
+  searchESCPOSPrinter,
   setEncoding,
   status,
 } from "react-native-citizen-escposprinter";
@@ -61,31 +61,41 @@ const App: FunctionComponent = () => {
         backgroundColor={backgroundStyle.backgroundColor}
       />
       <ScrollView
-        className="h-full flex gap-5"
+        className="p-3 h-full flex gap-5"
         contentInsetAdjustmentBehavior="automatic"
       >
-        {loading ? (
-          <ActivityIndicator size="large" />
-        ) : (
-          <Button
-            title="Search"
-            onPress={async () => {
-              setLoading(true);
+        <Pressable
+          className="bg-gray-200 active:bg-gray-300 active:opacity-50 rounded-xl"
+          onPress={async () => {
+            setLoading(true);
+            setAnswer(null);
 
-              setAnswer(null);
-
-              try {
-                setAnswer(
-                  await searchCitizenPrinter(ESCPOSConst.CMP_PORT_WiFi),
-                );
-              } catch (e) {
+            try {
+              setAnswer(await searchCitizenPrinter(ESCPOSConst.CMP_PORT_WiFi));
+            } catch (e) {
+              if (e instanceof Error) {
                 console.error(e);
+              } else {
+                throw e;
               }
+            }
 
-              setLoading(false);
-            }}
-          />
-        )}
+            const printers = await searchESCPOSPrinter(
+              ESCPOSConst.CMP_PORT_WiFi,
+            );
+            console.debug({ printers });
+
+            setLoading(false);
+          }}
+        >
+          {loading ? (
+            <ActivityIndicator className="p-3 text-lg color-blue-500" />
+          ) : (
+            <Text className="p-3 color-blue-500 text-lg text-center">
+              Search Printers
+            </Text>
+          )}
+        </Pressable>
 
         {answer
           ?.filter(
@@ -93,7 +103,8 @@ const App: FunctionComponent = () => {
               !!(printer as any).ipAddress,
           )
           .map((printer) => (
-            <TouchableOpacity
+            <Pressable
+              className="bg-gray-200 active:bg-gray-300 active:opacity-50 rounded-xl"
               key={printer.ipAddress}
               disabled={loading}
               onPress={async () => {
@@ -161,16 +172,22 @@ const App: FunctionComponent = () => {
                   console.log("✅ cutPaper");
                   await disconnect();
                   console.log("✅ disconnect");
-                } finally {
-                  setLoading(false);
+                } catch (e) {
+                  if (e instanceof Error) {
+                    console.error(e.message);
+                  } else {
+                    throw e;
+                  }
                 }
+
+                setLoading(false);
               }}
             >
-              <View className="p-4 bg-gray-200 flex flex-row justify-between">
+              <View className="p-4 flex flex-row justify-between">
                 <Text className="color-blue-500">{printer.ipAddress}</Text>
-                <Text>{printer.macAddress}</Text>
+                <Text className="color-black">{printer.macAddress}</Text>
               </View>
-            </TouchableOpacity>
+            </Pressable>
           ))}
       </ScrollView>
     </SafeAreaView>

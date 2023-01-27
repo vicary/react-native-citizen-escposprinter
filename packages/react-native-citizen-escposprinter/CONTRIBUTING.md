@@ -22,37 +22,32 @@ To start the packager:
 yarn workspace PrinterTestApp start
 ```
 
+### old architecture
+
 To run the example app on Android:
 
 ```sh
-yarn workspace PrinterTestApp android
+yarn workspace PrinterTestApp and:old
 ```
 
 To run the example app on iOS:
 
 ```sh
-yarn workspace PrinterTestApp ios
+yarn workspace PrinterTestApp ios:old
 ```
 
-By default, the example is configured to build with the old architecture. To run the example with the new architecture, you can do the following:
+### new architecture
 
-1. For Android, run:
-
-   ```sh
-   ORG_GRADLE_PROJECT_newArchEnabled=true yarn workspace PrinterTestApp android
-   ```
-
-2. For iOS, run:
-
-   ```sh
-   RCT_NEW_ARCH_ENABLED=1 yarn workspace PrinterTestApp pods
-   yarn workspace PrinterTestApp ios
-   ```
-
-If you are building for a different architecture than your previous build, make sure to remove the build folders first. You can run the following command to cleanup all build folders:
+To run the example app on Android:
 
 ```sh
-yarn clean
+yarn workspace PrinterTestApp and:new
+```
+
+To run the example app on iOS:
+
+```sh
+yarn workspace PrinterTestApp ios:new
 ```
 
 To confirm that the app is running with the new architecture, you can check the Metro logs for a message like this:
@@ -62,6 +57,8 @@ Running "CitizenEscposprinterExample" with {"fabric":true,"initialProps":{"concu
 ```
 
 Note the `"fabric":true` and `"concurrentRoot":true` properties.
+
+### Linting and Testing
 
 Make sure your code passes TypeScript and ESLint. Run the following to verify:
 
@@ -81,17 +78,24 @@ Remember to add tests for your change if possible. Run the unit tests by:
 yarn workspace react-native-citizen-escposprinter test
 ```
 
-To edit the Objective-C or Swift files, open `examples/PrinterTestApp/ios/CitizenEscposprinterExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > react-native-citizen-escposprinter`.
+### Creating a new function
+
+1. Expose the function in `src/index.tsx`
+1. Create newarch implementation in `src/NativeCitizenEscposprinter.ts`
+
+#### iOS
+
+To edit the Objective-C or Swift files, open `examples/PrinterTestApp/ios/PrinterTestApp.xcworkspace` in XCode and find the source files at `Pods > Development Pods > react-native-citizen-escposprinter`.
+
+1. Expose the function signature in `CitizenEscposprinter.m`
+1. Implement the function in `CitizenEscposprinter.swift`
+
+#### Android
 
 To edit the Java or Kotlin files, open `examples/PrinterTestApp/android` in Android studio and find the source files at `react-native-citizen-escposprinter` under `Android`.
 
-### Create a new function
-
-1. Expose the function in `src/index.tsx`
-1. Implement it in Native Module
-   1. (oldarch) Add an abstract method in `android/src/oldarch/CitizenEscposprinterSpec.java`
-   1. (newarch) Add JNI interface in `src/NativeCitizenEscposprinter.ts`
-   1. (ios) Add the method in `ios/CitizenEscposprinter.m` and `ios/CitizenEscposprinter.swift`
+1. Create an abstract function in `src/oldarch/CitizenEscposprinterSpec.kt`
+1. Implement the function in `src/main/java/com/citizenescposprinter/CitizenEscposprinterModule.kt`
 
 ### Commit message convention
 

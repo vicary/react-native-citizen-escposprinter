@@ -2,7 +2,7 @@ import { CitizenPrinerInfo, ESCPOSConst, ESCPOSPrinterBarcodeType, ESCPOSPrinter
 export { ESCPOSConst };
 /**
  * This method is used to connect the printer. Please specify the type and
- * address/UsbDevice of the printer connection.
+ * address of the printer connection.
  *
  * Bluetooth device address letters, please specify in uppercase.
  *
@@ -14,16 +14,15 @@ export { ESCPOSConst };
  * by the Android 2.3.3 or later, please specify the connection type
  * CMP_PORT_Bluetooth_Insecure.
  *
- * If you want to use the USB device, must execute the setContext method before
- * the execution of this method.
+ * Connection port number is valid only for Wifi or USB, default values are:
+ * 1. Android Wifi: 9100
+ * 2. iOS Wifi: 9210
+ * 3. iOS USB: 2
  *
- * Connection port number is valid only if you specify the connection type
- * CMP_PORT_WiFi. If it is omitted, you connected with number 9100.
- *
- * Timeout is gives the maximum number of milliseconds to connect printer.
- * Timeout is invalid if you specify the connection type CMP_PORT_USB. If it is
- * omitted, you connected with 4000 milliseconds when using WiFi and connected
- * with 8000 milliseconds when using Bluetooth.
+ * Timeout is gives the maximum number of milliseconds to connect printer,
+ * timeout is ignored for USB connections. Default values are:
+ * 1. Wifi: 4000
+ * 2. Bluetooth: 8000
  *
  * When connecting to the printer, this SDK also checks the status of the
  * printer and the supporting models.
@@ -32,7 +31,7 @@ export { ESCPOSConst };
  * dissconnect method to disconnect the printer connection. When not disconnect,
  * the next connection will be an error.
  *
- * Note:
+ * Note on Android:
  * When you first connect with USB, a dialog asking permission to access the USB
  * device on the Android terminal will be displayed, please tap the OK button.
  */

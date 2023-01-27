@@ -11,6 +11,7 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.WritableMap
 import kotlin.comparisons.compareBy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
@@ -46,12 +47,15 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
       return GlobalScope
     }
 
-  /** TODO: Look up error messages from code. */
   protected fun handleRejection(promise: Promise, errorCode: Int) {
     promise.reject("ESCPOSPrinter", errorCode.toString())
   }
   protected fun handleRejection(promise: Promise, error: Throwable) {
     promise.reject("ESCPOSPrinter", error)
+  }
+
+  protected fun ipToNumber(ip: String): Long {
+    return ip.split(".").fold(0L) { acc, s -> (acc shl 8) + s.toLong() }
   }
 
   @ReactMethod
@@ -547,18 +551,15 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
   override fun searchCitizenPrinter(connectType: Double, timeout: Double, promise: Promise) {
     coroutineScope.launch {
       val errorCode = IntArray(1)
-      val printers = printer.searchCitizenPrinter(connectType.toInt(), timeout.toInt(), errorCode)
-      val result = Arguments.createArray()
-
-      if (errorCode[0] == ESCPOSConst.CMP_SUCCESS) {
-        printers.sortedWith(
-            compareBy(String.CASE_INSENSITIVE_ORDER) { it: CitizenPrinterInfo -> it.ipAddress }
-                .thenBy(String.CASE_INSENSITIVE_ORDER) { it.macAddress }
-                .thenBy(String.CASE_INSENSITIVE_ORDER) { it.deviceName }
-                .thenBy(String.CASE_INSENSITIVE_ORDER) { it.bdAddress }
+      val printers = printer
+        .searchCitizenPrinter(connectType.toInt(), timeout.toInt(), errorCode)
+        .sortedWith(
+          compareBy { it: CitizenPrinterInfo -> ipToNumber(it.ipAddress) }
+            .thenBy(String.CASE_INSENSITIVE_ORDER) { it.macAddress }
+            .thenBy(String.CASE_INSENSITIVE_ORDER) { it.deviceName }
+            .thenBy(String.CASE_INSENSITIVE_ORDER) { it.bdAddress }
         )
-
-        printers.forEach {
+        .map {
           val map = Arguments.createMap()
 
           if (!it.ipAddress.isNullOrEmpty()) map.putString("ipAddress", it.ipAddress)
@@ -566,13 +567,15 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
           if (!it.deviceName.isNullOrEmpty()) map.putString("deviceName", it.deviceName)
           if (!it.bdAddress.isNullOrEmpty()) map.putString("bdAddress", it.bdAddress)
 
-          result.pushMap(map)
+          map
         }
-      } else if (errorCode[0] != ESCPOSConst.CMP_E_NO_LIST) {
-        handleRejection(promise, errorCode[0])
-      }
+        .toList()
 
-      promise.resolve(result)
+      if (errorCode[0] != ESCPOSConst.CMP_SUCCESS && errorCode[0] != ESCPOSConst.CMP_E_NO_LIST) {
+        handleRejection(promise, errorCode[0])
+      } else {
+        promise.resolve(Arguments.makeNativeArray(printers))
+      }
     }
   }
 
@@ -580,18 +583,16 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
   override fun searchESCPOSPrinter(connectType: Double, timeout: Double, promise: Promise) {
     coroutineScope.launch {
       val errorCode = IntArray(1)
-      val printers = printer.searchESCPOSPrinter(connectType.toInt(), timeout.toInt(), errorCode)
-      val result = ArrayList<String>()
+      val printers = printer
+        .searchESCPOSPrinter(connectType.toInt(), timeout.toInt(), errorCode)
+        .sortedBy { ipToNumber(it) }
+        .toList()
 
-      printers.sort()
-
-      if (errorCode[0] == ESCPOSConst.CMP_SUCCESS) {
-        result.addAll(printers)
-      } else if (errorCode[0] != ESCPOSConst.CMP_E_NO_LIST) {
+      if (errorCode[0] != ESCPOSConst.CMP_SUCCESS && errorCode[0] != ESCPOSConst.CMP_E_NO_LIST) {
         handleRejection(promise, errorCode[0])
+      } else {
+        promise.resolve(Arguments.makeNativeArray(printers))
       }
-
-      promise.resolve(Arguments.makeNativeArray(result))
     }
   }
 

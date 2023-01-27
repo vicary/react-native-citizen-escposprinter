@@ -8,14 +8,13 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 abstract class CitizenEscposprinterSpec internal constructor(context: ReactApplicationContext) :
     ReactContextBaseJavaModule(context) {
 
-  // TODO: Find a way to address UsbDevices from JavaScript
   // import android.hardware.usb.UsbDevice
   // abstract fun connect(connectType: Int, device: UsbDevice)
   abstract fun connect(
       type: Double,
       address: String,
-      port: Double = -1.0,
-      timeout: Double = -1.0,
+      port: Double,
+      timeout: Double,
       promise: Promise
   )
   abstract fun disconnect(promise: Promise)

@@ -624,7 +624,7 @@ PODS:
   - React-jsinspector (0.71.1)
   - React-logger (0.71.1):
     - glog
-  - react-native-citizen-escposprinter (0.1.1):
+  - react-native-citizen-escposprinter (0.2.4):
     - RCT-Folly (= 2021.07.22.00)
     - RCTRequired
     - RCTTypeSafety
@@ -928,7 +928,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 60cf272aababc5212410e4249d17cea14fc36caa
   React-jsinspector: ff56004b0c974b688a6548c156d5830ad751ae07
   React-logger: 60a0b5f8bed667ecf9e24fecca1f30d125de6d75
-  react-native-citizen-escposprinter: df9467cc17b823492445d369f7a8c1a85604a8eb
+  react-native-citizen-escposprinter: 87779e4d2174bdbd29bcdc21987ddb5fc4c0f3c2
   React-perflogger: ec8eef2a8f03ecfa6361c2c5fb9197ef4a29cc85
   React-RCTActionSheet: a0c023b86cf4c862fa9c4eb0f6f91fbe878fb2de
   React-RCTAnimation: 168d53718c74153947c0109f55900faa64d79439

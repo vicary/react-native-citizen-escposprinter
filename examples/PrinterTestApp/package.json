@@ -3,10 +3,14 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
+    "and": "react-native run-android",
+    "and:clean": "cd android/ && ./gradlew clean && cd ..",
+    "and:old": "yarn and:clean && ORG_GRADLE_PROJECT_newArchEnabled=false yarn and",
+    "and:new": "yarn and:clean && ORG_GRADLE_PROJECT_newArchEnabled=true yarn and",
     "ios": "react-native run-ios",
-    "pods": "cd ios/ && pod install",
-    "clean": "rm -rf android/build ios/build",
+    "ios:clean": "cd ios/ && rm -rf build/ && pod install && cd ..",
+    "ios:old": "RCT_NEW_ARCH_ENABLED=0 yarn ios:clean && yarn ios",
+    "ios:new": "RCT_NEW_ARCH_ENABLED=1 yarn ios:clean && yarn ios",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest"
