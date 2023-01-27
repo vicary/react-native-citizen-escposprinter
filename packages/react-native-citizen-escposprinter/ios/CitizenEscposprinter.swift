@@ -695,7 +695,7 @@ class CitizenEscposprinter: NSObject {
           ) as? [String]
       else {
         self.handleRejection(reject: reject, errorCode: CMP_E_ILLEGAL)
-          return
+        return
       }
 
       let exitCode = result.pointee
