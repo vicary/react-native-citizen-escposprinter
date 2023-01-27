@@ -27,8 +27,8 @@
 RCT_EXTERN_METHOD(connect
                   :          (double)                 type
                   toAddress: (NSString *)             address
-                  withPort:  (NSNumber *)             port
-                  waitFor:   (NSNumber *)             timeout
+                  withPort:  (nonnull NSNumber *)       port
+                  waitFor:   (nonnull NSNumber *)       timeout
                   resolver:  (RCTPromiseResolveBlock) resolve
                   rejecter:  (RCTPromiseRejectBlock)  reject)
 
