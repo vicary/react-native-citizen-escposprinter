@@ -1,9 +1,10 @@
 package com.citizenescposprinter
 
 import android.graphics.Typeface
+import android.hardware.usb.UsbDevice
 import android.util.Base64
-import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.ViewTreeLifecycleOwner
 import com.citizen.sdk.CitizenPrinterInfo
 import com.citizen.sdk.ESCPOSConst
 import com.citizen.sdk.ESCPOSPrinter
@@ -77,7 +78,10 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
                 else printer.connect(type.toInt(), address)
             ESCPOSConst.CMP_PORT_Bluetooth, ESCPOSConst.CMP_PORT_Bluetooth_Insecure ->
                 printer.connect(type.toInt(), address)
-            ESCPOSConst.CMP_PORT_USB -> printer.connect(connectType, null)
+            ESCPOSConst.CMP_PORT_USB -> {
+              val usbDevice: UsbDevice? = null
+              printer.connect(type.toInt(), usbDevice)
+            }
             else -> ESCPOSConst.CMP_E_ILLEGAL
           }
 
