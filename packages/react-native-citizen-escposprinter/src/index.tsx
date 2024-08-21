@@ -27,7 +27,8 @@ import type { Spec } from "./NativeCitizenEscposprinter";
 const isTurboModuleEnabled = global.__turboModuleProxy != null;
 
 const CitizenEscposprinter: Spec = isTurboModuleEnabled
-  ? require("./NativeCitizenEscposprinter").default
+  ? // eslint-disable-next-line @typescript-eslint/no-var-requires
+    require("./NativeCitizenEscposprinter").default
   : NativeModules.CitizenEscposprinter;
 
 if (!CitizenEscposprinter) {

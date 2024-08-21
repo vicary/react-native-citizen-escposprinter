@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-duplicate-enum-values */
+
 export enum ESCPOSConst {
   CMP_ALIGNMENT_LEFT = 0,
   CMP_ALIGNMENT_CENTER = 1,
