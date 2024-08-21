@@ -77,7 +77,7 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
                 else printer.connect(type.toInt(), address)
             ESCPOSConst.CMP_PORT_Bluetooth, ESCPOSConst.CMP_PORT_Bluetooth_Insecure ->
                 printer.connect(type.toInt(), address)
-            // ESCPOSConst.CMP_PORT_USB -> printer.connect(connectType, device)
+            ESCPOSConst.CMP_PORT_USB -> printer.connect(connectType, null)
             else -> ESCPOSConst.CMP_E_ILLEGAL
           }
 

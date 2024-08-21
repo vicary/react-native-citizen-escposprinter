@@ -1,27 +1,8 @@
 {
   "private": true,
-  "eslintConfig": {
-    "root": true,
-    "extends": [
-      "@react-native-community",
-      "eslint:recommended",
-      "plugin:@typescript-eslint/recommended"
-    ],
-    "parser": "@typescript-eslint/parser",
-    "plugins": [
-      "@typescript-eslint"
-    ],
-    "rules": {
-      "quotes": [
-        "warn",
-        "double"
-      ]
-    }
-  },
-  "eslintIgnore": [
-    "*.js",
-    "node_modules/",
-    "lib/"
+  "workspaces": [
+    "examples/*",
+    "packages/*"
   ],
   "prettier": {
     "arrowParens": "always",
@@ -34,9 +15,12 @@
     "trailingComma": "all",
     "useTabs": false
   },
-  "workspaces": [
-    "examples/*",
-    "packages/*"
-  ],
-  "packageManager": "yarn@3.3.1"
+  "packageManager": "yarn@4.4.0",
+  "devDependencies": {
+    "husky": "^9.1.5"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "test": "yarn workspaces foreach -Apt run test"
+  }
 }
