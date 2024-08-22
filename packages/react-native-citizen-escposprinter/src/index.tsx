@@ -41,7 +41,13 @@ if (!CitizenEscposprinter) {
 }
 
 const handleRejection = (error: unknown) => {
-  throw (error instanceof Error && getPrintError(+error.message)) || error;
+  if (error instanceof Error || (typeof error === "object" && error !== null)) {
+    const code = Reflect.get(error, "message") | 0;
+
+    error = getPrintError(code) ?? error;
+  }
+
+  throw error;
 };
 
 export { ESCPOSConst };

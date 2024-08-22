@@ -135,7 +135,6 @@
     "react": "^17 || ^18",
     "react-native": "^0.69 || ^0.70 || ^0.71"
   },
-  "packageManager": "yarn@3.3.1",
   "engines": {
     "node": ">= 16.0.0"
   },

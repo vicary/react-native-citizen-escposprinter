@@ -62,7 +62,7 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
   @ReactMethod
   override fun connect(
       type: Double,
-      address: String,
+      address: String?,
       port: Double,
       timeout: Double,
       promise: Promise
