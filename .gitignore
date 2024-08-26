@@ -150,6 +150,8 @@ DerivedData
 *.xcuserstate
 project.xcworkspace
 
+packages/*/lib/
+
 # Android/IntelliJ
 .idea
 .gradle

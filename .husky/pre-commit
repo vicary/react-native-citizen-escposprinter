@@ -1,0 +1,3 @@
+yarn test
+
+yarn --quiet dlx sort-package-json --quiet {examples,packages}/*/package.json && git add {examples,packages}/*/package.json

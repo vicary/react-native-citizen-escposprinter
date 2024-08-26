@@ -5,7 +5,7 @@ export interface Spec extends TurboModule {
   connect(
     /** @type ESCPOSPrinterConnectType */
     type: number,
-    address: string,
+    address?: string,
     port?: number,
     timeout?: number,
   ): Promise<void>;

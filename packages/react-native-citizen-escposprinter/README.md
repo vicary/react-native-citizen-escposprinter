@@ -12,14 +12,16 @@ npm install react-native-citizen-escposprinter
 
 ## Usage
 
-Most of the methods are wrapped directly from the native SDK. For a complete list of methods and their details, you may refer to the PDF manual inside the [Citizen SDK](https://www.citizen-systems.co.jp/en/printer/download).
+Most of the methods are wrapped directly from the native SDK. For a complete
+list of methods and their details, you may refer to the PDF manual inside the
+[Citizen SDK](https://www.citizen-systems.co.jp/en/printer/download).
 
 ```tsx
 import {
-  ESCPOSConst,
   connect,
   cutPaper,
   disconnect,
+  ESCPOSConst,
   printText,
   searchCitizenPrinters,
 } from "react-native-citizen-escposprinter";
@@ -37,8 +39,20 @@ const main = async () => {
 };
 ```
 
+## ⚠️ Partial USB Support
+
+USB connections without specified a serial number is supported and tested in the
+following environments (see vicary/react-native-citizen-escposprinter#7):
+
+1. Android in "old" architecture
+2. Android in
+   [New Architecture](https://reactnative.dev/docs/the-new-architecture/landing-page)
+
 ## Contributing
 
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
+See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the
+repository and the development workflow.
 
-If you use this library at work, consider [sponsoring](https://github.com/sponsors/vicary) for a first-class technical support.
+If you use this library at work, consider
+[sponsoring](https://github.com/sponsors/vicary) for a first-class technical
+support.

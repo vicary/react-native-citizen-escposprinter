@@ -1,25 +1,25 @@
 import { NativeModules, Platform } from "react-native";
 import { getPrintError } from "./errors";
 import {
-  CitizenPrinerInfo,
   ESCPOSConst,
-  ESCPOSPrinterBarcodeType,
-  ESCPOSPrinterConnectType,
-  ESCPOSPrinterCutType,
-  ESCPOSPrinterDrawer,
-  ESCPOSPrinterGS1DatabarType,
-  ESCPOSPrinterMarkFeedType,
-  ESCPOSPrinterPageModeControl,
-  ESCPOSPrinterPDF417ECLevel,
-  ESCPOSPrinterPrintAlignment,
-  ESCPOSPrinterQRCodeECLevel,
-  ESCPOSPrinterRotation,
-  ESCPOSPrinterSearchType,
-  ESCPOSPrinterSide,
-  ESCPOSPrinterTextPosition,
-  ESCPOSPrinterTransactionControl,
-  ESCPOSPrinterTypeface,
-  ESCPOSPrinterWatermarkStart,
+  type CitizenPrinerInfo,
+  type ESCPOSPrinterBarcodeType,
+  type ESCPOSPrinterConnectType,
+  type ESCPOSPrinterCutType,
+  type ESCPOSPrinterDrawer,
+  type ESCPOSPrinterGS1DatabarType,
+  type ESCPOSPrinterMarkFeedType,
+  type ESCPOSPrinterPageModeControl,
+  type ESCPOSPrinterPDF417ECLevel,
+  type ESCPOSPrinterPrintAlignment,
+  type ESCPOSPrinterQRCodeECLevel,
+  type ESCPOSPrinterRotation,
+  type ESCPOSPrinterSearchType,
+  type ESCPOSPrinterSide,
+  type ESCPOSPrinterTextPosition,
+  type ESCPOSPrinterTransactionControl,
+  type ESCPOSPrinterTypeface,
+  type ESCPOSPrinterWatermarkStart,
 } from "./ESCPOSConst";
 import type { Spec } from "./NativeCitizenEscposprinter";
 
@@ -27,7 +27,8 @@ import type { Spec } from "./NativeCitizenEscposprinter";
 const isTurboModuleEnabled = global.__turboModuleProxy != null;
 
 const CitizenEscposprinter: Spec = isTurboModuleEnabled
-  ? require("./NativeCitizenEscposprinter").default
+  ? // eslint-disable-next-line @typescript-eslint/no-var-requires
+    require("./NativeCitizenEscposprinter").default
   : NativeModules.CitizenEscposprinter;
 
 if (!CitizenEscposprinter) {
@@ -40,10 +41,36 @@ if (!CitizenEscposprinter) {
 }
 
 const handleRejection = (error: unknown) => {
-  throw (error instanceof Error && getPrintError(+error.message)) || error;
+  if (error instanceof Error || (typeof error === "object" && error !== null)) {
+    const code = Reflect.get(error, "message") | 0;
+
+    error = getPrintError(code) ?? error;
+  }
+
+  throw error;
 };
 
-export { ESCPOSConst };
+export {
+  ESCPOSConst,
+  type CitizenPrinerInfo,
+  type ESCPOSPrinterBarcodeType,
+  type ESCPOSPrinterConnectType,
+  type ESCPOSPrinterCutType,
+  type ESCPOSPrinterDrawer,
+  type ESCPOSPrinterGS1DatabarType,
+  type ESCPOSPrinterMarkFeedType,
+  type ESCPOSPrinterPageModeControl,
+  type ESCPOSPrinterPDF417ECLevel,
+  type ESCPOSPrinterPrintAlignment,
+  type ESCPOSPrinterQRCodeECLevel,
+  type ESCPOSPrinterRotation,
+  type ESCPOSPrinterSearchType,
+  type ESCPOSPrinterSide,
+  type ESCPOSPrinterTextPosition,
+  type ESCPOSPrinterTransactionControl,
+  type ESCPOSPrinterTypeface,
+  type ESCPOSPrinterWatermarkStart,
+};
 
 /**
  * This method is used to connect the printer. Please specify the type and
@@ -82,15 +109,20 @@ export { ESCPOSConst };
  */
 export async function connect(
   connectType: ESCPOSPrinterConnectType,
-  address: string,
+  address: string | undefined = "",
   port = 0,
   timeout = 0,
 ) {
-  // TODO: Find a way to address UsbDevices from JavaScript
+  address = address?.trim() || undefined;
+
   if (connectType === ESCPOSConst.CMP_PORT_USB) {
-    throw new Error(
-      "USB connection is not supported yet, feel free open a pull/feature request on GitHub and discuss.",
-    );
+    if (address) {
+      throw new Error(`USB connections by serial number is not supported.`);
+    }
+  } else {
+    if (!address) {
+      throw new Error(`Device address is required for non-USB connections.`);
+    }
   }
 
   try {

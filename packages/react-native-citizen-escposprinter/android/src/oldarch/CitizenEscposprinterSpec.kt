@@ -12,7 +12,7 @@ abstract class CitizenEscposprinterSpec internal constructor(context: ReactAppli
   // abstract fun connect(connectType: Int, device: UsbDevice)
   abstract fun connect(
       type: Double,
-      address: String,
+      address: String?,
       port: Double,
       timeout: Double,
       promise: Promise

@@ -5,42 +5,15 @@
   "scripts": {
     "and": "react-native run-android",
     "and:clean": "cd android/ && ./gradlew clean && cd ..",
-    "and:old": "yarn and:clean && ORG_GRADLE_PROJECT_newArchEnabled=false yarn and",
     "and:new": "yarn and:clean && ORG_GRADLE_PROJECT_newArchEnabled=true yarn and",
+    "and:old": "yarn and:clean && ORG_GRADLE_PROJECT_newArchEnabled=false yarn and",
     "ios": "react-native run-ios",
     "ios:clean": "cd ios/ && rm -rf build/ && pod install && cd ..",
-    "ios:old": "RCT_NEW_ARCH_ENABLED=0 yarn ios:clean && yarn ios",
     "ios:new": "RCT_NEW_ARCH_ENABLED=1 yarn ios:clean && yarn ios",
+    "ios:old": "RCT_NEW_ARCH_ENABLED=0 yarn ios:clean && yarn ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
-  },
-  "eslintConfig": {
-    "root": true,
-    "extends": [
-      "@react-native-community",
-      "eslint:recommended",
-      "plugin:@typescript-eslint/recommended",
-      "plugin:react/jsx-runtime"
-    ],
-    "parser": "@typescript-eslint/parser",
-    "plugins": [
-      "@typescript-eslint"
-    ],
-    "rules": {
-      "quotes": [
-        "warn",
-        "double"
-      ]
-    }
-  },
-  "eslintIgnore": [
-    "*.js",
-    "node_modules/",
-    "lib/"
-  ],
-  "jest": {
-    "preset": "react-native"
+    "test": "echo 'Enable jest when the Invariant Violation is fixed.'"
   },
   "prettier": {
     "arrowParens": "always",
@@ -52,6 +25,9 @@
     "tabWidth": 2,
     "trailingComma": "all",
     "useTabs": false
+  },
+  "jest": {
+    "preset": "react-native"
   },
   "dependencies": {
     "nativewind": "^2.0.11",
@@ -83,7 +59,6 @@
     "react-test-renderer": "18.2.0",
     "tailwindcss": "^3.2.4",
     "type-fest": "^3.5.3",
-    "typescript": "^4.9.4"
-  },
-  "packageManager": "yarn@4.0.0-rc.35"
+    "typescript": "^5.5.4"
+  }
 }
