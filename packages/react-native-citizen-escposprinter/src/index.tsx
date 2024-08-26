@@ -50,7 +50,27 @@ const handleRejection = (error: unknown) => {
   throw error;
 };
 
-export { ESCPOSConst };
+export {
+  ESCPOSConst,
+  type CitizenPrinerInfo,
+  type ESCPOSPrinterBarcodeType,
+  type ESCPOSPrinterConnectType,
+  type ESCPOSPrinterCutType,
+  type ESCPOSPrinterDrawer,
+  type ESCPOSPrinterGS1DatabarType,
+  type ESCPOSPrinterMarkFeedType,
+  type ESCPOSPrinterPageModeControl,
+  type ESCPOSPrinterPDF417ECLevel,
+  type ESCPOSPrinterPrintAlignment,
+  type ESCPOSPrinterQRCodeECLevel,
+  type ESCPOSPrinterRotation,
+  type ESCPOSPrinterSearchType,
+  type ESCPOSPrinterSide,
+  type ESCPOSPrinterTextPosition,
+  type ESCPOSPrinterTransactionControl,
+  type ESCPOSPrinterTypeface,
+  type ESCPOSPrinterWatermarkStart,
+};
 
 /**
  * This method is used to connect the printer. Please specify the type and
