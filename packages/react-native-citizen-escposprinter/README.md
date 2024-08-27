@@ -42,7 +42,8 @@ const main = async () => {
 ## ⚠️ Partial USB Support
 
 USB connections without specified a serial number is supported and tested in the
-following environments (see vicary/react-native-citizen-escposprinter#7):
+following environments (see
+[#7](https://github.com/vicary/react-native-citizen-escposprinter/pull/7)):
 
 1. Android in "old" architecture
 2. Android in

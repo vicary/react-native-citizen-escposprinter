@@ -1,6 +1,6 @@
 {
   "name": "react-native-citizen-escposprinter",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "A Turbo Module wrapper for the Citizen ESC POS Printer SDK.",
   "keywords": [
     "react-native",
