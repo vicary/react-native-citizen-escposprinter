@@ -8,14 +8,17 @@ import {
   type ESCPOSPrinterCutType,
   type ESCPOSPrinterDrawer,
   type ESCPOSPrinterGS1DatabarType,
+  type ESCPOSPrinterMapMode,
   type ESCPOSPrinterMarkFeedType,
   type ESCPOSPrinterPageModeControl,
+  type ESCPOSPrinterPageModePrintDirection,
   type ESCPOSPrinterPDF417ECLevel,
   type ESCPOSPrinterPrintAlignment,
   type ESCPOSPrinterQRCodeECLevel,
   type ESCPOSPrinterRotation,
   type ESCPOSPrinterSearchType,
   type ESCPOSPrinterSide,
+  type ESCPOSPrinterStatus,
   type ESCPOSPrinterTextPosition,
   type ESCPOSPrinterTransactionControl,
   type ESCPOSPrinterTypeface,
@@ -58,8 +61,10 @@ export {
   type ESCPOSPrinterCutType,
   type ESCPOSPrinterDrawer,
   type ESCPOSPrinterGS1DatabarType,
+  type ESCPOSPrinterMapMode,
   type ESCPOSPrinterMarkFeedType,
   type ESCPOSPrinterPageModeControl,
+  type ESCPOSPrinterPageModePrintDirection,
   type ESCPOSPrinterPDF417ECLevel,
   type ESCPOSPrinterPrintAlignment,
   type ESCPOSPrinterQRCodeECLevel,
@@ -109,11 +114,11 @@ export {
  */
 export async function connect(
   connectType: ESCPOSPrinterConnectType,
-  address: string | undefined = "",
+  address = "",
   port = 0,
   timeout = 0,
 ) {
-  address = address?.trim() || undefined;
+  address = address?.trim();
 
   if (connectType === ESCPOSConst.CMP_PORT_USB) {
     if (address) {
@@ -949,10 +954,12 @@ export async function printerCheckEx(
    * - 00:00:00:00:00:00 ~ FF:FF:FF:FF:FF:FF
    * - Device name (Automatic detection)
    */
-  address: string,
-  port?: number,
-  timeout?: number,
-) {
+  address = "",
+  port = 0,
+  timeout = 0,
+): Promise<ESCPOSPrinterStatus> {
+  address = address?.trim();
+
   try {
     return await CitizenEscposprinter.printerCheckEx(
       connectType,
@@ -984,9 +991,9 @@ export function openDrawerEx(
    * - 00:00:00:00:00:00 ~ FF:FF:FF:FF:FF:FF
    * - Device name (Automatic detection)
    */
-  address: string,
-  port?: number,
-  timeout?: number,
+  address = "",
+  port = 0,
+  timeout = 0,
 ) {
   try {
     return CitizenEscposprinter.openDrawerEx(
@@ -1076,4 +1083,281 @@ export async function getVersionName() {
   } catch (error) {
     return handleRejection(error);
   }
+}
+
+/**
+ * This property holds the page area. Expressed in the unit of measure given by
+ * MapMode (default dots). The string consists of two ASCII numbers separated by
+ * a comma, in the following order: horizontal size, vertical size.
+ *
+ * This page area is determined by the hardware capability of the printer.
+ * - CT-S251 Series: “432,1662”
+ * - CT-S281/281II Series: “384,938”
+ * - CT-D101/150/151, CT-E301/351/601/651, CT-S310II/601/651/801/851/601II/651II/801II/851II/ 801III/851III/751/2000, PMU3300 Series: "576,1662"
+ * - CT-S4000/4500 Series: "832,1662"
+ * - CMP-20 Series: "384,938"
+ * - CMP-30 Series: "576,938"
+ *
+ * For example, if the string is “384,938”, then the page size is 384 horizontal
+ * units by 938 vertical units, and the station print area is a rectangle
+ * beginning at the top left point (0,0), and continuing up to the bottom
+ * right point (383,937).
+ *
+ * The connect method must be complete before accessing this property. This
+ * property is set in connect method.
+ */
+export async function getPageModeArea() {
+  try {
+    return CitizenEscposprinter.getPageModeArea();
+  } catch (error) {
+    return handleRejection(error);
+  }
+}
+
+// [ ] Refactor direct wrappers into a class based API
+// 1. For multiple printer instances
+// 2. Property accessors instead of get*/set* wrapper methods
+
+/**
+ * This property holds the print area of Page Mode. Expressed in the unit of
+ * measure given by MapMode (default dots). The maximum print area is the page
+ * area. The string consists of four ASCII numbers separated by commas, in the
+ * following order: horizontal start, vertical start, horizontal size, vertical
+ * size.
+ *
+ * Text written to the right edge of the print area will wrap to the next line.
+ * Any text or image written beyond the bottom of the print area will be
+ * truncated.
+ *
+ * For example, if the string is “50,100,200,400”, then the station print area
+ * is a rectangle beginning at the point (50,100), and continuing up to the
+ * point (249,499).
+ *
+ * The connect method must be complete before accessing this property. This
+ * property is initialized to “0,0,0,0” at connect method.
+ */
+export async function getPageModePrintArea() {
+  try {
+    return CitizenEscposprinter.getPageModePrintArea();
+  } catch (error) {
+    return handleRejection(error);
+  }
+}
+
+export async function setPageModePrintArea(area: string) {
+  try {
+    return CitizenEscposprinter.setPageModePrintArea(area);
+  } catch (error) {
+    return handleRejection(error);
+  }
+}
+
+/**
+ * This property holds the print direction of the Page Mode print area. The
+ * print direction values are as follows.
+ *
+ * | Value                  | Meaning                                                                 |
+ * | :--------------------- | :---------------------------------------------------------------------- |
+ * | `CMP_PD_LEFT_TO_RIGHT` | Print left to right, starting at top left position of the print area,   |
+ * |                        | i.e., normal printing.                                                  |
+ * | `CMP_PD_BOTTOM_TO_TOP` | Print bottom to top, starting at the bottom left position of the print  |
+ * |                        | area, i.e., rotated left 90° printing.                                  |
+ * | `CMP_PD_RIGHT_TO_LEFT` | Print right to left, starting at the bottom right position of the print |
+ * |                        | area, i.e., upside down printing.                                       |
+ * | `CMP_PD_TOP_TO_BOTTOM` | Print top to bottom, starting at the top right position of the print    |
+ * |                        | area, i.e., rotated right 90° printing.                                 |
+ *
+ * Setting this property may also change PageModeHorizontalPosition and
+ * PageModeVerticalPosition. Setting this property will have an effect on the
+ * current print area. By changing the print area, it is possible to generate a
+ * receipt or slip with text printed in multiple rotations.
+ *
+ * The connect method must be complete before accessing this property. This
+ * property is initialized to `CMP_PD_LEFT_TO_RIGHT` at connect method.
+ */
+export async function getPageModePrintDirection(): Promise<ESCPOSPrinterPageModePrintDirection> {
+  try {
+    return CitizenEscposprinter.getPageModePrintDirection();
+  } catch (error) {
+    return handleRejection(error);
+  }
+}
+
+export async function setPageModePrintDirection(
+  direction: ESCPOSPrinterPageModePrintDirection,
+) {
+  try {
+    return CitizenEscposprinter.setPageModePrintDirection(direction);
+  } catch (error) {
+    return handleRejection(error);
+  }
+}
+
+/**
+ * This property holds the horizontal start position offset within the Page Mode
+ * print area, expressed in the unit of dot.
+ *
+ * The horizontal direction is the same as the actual PageModePrintDirection
+ * property.
+ *
+ * A read/get on this property will return the horizontal position offset set by
+ * the last write/set and not the current position.
+ *
+ * The connect method must be complete before accessing this property. This
+ * property is initialized to zero (0) at connect method.
+ */
+export async function getPageModeHorizontalPosition() {
+  try {
+    return CitizenEscposprinter.getPageModeHorizontalPosition();
+  } catch (error) {
+    return handleRejection(error);
+  }
+}
+
+export async function setPageModeHorizontalPosition(position: number) {
+  try {
+    return CitizenEscposprinter.setPageModeHorizontalPosition(position);
+  } catch (error) {
+    return handleRejection(error);
+  }
+}
+
+/**
+ * This property holds the vertical start position offset within the Page Mode
+ * print area, expressed in the unit of dot.
+ *
+ * The vertical direction is perpendicular to the direction specified in the
+ * actual PageModePrintDirection property.
+ *
+ * A read/get on this property will return the vertical position offset set by
+ * the last write/set and not the current position.
+ *
+ * The connect method must be complete before accessing this property. This
+ * property is initialized to zero (0) at connect method.
+ */
+export async function getPageModeVerticalPosition() {
+  try {
+    return CitizenEscposprinter.getPageModeVerticalPosition();
+  } catch (error) {
+    return handleRejection(error);
+  }
+}
+
+export async function setPageModeVerticalPosition(position: number) {
+  try {
+    return CitizenEscposprinter.setPageModeVerticalPosition(position);
+  } catch (error) {
+    return handleRejection(error);
+  }
+}
+
+/**
+ * This property holds the spacing of each single-high print line, including
+ * both the printed line height plus the whitespace between each pair of lines,
+ * expressed in the unit of dot.
+ *
+ * Depending upon the current line spacing, a multi-high print line might exceed
+ * this value. In this case, the whitespace is zero.
+ *
+ * The connect method must be complete before accessing this property. This
+ * property is initialized to 34 at connect method.
+ */
+export async function getRecLineSpacing() {
+  try {
+    return CitizenEscposprinter.getRecLineSpacing();
+  } catch (error) {
+    return handleRejection(error);
+  }
+}
+
+export async function setRecLineSpacing(spacing: number) {
+  try {
+    return CitizenEscposprinter.setRecLineSpacing(spacing);
+  } catch (error) {
+    return handleRejection(error);
+  }
+}
+
+/**
+ * This property holds the mapping mode of the printer. The mapping mode defines
+ * the unit of measure used for other properties, such as line heights and line
+ * spacing. The map mode values are as follows.
+ *
+ * | Value           | Meaning                  |
+ * |:----------------|:-------------------------|
+ * | CMP_MM_DOTS     | The printer’s dot width. |
+ * | CMP_MM_TWIPS    | 1/1440 of an inch.       |
+ * | CMP_MM_ENGLISH  | 0.001 inch.              |
+ * | CMP_MM_METRIC   | 0.01 millimeter.         |
+ *
+ * The method and the properties to be affected by the MapMode property are as
+ * follows:
+ * - `printBitmap` method: width, alignment
+ * - `printBitmapData` method: width, alignment
+ * - `setNVBitmap` method: width
+ * - `printBarcode` method: height, width, alignment
+ * - `printPDF417` method: moduleWidth, alignment
+ * - `printQRCode` method: moduleSize, alignment
+ * - `printGS1DataBarStacked` method: moduleSize, maxSize, alignment
+ * - `unitFeed` method: ufCount
+ * - `watermarkPrint` method: pass, feed
+ * - `PageModeArea` property
+ * - `PageModePrintArea` property
+ * - `PageModeHorizontalPosition` property
+ * - `PageModeVerticalPosition` property
+ * - `RecLineSpacing` property
+ *
+ * The connect method must be complete before accessing this property. This
+ * property is initialized to CMP_MM_DOTS at connect method.
+ */
+export async function getMapMode(): Promise<ESCPOSPrinterMapMode> {
+  try {
+    return CitizenEscposprinter.getMapMode();
+  } catch (error) {
+    return handleRejection(error);
+  }
+}
+
+export async function setMapMode(mode: ESCPOSPrinterMapMode) {
+  try {
+    return CitizenEscposprinter.setMapMode(mode);
+  } catch (error) {
+    return handleRejection(error);
+  }
+}
+
+export async function getRecCharacterSpacing() {
+  throw new Error(
+    "Not implemented in iOS SDK, file a feature request if you need this in Android.",
+  );
+}
+
+export async function setRecCharacterSpacing(_spacing: number) {
+  throw new Error(
+    "Not implemented in iOS SDK, file a feature request if you need this in Android.",
+  );
+}
+
+export async function getRecKanjiLeftSpacing() {
+  throw new Error(
+    "Not implemented in iOS SDK, file a feature request if you need this in Android.",
+  );
+}
+
+export async function setRecKanjiLeftSpacing(_spacing: number) {
+  throw new Error(
+    "Not implemented in iOS SDK, file a feature request if you need this in Android.",
+  );
+}
+
+export async function getRecKanjiRightSpacing() {
+  throw new Error(
+    "Not implemented in iOS SDK, file a feature request if you need this in Android.",
+  );
+}
+
+export async function setRecKanjiRightSpacing(_spacing: number) {
+  throw new Error(
+    "Not implemented in iOS SDK, file a feature request if you need this in Android.",
+  );
 }

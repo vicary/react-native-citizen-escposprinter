@@ -4,10 +4,10 @@ import { TurboModuleRegistry } from "react-native";
 export interface Spec extends TurboModule {
   connect(
     /** @type ESCPOSPrinterConnectType */
-    type: number,
-    address?: string,
-    port?: number,
-    timeout?: number,
+    connectType: number,
+    address: string,
+    port: number,
+    timeout: number,
   ): Promise<void>;
 
   disconnect(): Promise<void>;
@@ -176,8 +176,8 @@ export interface Spec extends TurboModule {
     /** @type ESCPOSPrinterConnectType */
     connectType: number,
     address: string,
-    port?: number,
-    timeout?: number,
+    port: number,
+    timeout: number,
   ): Promise<number>;
 
   openDrawerEx(
@@ -187,8 +187,8 @@ export interface Spec extends TurboModule {
     /** @type ESCPOSPrinterConnectType */
     connectType: number,
     address: string,
-    port?: number,
-    timeout?: number,
+    port: number,
+    timeout: number,
   ): Promise<void>;
 
   setPrintCompletedTimeout(timeout: number): Promise<void>;
@@ -198,6 +198,38 @@ export interface Spec extends TurboModule {
   getVersionCode(): Promise<number>;
 
   getVersionName(): Promise<string>;
+
+  getPageModeArea(): Promise<string>;
+
+  getPageModePrintArea(): Promise<string>;
+
+  setPageModePrintArea(area: string): Promise<void>;
+
+  getPageModePrintDirection(): Promise<number>;
+
+  setPageModePrintDirection(
+    /** @type ESCPOSPrinterPageModePrintDirection */
+    direction: number,
+  ): Promise<void>;
+
+  getPageModeHorizontalPosition(): Promise<number>;
+
+  setPageModeHorizontalPosition(position: number): Promise<void>;
+
+  getPageModeVerticalPosition(): Promise<number>;
+
+  setPageModeVerticalPosition(position: number): Promise<void>;
+
+  getRecLineSpacing(): Promise<number>;
+
+  setRecLineSpacing(spacing: number): Promise<void>;
+
+  getMapMode(): Promise<number>;
+
+  setMapMode(
+    /** @type ESCPOSPrinterMapMode */
+    mode: number,
+  ): Promise<void>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>("CitizenEscposprinter");

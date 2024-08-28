@@ -1,4 +1,5 @@
 #import <React/RCTBridgeModule.h>
+#include <sys/wait.h>
 
 /* Argument types cheatsheet
  * | Objective C                                   | JavaScript         |
@@ -27,8 +28,8 @@
 RCT_EXTERN_METHOD(connect
                   :          (double)                 type
                   toAddress: (NSString *)             address
-                  withPort:  (nonnull NSNumber *)       port
-                  waitFor:   (nonnull NSNumber *)       timeout
+                  withPort:  (double)             port
+                  waitFor:   (double)             timeout
                   resolver:  (RCTPromiseResolveBlock) resolve
                   rejecter:  (RCTPromiseRejectBlock)  reject)
 
@@ -204,6 +205,24 @@ RCT_EXTERN_METHOD(searchESCPOSPrinter
                   resolver:       (RCTPromiseResolveBlock) resolve
                   rejecter:       (RCTPromiseRejectBlock)  reject)
 
+RCT_EXTERN_METHOD(printerCheckEx
+                  :          (double)                 connectType
+                  toAddress: (NSString *)             address
+                  withPort:  (double)             port
+                  waitFor:   (double)             timeout
+                  resolver:  (RCTPromiseResolveBlock) resolve
+                  rejecter:  (RCTPromiseRejectBlock)  reject)
+
+RCT_EXTERN_METHOD(openDrawerEx
+                  :                (double)                 drawer
+                  withPulseLength: (double)                 pulseLength
+                  connectType:     (double)                 type
+                  toAddress:       (NSString *)             address
+                  withPort:        (double)             port
+                  waitFor:         (double)             timeout
+                  resolver:        (RCTPromiseResolveBlock) resolve
+                  rejecter:        (RCTPromiseRejectBlock)  reject)
+
 RCT_EXTERN_METHOD(setPrintCompletedTimeout
                   :         (double)                 timeout
                   resolver: (RCTPromiseResolveBlock) resolve
@@ -222,6 +241,60 @@ RCT_EXTERN_METHOD(getVersionCode
 
 RCT_EXTERN_METHOD(getVersionName
                   :         (RCTPromiseResolveBlock) resolve
+                  rejecter: (RCTPromiseRejectBlock)  reject)
+
+RCT_EXTERN_METHOD(getPageModeArea
+                  :         (RCTPromiseResolveBlock) resolve
+                  rejecter: (RCTPromiseRejectBlock)  reject)
+
+RCT_EXTERN_METHOD(setPageModeArea
+                  :         (NSString *)             area
+                  resolver: (RCTPromiseResolveBlock) resolve
+                  rejecter: (RCTPromiseRejectBlock)  reject)
+
+RCT_EXTERN_METHOD(getPageModePrintDirection
+                  :         (RCTPromiseResolveBlock) resolve
+                  rejecter: (RCTPromiseRejectBlock)  reject)
+
+RCT_EXTERN_METHOD(setPageModePrintDirection
+                  :         (double)                 direction
+                  resolver: (RCTPromiseResolveBlock) resolve
+                  rejecter: (RCTPromiseRejectBlock)  reject)
+
+RCT_EXTERN_METHOD(getPageModeHorizontalPosition
+                  :         (RCTPromiseResolveBlock) resolve
+                  rejecter: (RCTPromiseRejectBlock)  reject)
+
+RCT_EXTERN_METHOD(setPageModeHorizontalPosition
+                  :         (double)                 position
+                  resolver: (RCTPromiseResolveBlock) resolve
+                  rejecter: (RCTPromiseRejectBlock)  reject)
+
+RCT_EXTERN_METHOD(getPageModeVerticalPosition
+                  :         (RCTPromiseResolveBlock) resolve
+                  rejecter: (RCTPromiseRejectBlock)  reject)
+
+RCT_EXTERN_METHOD(setPageModeVerticalPosition
+                  :         (double)                 position
+                  resolver: (RCTPromiseResolveBlock) resolve
+                  rejecter: (RCTPromiseRejectBlock)  reject)
+
+RCT_EXTERN_METHOD(getRecLineSpacing
+                  :         (RCTPromiseResolveBlock) resolve
+                  rejecter: (RCTPromiseRejectBlock)  reject)
+
+RCT_EXTERN_METHOD(setRecLineSpacing
+                  :         (double)                 spacing
+                  resolver: (RCTPromiseResolveBlock) resolve
+                  rejecter: (RCTPromiseRejectBlock)  reject)
+
+RCT_EXTERN_METHOD(getMapMode
+                  :         (RCTPromiseResolveBlock) resolve
+                  rejecter: (RCTPromiseRejectBlock)  reject)
+
+RCT_EXTERN_METHOD(setMapMode
+                  :         (double)                 mode
+                  resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 // Don't compile this code when we build for the old architecture.

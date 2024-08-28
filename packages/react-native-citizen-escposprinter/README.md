@@ -1,19 +1,20 @@
 # react-native-citizen-escposprinter
 
-A React Native wrapper for the Citizen ECSPOSPrinter SDK.
+A React Native wrapper of the
+[Citizen ECSPOSPrinter SDK](https://www.citizen-systems.co.jp/en/printer/download),
+supporting the
+[New Architecture](https://reactnative.dev/docs/the-new-architecture/landing-page)
+and classic builds.
 
-This supports both the old architecture and new architecture, Android and iOS.
+The current version embeds these SDKs:
 
-## Installation
-
-```sh
-npm install react-native-citizen-escposprinter
-```
+1. [CSJAndroidPOSSDK_V212E.zip](https://www.citizen-systems.co.jp/cms/c-s/en/printer/download/sdk-print/CSJAndroidPOSSDK_V212E.zip)
+1. [CSJiOSSwiftSDK_V212E.zip](https://www.citizen-systems.co.jp/cms/c-s/en/printer/download/sdk-print/CSJiOSSwiftSDK_V212E.zip)
 
 ## Usage
 
-Most of the methods are wrapped directly from the native SDK. For a complete
-list of methods and their details, you may refer to the PDF manual inside the
+Most of the methods are a simple wrapper of the native SDK. For a complete list
+of methods and their details, you may refer to the PDF manual inside the
 [Citizen SDK](https://www.citizen-systems.co.jp/en/printer/download).
 
 ```tsx
@@ -27,7 +28,7 @@ import {
 } from "react-native-citizen-escposprinter";
 
 const main = async () => {
-  const printers: CitizenPrinerInfo = await searchCitizenPrinters(
+  const printers = await searchCitizenPrinters(
     ESCPOSConst.CMP_PORT_WiFi,
   );
   console.info("Found printers:", printers);
