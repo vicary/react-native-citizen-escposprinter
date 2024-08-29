@@ -248,14 +248,16 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
   ) {
     coroutineScope.launch {
       try {
-
+        var argWidth = width.toInt()
+        var argAlignment = alignment.toInt()
+        var argMode = mode.toInt()
         val bytes = Base64.decode(data, Base64.DEFAULT)
         val ret: Int
 
         if (mode > 0) {
-          ret = printer.printBitmap(bytes, width.toInt(), alignment.toInt(), mode.toInt())
+          ret = printer.printBitmap(bytes, argWidth, argAlignment, argMode)
         } else {
-          ret = printer.printBitmap(bytes, width.toInt(), alignment.toInt())
+          ret = printer.printBitmap(bytes, argWidth, argAlignment)
         }
 
         if (ret == ESCPOSConst.CMP_SUCCESS) {

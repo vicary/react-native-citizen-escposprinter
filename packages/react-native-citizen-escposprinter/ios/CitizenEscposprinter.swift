@@ -51,8 +51,8 @@ class CitizenEscposprinter: NSObject {
 
       switch argType {
       case ESCPOSConst.CMP_PORT_BLUETOOTH, ESCPOSConst.CMP_PORT_WiFi:
-        let argPort = Int32(truncating: port!)
-        let argTimeout = Int32(truncating: timeout!)
+        let argPort = Int32(truncating: port)
+        let argTimeout = Int32(truncating: timeout)
 
         switch (argPort, argTimeout) {
         case (let port, let timeout) where port <= 0 && timeout <= 0:
@@ -76,7 +76,8 @@ class CitizenEscposprinter: NSObject {
         }
       case ESCPOSConst.CMP_PORT_USB, ESCPOSConst.CMP_PORT_SNMP:
         result = self.printer!.connect(
-          argType
+          argType,
+          withAddrress: argAddr
         )
       default:
         result = ESCPOSConst.CMP_E_ILLEGAL
@@ -150,7 +151,8 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func status(
-    _ resolve: @escaping RCTPromiseResolveBlock,
+    _ type: Double,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
@@ -745,29 +747,29 @@ class CitizenEscposprinter: NSObject {
 
     queue.async {
       var result = ESCPOSConst.CMP_E_ILLEGAL
-      var status = 0
+      var status = Int32(0)
 
       switch argType {
       case ESCPOSConst.CMP_PORT_BLUETOOTH, ESCPOSConst.CMP_PORT_WiFi:
-        let argPort = Int32(truncating: port!)
-        let argTimeout = Int32(truncating: timeout!)
+        let argPort = Int32(truncating: port)
+        let argTimeout = Int32(truncating: timeout)
 
         switch (argPort, argTimeout) {
         case (let port, let timeout) where port <= 0 && timeout <= 0:
-          result = self.printer!.printerCheck(
+          result = self.printer!.printerCheckEx(
             &status,
             withConnectType: argType,
             withAddrress: argAddr
           )
         case (_, let timeout) where timeout <= 0:
-          result = self.printer!.printerCheck(
+          result = self.printer!.printerCheckEx(
             &status,
             withConnectType: argType,
             withAddrress: argAddr,
             withPort: argPort
           )
         default:
-          result = self.printer!.printerCheck(
+          result = self.printer!.printerCheckEx(
             &status,
             withConnectType: argType,
             withAddrress: argAddr,
@@ -776,9 +778,10 @@ class CitizenEscposprinter: NSObject {
           )
         }
       case ESCPOSConst.CMP_PORT_USB, ESCPOSConst.CMP_PORT_SNMP:
-        result = self.printer!.printerCheck(
+        result = self.printer!.printerCheckEx(
           &status,
-          withConnectType: argType
+          withConnectType: argType,
+          withAddrress: argAddr
         )
       default:
         result = ESCPOSConst.CMP_E_ILLEGAL
@@ -814,8 +817,8 @@ class CitizenEscposprinter: NSObject {
 
       switch argType {
       case ESCPOSConst.CMP_PORT_BLUETOOTH, ESCPOSConst.CMP_PORT_WiFi:
-        let argPort = Int32(truncating: port!)
-        let argTimeout = Int32(truncating: timeout!)
+        let argPort = Int32(truncating: port)
+        let argTimeout = Int32(truncating: timeout)
 
         switch (argPort, argTimeout) {
         case (let port, let timeout) where port <= 0 && timeout <= 0:
@@ -847,7 +850,8 @@ class CitizenEscposprinter: NSObject {
         result = self.printer!.openDrawerEx(
           argDrawer,
           withPulseLength: argPulseLength,
-          withConnectType: argType
+          withConnectType: argType,
+          withAddrress: argAddr
         )
       default:
         result = ESCPOSConst.CMP_E_ILLEGAL
@@ -932,23 +936,6 @@ class CitizenEscposprinter: NSObject {
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     resolve(self.printer!.getPageModePrintArea())
-  }
-
-  @objc
-  func setPageModeArea(
-    _ area: NSString?,
-    resolver resolve: @escaping RCTPromiseResolveBlock,
-    rejecter reject: @escaping RCTPromiseRejectBlock
-  ) {
-    queue.async {
-      let result = self.printer!.setPageModeArea(data)
-      guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
-        return
-      }
-
-      resolve(nil)
-    }
   }
 
   @objc

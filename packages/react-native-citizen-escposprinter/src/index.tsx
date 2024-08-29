@@ -3,6 +3,7 @@ import { getPrintError } from "./errors";
 import {
   ESCPOSConst,
   type CitizenPrinerInfo,
+  type CitizenPrinerWiFiInfo,
   type ESCPOSPrinterBarcodeType,
   type ESCPOSPrinterConnectType,
   type ESCPOSPrinterCutType,
@@ -56,6 +57,7 @@ const handleRejection = (error: unknown) => {
 export {
   ESCPOSConst,
   type CitizenPrinerInfo,
+  type CitizenPrinerWiFiInfo,
   type ESCPOSPrinterBarcodeType,
   type ESCPOSPrinterConnectType,
   type ESCPOSPrinterCutType,
@@ -222,7 +224,7 @@ export async function status(
 ) {
   try {
     if (Platform.OS === "ios") {
-      return await CitizenEscposprinter.status();
+      return await CitizenEscposprinter.status(0);
     } else {
       return await CitizenEscposprinter.status(type);
     }

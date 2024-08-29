@@ -18,7 +18,7 @@ export interface Spec extends TurboModule {
 
   status(
     /** ESCPOSPrinterStatus */
-    type?: number,
+    type: number,
   ): Promise<number>;
 
   printText(
@@ -59,11 +59,11 @@ export interface Spec extends TurboModule {
 
   printBitmap(
     data: string,
-    width?: number,
+    width: number,
     /** @type ESCPOSPrinterPrintAlignment */
-    alignment?: number,
+    alignment: number,
     /** @type ESCPOSPrinterBitmapMode */
-    mode?: number,
+    mode: number,
   ): Promise<void>;
 
   printBarCode(

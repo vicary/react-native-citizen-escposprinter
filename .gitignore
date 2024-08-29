@@ -179,11 +179,16 @@ buck-out/
 *.jsbundle
 
 # CocoaPods
-/ios/Pods/
+ios/Pods/
+
+# Expo
+**/.expo/
+examples/**/ios/
+examples/**/android/
+expo-env.d.ts
 
 # DotEnv
 .env
-.env.*
 
 # Local Netlify folder
 .netlify/
