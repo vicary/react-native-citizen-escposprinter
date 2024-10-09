@@ -4,6 +4,10 @@
     "examples/*",
     "packages/*"
   ],
+  "scripts": {
+    "prepare": "husky",
+    "test": "yarn workspaces run test"
+  },
   "prettier": {
     "arrowParens": "always",
     "bracketSpacing": true,
@@ -15,12 +19,8 @@
     "trailingComma": "all",
     "useTabs": false
   },
-  "packageManager": "yarn@4.4.0",
   "devDependencies": {
     "husky": "^9.1.5"
   },
-  "scripts": {
-    "prepare": "husky",
-    "test": "yarn workspaces foreach -Apt run test"
-  }
+  "packageManager": "yarn@1.22.22"
 }

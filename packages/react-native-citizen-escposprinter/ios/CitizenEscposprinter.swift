@@ -1,11 +1,3 @@
-//
-//  CitizenEscposprinter.swift
-//  CitizenEscposprinter
-//
-//  Created by Vicary Archangel on 25/01/2023.
-//  Copyright © 2023 Facebook. All rights reserved.
-//
-
 import CSJPOSLibSwift
 import Foundation
 
@@ -19,7 +11,13 @@ class CitizenEscposprinter: NSObject {
     reject: RCTPromiseRejectBlock,
     errorCode: Int32
   ) {
-    reject("ESCSPOSPrinter", String(errorCode), nil)
+    let errorCodeEx = self.printer!.getErrorCodeExtended()
+
+    if errorCodeEx > 0 {
+      reject("ESCSPOSPrinter", String(errorCodeEx), nil)
+    } else {
+      reject("ESCSPOSPrinter", String(errorCode), nil)
+    }
   }
 
   internal func handleRejection(
@@ -40,37 +38,49 @@ class CitizenEscposprinter: NSObject {
   func connect(
     _ type: Double,
     toAddress addr: NSString?,
-    withPort port: NSNumber?,
-    waitFor timeout: NSNumber?,
+    withPort port: NSNumber,
+    waitFor timeout: NSNumber,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     let argType = Int32(type)
     let argAddr = addr as String?
-    let argPort = port == nil ? nil : Int32(truncating: port!)
-    let argTimeout = timeout == nil ? nil : Int32(truncating: timeout!)
 
     queue.async {
-      var result: Int32 = 0
+      var result = ESCPOSConst.CMP_E_ILLEGAL
 
-      if argPort == nil {
+      switch argType {
+      case ESCPOSConst.CMP_PORT_BLUETOOTH, ESCPOSConst.CMP_PORT_WiFi:
+        let argPort = Int32(truncating: port)
+        let argTimeout = Int32(truncating: timeout)
+
+        switch (argPort, argTimeout) {
+        case (let port, let timeout) where port <= 0 && timeout <= 0:
+          result = self.printer!.connect(
+            argType,
+            withAddrress: argAddr
+          )
+        case (_, let timeout) where timeout <= 0:
+          result = self.printer!.connect(
+            argType,
+            withAddrress: argAddr,
+            withPort: argPort
+          )
+        default:
+          result = self.printer!.connect(
+            argType,
+            withAddrress: argAddr,
+            withPort: argPort,
+            withTimeout: argTimeout
+          )
+        }
+      case ESCPOSConst.CMP_PORT_USB, ESCPOSConst.CMP_PORT_SNMP:
         result = self.printer!.connect(
           argType,
           withAddrress: argAddr
         )
-      } else if argTimeout == nil {
-        result = self.printer!.connect(
-          argType,
-          withAddrress: argAddr,
-          withPort: argPort!
-        )
-      } else {
-        result = self.printer!.connect(
-          argType,
-          withAddrress: argAddr,
-          withPort: argPort!,
-          withTimeout: argTimeout!
-        )
+      default:
+        result = ESCPOSConst.CMP_E_ILLEGAL
       }
 
       guard result == CMP_SUCCESS else {
@@ -141,7 +151,8 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func status(
-    _ resolve: @escaping RCTPromiseResolveBlock,
+    _ type: Double,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
@@ -723,6 +734,139 @@ class CitizenEscposprinter: NSObject {
   }
 
   @objc
+  func printerCheckEx(
+    _ connectType: Double,
+    toAddress addr: NSString?,
+    withPort port: NSNumber,
+    waitFor timeout: NSNumber,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    let argType = Int32(connectType)
+    let argAddr = addr as String?
+
+    queue.async {
+      var result = ESCPOSConst.CMP_E_ILLEGAL
+      var status = Int32(0)
+
+      switch argType {
+      case ESCPOSConst.CMP_PORT_BLUETOOTH, ESCPOSConst.CMP_PORT_WiFi:
+        let argPort = Int32(truncating: port)
+        let argTimeout = Int32(truncating: timeout)
+
+        switch (argPort, argTimeout) {
+        case (let port, let timeout) where port <= 0 && timeout <= 0:
+          result = self.printer!.printerCheckEx(
+            &status,
+            withConnectType: argType,
+            withAddrress: argAddr
+          )
+        case (_, let timeout) where timeout <= 0:
+          result = self.printer!.printerCheckEx(
+            &status,
+            withConnectType: argType,
+            withAddrress: argAddr,
+            withPort: argPort
+          )
+        default:
+          result = self.printer!.printerCheckEx(
+            &status,
+            withConnectType: argType,
+            withAddrress: argAddr,
+            withPort: argPort,
+            withTimeout: argTimeout
+          )
+        }
+      case ESCPOSConst.CMP_PORT_USB, ESCPOSConst.CMP_PORT_SNMP:
+        result = self.printer!.printerCheckEx(
+          &status,
+          withConnectType: argType,
+          withAddrress: argAddr
+        )
+      default:
+        result = ESCPOSConst.CMP_E_ILLEGAL
+      }
+
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(status)
+    }
+  }
+
+  @objc
+  func openDrawerEx(
+    _ drawer: Double,
+    withPulseLength pulseLength: Double,
+    connectType type: Double,
+    toAddress addr: NSString?,
+    withPort port: NSNumber,
+    waitFor timeout: NSNumber,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    let argDrawer = Int32(drawer)
+    let argPulseLength = Int32(pulseLength)
+    let argType = Int32(type)
+    let argAddr = addr as String?
+
+    queue.async {
+      var result = ESCPOSConst.CMP_E_ILLEGAL
+
+      switch argType {
+      case ESCPOSConst.CMP_PORT_BLUETOOTH, ESCPOSConst.CMP_PORT_WiFi:
+        let argPort = Int32(truncating: port)
+        let argTimeout = Int32(truncating: timeout)
+
+        switch (argPort, argTimeout) {
+        case (let port, let timeout) where port <= 0 && timeout <= 0:
+          result = self.printer!.openDrawerEx(
+            argDrawer,
+            withPulseLength: argPulseLength,
+            withConnectType: argType,
+            withAddrress: argAddr
+          )
+        case (_, let timeout) where timeout <= 0:
+          result = self.printer!.openDrawerEx(
+            argDrawer,
+            withPulseLength: argPulseLength,
+            withConnectType: argType,
+            withAddrress: argAddr,
+            withPort: argPort
+          )
+        default:
+          result = self.printer!.openDrawerEx(
+            argDrawer,
+            withPulseLength: argPulseLength,
+            withConnectType: argType,
+            withAddrress: argAddr,
+            withPort: argPort,
+            withTimeout: argTimeout
+          )
+        }
+      case ESCPOSConst.CMP_PORT_USB, ESCPOSConst.CMP_PORT_SNMP:
+        result = self.printer!.openDrawerEx(
+          argDrawer,
+          withPulseLength: argPulseLength,
+          withConnectType: argType,
+          withAddrress: argAddr
+        )
+      default:
+        result = ESCPOSConst.CMP_E_ILLEGAL
+      }
+
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
+    }
+  }
+
+  @objc
   func setPrintCompletedTimeout(
     _ timeout: Double,
     resolver resolve: @escaping RCTPromiseResolveBlock,
@@ -776,5 +920,146 @@ class CitizenEscposprinter: NSObject {
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     resolve(self.printer!.getVersionName())
+  }
+
+  @objc
+  func getPageModeArea(
+    _ resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    resolve(self.printer!.getPageModeArea())
+  }
+
+  @objc
+  func getPageModePrintArea(
+    _ resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    resolve(self.printer!.getPageModePrintArea())
+  }
+
+  @objc
+  func getPageModePrintDirection(
+    _ resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    resolve(self.printer!.getPageModePrintDirection())
+  }
+
+  @objc
+  func setPageModePrintDirection(
+    _ direction: Double,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    queue.async {
+      let result = self.printer!.setPageModePrintDirection(Int32(direction))
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
+    }
+  }
+
+  @objc
+  func getPageModeHorizontalPosition(
+    _ resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    resolve(self.printer!.getPageModeHorizontalPosition())
+  }
+
+  @objc
+  func setPageModeHorizontalPosition(
+    _ position: Double,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    queue.async {
+      let result = self.printer!.setPageModeHorizontalPosition(Int32(position))
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
+    }
+  }
+
+  @objc
+  func getPageModeVerticalPosition(
+    _ resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    resolve(self.printer!.getPageModeVerticalPosition())
+  }
+
+  @objc
+  func setPageModeVerticalPosition(
+    _ position: Double,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    queue.async {
+      let result = self.printer!.setPageModeVerticalPosition(Int32(position))
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
+    }
+  }
+
+  @objc
+  func getRecLineSpacing(
+    _ resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    resolve(self.printer!.getRecLineSpacing())
+  }
+
+  @objc
+  func setRecLineSpacing(
+    _ spacing: Double,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    queue.async {
+      let result = self.printer!.setRecLineSpacing(Int32(spacing))
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
+    }
+  }
+
+  @objc
+  func getMapMode(
+    _ resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    resolve(self.printer!.getMapMode())
+  }
+
+  @objc
+  func setMapMode(
+    _ mode: Double,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    queue.async {
+      let result = self.printer!.setMapMode(Int32(mode))
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result)
+        return
+      }
+
+      resolve(nil)
+    }
   }
 }

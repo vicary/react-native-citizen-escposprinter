@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-duplicate-enum-values */
 
-export enum ESCPOSConst {
+export const enum ESCPOSConst {
   CMP_ALIGNMENT_LEFT = 0,
   CMP_ALIGNMENT_CENTER = 1,
   CMP_ALIGNMENT_RIGHT = 2,
@@ -52,6 +52,10 @@ export enum ESCPOSConst {
   CMP_E_FAILURE = 1104,
   CMP_E_TIMEOUT = 1105,
   CMP_E_NO_LIST = 1106,
+  CMP_EX_DEV_NO_PRINTER = 62000,
+  CMP_EX_DEV_OPEN_ERROR = 62100,
+  CMP_EX_DEV_SEND_ERROR = 62101,
+  CMP_EX_DEV_NO_RESPONSE = 62102,
   CMP_EPTR_COVER_OPEN = 1201,
   CMP_EPTR_REC_EMPTY = 1202,
   CMP_EPTR_BADFORMAT = 1203,
@@ -166,6 +170,12 @@ export type ESCPOSPrinterStatus =
   | ESCPOSConst.CMP_STS_PAPER_NEAREMPTY
   | ESCPOSConst.CMP_STS_DRAWER_LEVEL_H
   | ESCPOSConst.CMP_STS_ONPRESENTER;
+
+export type ESCPOSPrinterErrorCodeExtended =
+  | ESCPOSConst.CMP_EX_DEV_NO_PRINTER
+  | ESCPOSConst.CMP_EX_DEV_OPEN_ERROR
+  | ESCPOSConst.CMP_EX_DEV_SEND_ERROR
+  | ESCPOSConst.CMP_EX_DEV_NO_RESPONSE;
 
 export type ESCPOSPrinterPrintAlignment =
   | ESCPOSConst.CMP_ALIGNMENT_LEFT
@@ -304,6 +314,18 @@ export type ESCPOSPrinterPageModeControl =
   | ESCPOSConst.CMP_PM_PRINT_SAVE
   | ESCPOSConst.CMP_PM_NORMAL
   | ESCPOSConst.CMP_PM_CANCEL;
+
+export type ESCPOSPrinterPageModePrintDirection =
+  | ESCPOSConst.CMP_PD_LEFT_TO_RIGHT
+  | ESCPOSConst.CMP_PD_BOTTOM_TO_TOP
+  | ESCPOSConst.CMP_PD_RIGHT_TO_LEFT
+  | ESCPOSConst.CMP_PD_TOP_TO_BOTTOM;
+
+export type ESCPOSPrinterMapMode =
+  | ESCPOSConst.CMP_MM_DOTS
+  | ESCPOSConst.CMP_MM_TWIPS
+  | ESCPOSConst.CMP_MM_ENGLISH
+  | ESCPOSConst.CMP_MM_METRIC;
 
 export type ESCPOSPrinterWatermarkStart =
   | ESCPOSConst.CMP_WM_START

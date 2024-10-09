@@ -3,8 +3,8 @@ package com.citizenescposprinter
 import android.graphics.Typeface
 import android.hardware.usb.UsbDevice
 import android.util.Base64
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.citizen.sdk.CitizenPrinterInfo
 import com.citizen.sdk.ESCPOSConst
 import com.citizen.sdk.ESCPOSPrinter
@@ -12,14 +12,13 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactMethod
-import com.facebook.react.bridge.WritableMap
 import kotlin.comparisons.compareBy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class CitizenEscposprinterModule internal constructor(context: ReactApplicationContext) :
-    CitizenEscposprinterSpec(context) {
+  CitizenEscposprinterSpec(context) {
 
   val printer = ESCPOSPrinter()
 
@@ -31,59 +30,66 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
     const val NAME = "CitizenEscposprinter"
   }
 
-  override fun getName(): String {
-    return NAME
-  }
+  override fun getName(): String = NAME
 
   protected val coroutineScope: CoroutineScope
-    get() {
-      val view = getCurrentActivity()?.getCurrentFocus()
-      if (view != null) {
-        val scope = ViewTreeLifecycleOwner.get(view)?.lifecycleScope
-        if (scope != null) {
-          return scope
-        }
-      }
-
-      return GlobalScope
-    }
+    get() =
+      getCurrentActivity()
+        ?.getCurrentFocus()
+        ?.let { ViewTreeLifecycleOwner.get(it) }
+        ?.lifecycleScope ?: GlobalScope
 
   protected fun handleRejection(promise: Promise, errorCode: Int) {
-    promise.reject("ESCPOSPrinter", errorCode.toString())
+    val errorCodeEx = printer.getErrorCodeExtended()
+
+    if (errorCodeEx > 0) {
+      promise.reject("ESCPOSPrinter", errorCodeEx.toString())
+    } else {
+      promise.reject("ESCPOSPrinter", errorCode.toString())
+    }
   }
+
   protected fun handleRejection(promise: Promise, error: Throwable) {
     promise.reject("ESCPOSPrinter", error)
   }
 
-  protected fun ipToNumber(ip: String): Long {
-    return ip.split(".").fold(0L) { acc, s -> (acc shl 8) + s.toLong() }
-  }
+  protected fun ipToNumber(ip: String): Long =
+    ip.split(".").fold(0L) { acc, s -> (acc shl 8) + s.toLong() }
 
   @ReactMethod
   override fun connect(
-      type: Double,
-      address: String?,
-      port: Double,
-      timeout: Double,
-      promise: Promise
+    connectType: Double,
+    address: String,
+    port: Double,
+    timeout: Double,
+    promise: Promise
   ) {
     coroutineScope.launch {
+      val intType = connectType.toInt()
       val ret =
-          when (type.toInt()) {
-            ESCPOSConst.CMP_PORT_WiFi ->
-                if (port > 0)
-                    if (timeout > 0)
-                        printer.connect(type.toInt(), address, port.toInt(), timeout.toInt())
-                    else printer.connect(type.toInt(), address, port.toInt())
-                else printer.connect(type.toInt(), address)
-            ESCPOSConst.CMP_PORT_Bluetooth, ESCPOSConst.CMP_PORT_Bluetooth_Insecure ->
-                printer.connect(type.toInt(), address)
-            ESCPOSConst.CMP_PORT_USB -> {
-              val usbDevice: UsbDevice? = null
-              printer.connect(type.toInt(), usbDevice)
+        when (intType) {
+          ESCPOSConst.CMP_PORT_WiFi -> {
+            val intPort = port.toInt()
+            val intTimeout = timeout.toInt()
+
+            when {
+              intPort > 0 && intTimeout > 0 ->
+                printer.connect(intType, address, intPort, intTimeout)
+              intPort > 0 ->
+                printer.connect(intType, address, intPort)
+              else ->
+                printer.connect(intType, address)
             }
-            else -> ESCPOSConst.CMP_E_ILLEGAL
           }
+          ESCPOSConst.CMP_PORT_Bluetooth,
+          ESCPOSConst.CMP_PORT_Bluetooth_Insecure ->
+            printer.connect(intType, address)
+          ESCPOSConst.CMP_PORT_USB -> {
+            val device: UsbDevice? = null
+            printer.connect(intType, device)
+          }
+          else -> ESCPOSConst.CMP_E_ILLEGAL
+        }
 
       if (ret == ESCPOSConst.CMP_SUCCESS) {
         promise.resolve(null)
@@ -110,6 +116,7 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
   override fun setEncoding(encoding: String, promise: Promise) {
     coroutineScope.launch {
       val ret = printer.setEncoding(encoding)
+
       if (ret == ESCPOSConst.CMP_SUCCESS) {
         promise.resolve(null)
       } else {
@@ -142,14 +149,15 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
 
   @ReactMethod
   override fun printText(
-      data: String,
-      alignment: Double,
-      attribute: Double,
-      textSize: Double,
-      promise: Promise
+    data: String,
+    alignment: Double,
+    attribute: Double,
+    textSize: Double,
+    promise: Promise
   ) {
     coroutineScope.launch {
-      val ret = printer.printText(data, alignment.toInt(), attribute.toInt(), textSize.toInt())
+      val ret =
+        printer.printText(data, alignment.toInt(), attribute.toInt(), textSize.toInt())
 
       if (ret == ESCPOSConst.CMP_SUCCESS) {
         promise.resolve(null)
@@ -161,22 +169,22 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
 
   @ReactMethod
   override fun printPaddingText(
-      data: String,
-      attribute: Double,
-      textSize: Double,
-      length: Double,
-      side: Double,
-      promise: Promise
+    data: String,
+    attribute: Double,
+    textSize: Double,
+    length: Double,
+    side: Double,
+    promise: Promise
   ) {
     coroutineScope.launch {
       val ret =
-          printer.printPaddingText(
-              data,
-              attribute.toInt(),
-              textSize.toInt(),
-              length.toInt(),
-              side.toInt()
-          )
+        printer.printPaddingText(
+          data,
+          attribute.toInt(),
+          textSize.toInt(),
+          length.toInt(),
+          side.toInt()
+        )
 
       if (ret == ESCPOSConst.CMP_SUCCESS) {
         promise.resolve(null)
@@ -188,37 +196,37 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
 
   @ReactMethod
   override fun printTextLocalFont(
-      data: String,
-      alignment: Double,
-      fontType: String,
-      point: Double,
-      style: Double,
-      hRatio: Double,
-      vRatio: Double,
-      promise: Promise
+    data: String,
+    alignment: Double,
+    fontType: String,
+    point: Double,
+    style: Double,
+    hRatio: Double,
+    vRatio: Double,
+    promise: Promise
   ) {
     coroutineScope.launch {
       val font =
-          when (fontType) {
-            "DEFAULT" -> Typeface.DEFAULT
-            "DEFAULT_BOLD" -> Typeface.DEFAULT_BOLD
-            "MONOSPACE" -> Typeface.MONOSPACE
-            "SANS_SERIF" -> Typeface.SANS_SERIF
-            "SERIF" -> Typeface.SERIF
-            else -> null
-          }
+        when (fontType) {
+          "DEFAULT" -> Typeface.DEFAULT
+          "DEFAULT_BOLD" -> Typeface.DEFAULT_BOLD
+          "MONOSPACE" -> Typeface.MONOSPACE
+          "SANS_SERIF" -> Typeface.SANS_SERIF
+          "SERIF" -> Typeface.SERIF
+          else -> null
+        }
 
       if (font != null) {
         val ret =
-            printer.printTextLocalFont(
-                data,
-                alignment.toInt(),
-                font,
-                point.toInt(),
-                style.toInt(),
-                hRatio.toInt(),
-                vRatio.toInt()
-            )
+          printer.printTextLocalFont(
+            data,
+            alignment.toInt(),
+            font,
+            point.toInt(),
+            style.toInt(),
+            hRatio.toInt(),
+            vRatio.toInt()
+          )
 
         if (ret == ESCPOSConst.CMP_SUCCESS) {
           promise.resolve(null)
@@ -232,22 +240,24 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
 
   @ReactMethod
   override fun printBitmap(
-      data: String,
-      width: Double,
-      alignment: Double,
-      mode: Double,
-      promise: Promise
+    data: String,
+    width: Double,
+    alignment: Double,
+    mode: Double,
+    promise: Promise
   ) {
     coroutineScope.launch {
       try {
-
+        var argWidth = width.toInt()
+        var argAlignment = alignment.toInt()
+        var argMode = mode.toInt()
         val bytes = Base64.decode(data, Base64.DEFAULT)
         val ret: Int
 
         if (mode > 0) {
-          ret = printer.printBitmap(bytes, width.toInt(), alignment.toInt(), mode.toInt())
+          ret = printer.printBitmap(bytes, argWidth, argAlignment, argMode)
         } else {
-          ret = printer.printBitmap(bytes, width.toInt(), alignment.toInt())
+          ret = printer.printBitmap(bytes, argWidth, argAlignment)
         }
 
         if (ret == ESCPOSConst.CMP_SUCCESS) {
@@ -263,24 +273,24 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
 
   @ReactMethod
   override fun printBarCode(
-      data: String,
-      symbology: Double,
-      height: Double,
-      width: Double,
-      alignment: Double,
-      textPosition: Double,
-      promise: Promise
+    data: String,
+    symbology: Double,
+    height: Double,
+    width: Double,
+    alignment: Double,
+    textPosition: Double,
+    promise: Promise
   ) {
     coroutineScope.launch {
       val ret =
-          printer.printBarCode(
-              data,
-              symbology.toInt(),
-              height.toInt(),
-              width.toInt(),
-              alignment.toInt(),
-              textPosition.toInt()
-          )
+        printer.printBarCode(
+          data,
+          symbology.toInt(),
+          height.toInt(),
+          width.toInt(),
+          alignment.toInt(),
+          textPosition.toInt()
+        )
 
       if (ret == ESCPOSConst.CMP_SUCCESS) {
         promise.resolve(null)
@@ -292,26 +302,26 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
 
   @ReactMethod
   override fun printPDF417(
-      data: String,
-      digits: Double,
-      steps: Double,
-      moduleWidth: Double,
-      stepHeight: Double,
-      ECLevel: Double,
-      alignment: Double,
-      promise: Promise
+    data: String,
+    digits: Double,
+    steps: Double,
+    moduleWidth: Double,
+    stepHeight: Double,
+    ECLevel: Double,
+    alignment: Double,
+    promise: Promise
   ) {
     coroutineScope.launch {
       val ret =
-          printer.printPDF417(
-              data,
-              digits.toInt(),
-              steps.toInt(),
-              moduleWidth.toInt(),
-              stepHeight.toInt(),
-              ECLevel.toInt(),
-              alignment.toInt()
-          )
+        printer.printPDF417(
+          data,
+          digits.toInt(),
+          steps.toInt(),
+          moduleWidth.toInt(),
+          stepHeight.toInt(),
+          ECLevel.toInt(),
+          alignment.toInt()
+        )
 
       if (ret == ESCPOSConst.CMP_SUCCESS) {
         promise.resolve(null)
@@ -323,14 +333,15 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
 
   @ReactMethod
   override fun printQRCode(
-      data: String,
-      moduleSize: Double,
-      ECLevel: Double,
-      alignment: Double,
-      promise: Promise
+    data: String,
+    moduleSize: Double,
+    ECLevel: Double,
+    alignment: Double,
+    promise: Promise
   ) {
     coroutineScope.launch {
-      val ret = printer.printQRCode(data, moduleSize.toInt(), ECLevel.toInt(), alignment.toInt())
+      val ret =
+        printer.printQRCode(data, moduleSize.toInt(), ECLevel.toInt(), alignment.toInt())
 
       if (ret == ESCPOSConst.CMP_SUCCESS) {
         promise.resolve(null)
@@ -342,22 +353,22 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
 
   @ReactMethod
   override fun printGS1DataBarStacked(
-      data: String,
-      symbology: Double,
-      moduleSize: Double,
-      maxSize: Double,
-      alignment: Double,
-      promise: Promise
+    data: String,
+    symbology: Double,
+    moduleSize: Double,
+    maxSize: Double,
+    alignment: Double,
+    promise: Promise
   ) {
     coroutineScope.launch {
       val ret =
-          printer.printGS1DataBarStacked(
-              data,
-              symbology.toInt(),
-              moduleSize.toInt(),
-              maxSize.toInt(),
-              alignment.toInt()
-          )
+        printer.printGS1DataBarStacked(
+          data,
+          symbology.toInt(),
+          moduleSize.toInt(),
+          maxSize.toInt(),
+          alignment.toInt()
+        )
 
       if (ret == ESCPOSConst.CMP_SUCCESS) {
         promise.resolve(null)
@@ -513,22 +524,22 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
 
   @ReactMethod
   override fun watermarkPrint(
-      start: Double,
-      nvImageNumber: Double,
-      pass: Double,
-      feed: Double,
-      repeat: Double,
-      promise: Promise
+    start: Double,
+    nvImageNumber: Double,
+    pass: Double,
+    feed: Double,
+    repeat: Double,
+    promise: Promise
   ) {
     coroutineScope.launch {
       val ret =
-          printer.watermarkPrint(
-              start.toInt(),
-              nvImageNumber.toInt(),
-              pass.toInt(),
-              feed.toInt(),
-              repeat.toInt()
-          )
+        printer.watermarkPrint(
+          start.toInt(),
+          nvImageNumber.toInt(),
+          pass.toInt(),
+          feed.toInt(),
+          repeat.toInt()
+        )
 
       if (ret == ESCPOSConst.CMP_SUCCESS) {
         promise.resolve(null)
@@ -555,27 +566,32 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
   override fun searchCitizenPrinter(connectType: Double, timeout: Double, promise: Promise) {
     coroutineScope.launch {
       val errorCode = IntArray(1)
-      val printers = printer
-        .searchCitizenPrinter(connectType.toInt(), timeout.toInt(), errorCode)
-        .sortedWith(
-          compareBy { it: CitizenPrinterInfo -> ipToNumber(it.ipAddress) }
-            .thenBy(String.CASE_INSENSITIVE_ORDER) { it.macAddress }
-            .thenBy(String.CASE_INSENSITIVE_ORDER) { it.deviceName }
-            .thenBy(String.CASE_INSENSITIVE_ORDER) { it.bdAddress }
-        )
-        .map {
-          val map = Arguments.createMap()
+      val printers =
+        printer
+          .searchCitizenPrinter(connectType.toInt(), timeout.toInt(), errorCode)
+          .sortedWith(
+            compareBy { it: CitizenPrinterInfo -> ipToNumber(it.ipAddress) }
+              .thenBy(String.CASE_INSENSITIVE_ORDER) { it.macAddress }
+              .thenBy(String.CASE_INSENSITIVE_ORDER) { it.deviceName }
+              .thenBy(String.CASE_INSENSITIVE_ORDER) { it.bdAddress }
+          )
+          .map {
+            val map = Arguments.createMap()
 
-          if (!it.ipAddress.isNullOrEmpty()) map.putString("ipAddress", it.ipAddress)
-          if (!it.macAddress.isNullOrEmpty()) map.putString("macAddress", it.macAddress)
-          if (!it.deviceName.isNullOrEmpty()) map.putString("deviceName", it.deviceName)
-          if (!it.bdAddress.isNullOrEmpty()) map.putString("bdAddress", it.bdAddress)
+            if (!it.ipAddress.isNullOrEmpty()) map.putString("ipAddress", it.ipAddress)
+            if (!it.macAddress.isNullOrEmpty())
+              map.putString("macAddress", it.macAddress)
+            if (!it.deviceName.isNullOrEmpty())
+              map.putString("deviceName", it.deviceName)
+            if (!it.bdAddress.isNullOrEmpty()) map.putString("bdAddress", it.bdAddress)
 
-          map
-        }
-        .toList()
+            map
+          }
+          .toList()
 
-      if (errorCode[0] != ESCPOSConst.CMP_SUCCESS && errorCode[0] != ESCPOSConst.CMP_E_NO_LIST) {
+      if (
+        errorCode[0] != ESCPOSConst.CMP_SUCCESS && errorCode[0] != ESCPOSConst.CMP_E_NO_LIST
+      ) {
         handleRejection(promise, errorCode[0])
       } else {
         promise.resolve(Arguments.makeNativeArray(printers))
@@ -587,12 +603,15 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
   override fun searchESCPOSPrinter(connectType: Double, timeout: Double, promise: Promise) {
     coroutineScope.launch {
       val errorCode = IntArray(1)
-      val printers = printer
-        .searchESCPOSPrinter(connectType.toInt(), timeout.toInt(), errorCode)
-        .sortedBy { ipToNumber(it) }
-        .toList()
+      val printers =
+        printer
+          .searchESCPOSPrinter(connectType.toInt(), timeout.toInt(), errorCode)
+          .sortedBy { ipToNumber(it) }
+          .toList()
 
-      if (errorCode[0] != ESCPOSConst.CMP_SUCCESS && errorCode[0] != ESCPOSConst.CMP_E_NO_LIST) {
+      if (
+        errorCode[0] != ESCPOSConst.CMP_SUCCESS && errorCode[0] != ESCPOSConst.CMP_E_NO_LIST
+      ) {
         handleRejection(promise, errorCode[0])
       } else {
         promise.resolve(Arguments.makeNativeArray(printers))
@@ -602,33 +621,54 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
 
   @ReactMethod
   override fun printerCheckEx(
-      connectType: Double,
-      address: String,
-      port: Double?,
-      timeout: Double?,
-      promise: Promise
+    connectType: Double,
+    address: String,
+    port: Double,
+    timeout: Double,
+    promise: Promise
   ) {
     coroutineScope.launch {
+      val intType = connectType.toInt()
       val status = IntArray(1)
       val ret =
-          when (connectType.toInt()) {
-            ESCPOSConst.CMP_PORT_WiFi ->
-                if (port != null)
-                    if (timeout != null)
-                        printer.printerCheckEx(
-                            status,
-                            connectType.toInt(),
-                            address,
-                            port.toInt(),
-                            timeout.toInt()
-                        )
-                    else printer.printerCheckEx(status, connectType.toInt(), address, port.toInt())
-                else printer.printerCheckEx(status, connectType.toInt(), address)
-            ESCPOSConst.CMP_PORT_Bluetooth, ESCPOSConst.CMP_PORT_Bluetooth_Insecure ->
-                printer.printerCheckEx(status, connectType.toInt(), address)
-            // ESCPOSConst.CMP_PORT_USB -> printer.connect(connectType, device)
-            else -> ESCPOSConst.CMP_E_ILLEGAL
+        when (intType) {
+          ESCPOSConst.CMP_PORT_WiFi -> {
+            val intPort = port.toInt()
+            val intTimeout = timeout.toInt()
+
+            when {
+              intPort > 0 && intTimeout > 0 ->
+                printer.printerCheckEx(
+                  status,
+                  intType,
+                  address,
+                  intPort,
+                  intTimeout
+                )
+              intPort > 0 ->
+                printer.printerCheckEx(
+                  status,
+                  intType,
+                  address,
+                  intPort
+                )
+              else ->
+                printer.printerCheckEx(
+                  status,
+                  intType,
+                  address
+                )
+            }
           }
+          ESCPOSConst.CMP_PORT_Bluetooth,
+          ESCPOSConst.CMP_PORT_Bluetooth_Insecure ->
+            printer.printerCheckEx(status, intType, address)
+          ESCPOSConst.CMP_PORT_USB -> {
+            val device: UsbDevice? = null
+            printer.printerCheckEx(status, intType, device)
+          }
+          else -> ESCPOSConst.CMP_E_ILLEGAL
+        }
 
       if (ret == ESCPOSConst.CMP_SUCCESS) {
         promise.resolve(status[0])
@@ -640,48 +680,69 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
 
   @ReactMethod
   override fun openDrawerEx(
-      drawer: Double,
-      pulseLen: Double,
-      connectType: Double,
-      address: String,
-      port: Double?,
-      timeout: Double?,
-      promise: Promise
+    drawer: Double,
+    pulseLen: Double,
+    connectType: Double,
+    address: String,
+    port: Double,
+    timeout: Double,
+    promise: Promise
   ) {
     coroutineScope.launch {
-      val ret =
-          when (connectType.toInt()) {
-            ESCPOSConst.CMP_PORT_WiFi ->
-                if (port != null)
-                    if (timeout != null)
-                        printer.openDrawerEx(
-                            drawer.toInt(),
-                            pulseLen.toInt(),
-                            connectType.toInt(),
-                            address,
-                            port.toInt(),
-                            timeout.toInt()
-                        )
-                    else
-                        printer.openDrawerEx(
-                            drawer.toInt(),
-                            pulseLen.toInt(),
-                            connectType.toInt(),
-                            address,
-                            port.toInt()
-                        )
-                else
-                    printer.openDrawerEx(
-                        drawer.toInt(),
-                        pulseLen.toInt(),
-                        connectType.toInt(),
-                        address
-                    )
-            ESCPOSConst.CMP_PORT_Bluetooth, ESCPOSConst.CMP_PORT_Bluetooth_Insecure ->
-                printer.openDrawerEx(drawer.toInt(), pulseLen.toInt(), connectType.toInt(), address)
-            // ESCPOSConst.CMP_PORT_USB -> printer.connect(connectType, device)
-            else -> ESCPOSConst.CMP_E_ILLEGAL
+      val intType = connectType.toInt()
+      val intDrawer = drawer.toInt()
+      val intPulseLen = pulseLen.toInt()
+      val ret = when (intType) {
+        ESCPOSConst.CMP_PORT_WiFi -> {
+          val intPort = port.toInt()
+          val intTimeout = timeout.toInt()
+
+          when {
+            intPort > 0 && intTimeout > 0 ->
+              printer.openDrawerEx(
+                intDrawer,
+                intPulseLen,
+                intType,
+                address,
+                intPort,
+                intTimeout
+              )
+            intPort > 0 ->
+              printer.openDrawerEx(
+                intDrawer,
+                intPulseLen,
+                intType,
+                address,
+                intPort
+              )
+            else ->
+              printer.openDrawerEx(
+                intDrawer,
+                intPulseLen,
+                intType,
+                address
+              )
           }
+        }
+        ESCPOSConst.CMP_PORT_Bluetooth,
+        ESCPOSConst.CMP_PORT_Bluetooth_Insecure ->
+          printer.openDrawerEx(
+            intDrawer,
+            intPulseLen,
+            intType,
+            address
+          )
+        ESCPOSConst.CMP_PORT_USB -> {
+          val device: UsbDevice? = null
+          printer.openDrawerEx(
+            intDrawer,
+            intPulseLen,
+            intType,
+            device
+          )
+        }
+        else -> ESCPOSConst.CMP_E_ILLEGAL
+      }
 
       if (ret == ESCPOSConst.CMP_SUCCESS) {
         promise.resolve(null)
@@ -722,5 +783,125 @@ class CitizenEscposprinterModule internal constructor(context: ReactApplicationC
   override fun getVersionName(promise: Promise) {
     val versionName = printer.getVersionName()
     promise.resolve(versionName)
+  }
+
+  @ReactMethod
+  override fun getPageModeArea(promise: Promise) {
+    val area = printer.getPageModeArea()
+    promise.resolve(area)
+  }
+
+  @ReactMethod
+  override fun getPageModePrintArea(promise: Promise) {
+    val area = printer.getPageModePrintArea()
+    promise.resolve(area)
+  }
+
+  @ReactMethod
+  override fun setPageModePrintArea(area: String, promise: Promise) {
+    coroutineScope.launch {
+      val ret = printer.setPageModePrintArea(area)
+
+      if (ret == ESCPOSConst.CMP_SUCCESS) {
+        promise.resolve(null)
+      } else {
+        handleRejection(promise, ret)
+      }
+    }
+  }
+
+  @ReactMethod
+  override fun getPageModePrintDirection(promise: Promise) {
+    val direction = printer.getPageModePrintDirection()
+    promise.resolve(direction)
+  }
+
+  @ReactMethod
+  override fun setPageModePrintDirection(direction: Double, promise: Promise) {
+    coroutineScope.launch {
+      val ret = printer.setPageModePrintDirection(direction.toInt())
+
+      if (ret == ESCPOSConst.CMP_SUCCESS) {
+        promise.resolve(null)
+      } else {
+        handleRejection(promise, ret)
+      }
+    }
+  }
+
+  @ReactMethod
+  override fun getPageModeHorizontalPosition(promise: Promise) {
+    val position = printer.getPageModeHorizontalPosition()
+    promise.resolve(position)
+  }
+
+  @ReactMethod
+  override fun setPageModeHorizontalPosition(position: Double, promise: Promise) {
+    coroutineScope.launch {
+      val ret = printer.setPageModeHorizontalPosition(position.toInt())
+
+      if (ret == ESCPOSConst.CMP_SUCCESS) {
+        promise.resolve(null)
+      } else {
+        handleRejection(promise, ret)
+      }
+    }
+  }
+
+  @ReactMethod
+  override fun getPageModeVerticalPosition(promise: Promise) {
+    val position = printer.getPageModeVerticalPosition()
+    promise.resolve(position)
+  }
+
+  @ReactMethod
+  override fun setPageModeVerticalPosition(position: Double, promise: Promise) {
+    coroutineScope.launch {
+      val ret = printer.setPageModeVerticalPosition(position.toInt())
+
+      if (ret == ESCPOSConst.CMP_SUCCESS) {
+        promise.resolve(null)
+      } else {
+        handleRejection(promise, ret)
+      }
+    }
+  }
+
+  @ReactMethod
+  override fun getRecLineSpacing(promise: Promise) {
+    val spacing = printer.getRecLineSpacing()
+    promise.resolve(spacing)
+  }
+
+  @ReactMethod
+  override fun setRecLineSpacing(spacing: Double, promise: Promise) {
+    coroutineScope.launch {
+      val ret = printer.setRecLineSpacing(spacing.toInt())
+
+      if (ret == ESCPOSConst.CMP_SUCCESS) {
+        promise.resolve(null)
+      } else {
+        handleRejection(promise, ret)
+      }
+    }
+  }
+
+  @ReactMethod
+  override fun getMapMode(promise: Promise) {
+    val mode = printer.getMapMode()
+    promise.resolve(mode)
+  }
+
+  @ReactMethod
+  override fun setMapMode(mode: Double, promise: Promise) {
+    coroutineScope.launch {
+      val ret = printer.setMapMode(mode.toInt())
+
+      if (ret == ESCPOSConst.CMP_SUCCESS) {
+        promise.resolve(null)
+      } else {
+        handleRejection(promise, ret)
+      }
+    }
   }
 }

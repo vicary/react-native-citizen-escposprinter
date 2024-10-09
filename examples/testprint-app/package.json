@@ -1,0 +1,60 @@
+{
+  "name": "testprint-app",
+  "version": "0.0.0-development",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "android": "expo run:android",
+    "arch:new": "cp -f .env.newarch .env.local && expo prebuild --clean",
+    "arch:old": "cp -f .env.oldarch .env.local && yarn arch:reset && expo prebuild --clean",
+    "arch:reset": "rm -rf ../../node_modules && yarn # New Architecture builds on Android are littering in node_modules",
+    "ios": "expo run:ios",
+    "lint": "expo lint",
+    "reset-project": "node ./scripts/reset-project.js",
+    "start": "expo start",
+    "test": "jest",
+    "web": "expo start --web"
+  },
+  "jest": {
+    "preset": "jest-expo"
+  },
+  "dependencies": {
+    "@expo/vector-icons": "^14.0.2",
+    "@react-navigation/native": "^6.0.2",
+    "expo": "~51.0.31",
+    "expo-build-properties": "~0.12.5",
+    "expo-constants": "~16.0.2",
+    "expo-dev-client": "~4.0.26",
+    "expo-font": "~12.0.10",
+    "expo-linking": "~6.3.1",
+    "expo-modules-autolinking": "^1.11.2",
+    "expo-router": "~3.5.23",
+    "expo-splash-screen": "~0.27.5",
+    "expo-status-bar": "~1.12.1",
+    "expo-system-ui": "~3.0.7",
+    "expo-web-browser": "~13.0.3",
+    "nativewind": "^4.0.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-native": "0.74.5",
+    "react-native-citizen-escposprinter": "*",
+    "react-native-gesture-handler": "~2.16.1",
+    "react-native-reanimated": "^3.15.1",
+    "react-native-safe-area-context": "4.10.5",
+    "react-native-screens": "3.31.1",
+    "react-native-web": "~0.19.10",
+    "tailwindcss": "^3.4.10"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0",
+    "@types/jest": "^29.5.12",
+    "@types/react": "~18.2.45",
+    "@types/react-test-renderer": "^18.0.7",
+    "dotenv": "^16.4.5",
+    "find-yarn-workspace-root": "^2.0.0",
+    "jest": "^29.2.1",
+    "jest-expo": "~51.0.3",
+    "react-test-renderer": "18.2.0",
+    "typescript": "~5.3.3"
+  }
+}

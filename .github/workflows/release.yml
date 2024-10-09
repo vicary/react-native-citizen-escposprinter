@@ -52,4 +52,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: yarn workspace react-native-citizen-escposprinter semantic-release
+        run: |-
+          cp ../../README.md .
+          cp ../../LICENSE .
+          yarn workspace react-native-citizen-escposprinter semantic-release
