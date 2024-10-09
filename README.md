@@ -40,7 +40,23 @@ const main = async () => {
 };
 ```
 
-## ⚠️ Partial USB Support
+## ⚠️ Known Issues
+
+### Error `RCTEvents.receiveEvent() is not registered`
+
+tl;dr Do not use `index.tsx` as your entrypoint, use something like `app.tsx`
+instead.
+
+This error happens when all of the following conditions are met:
+
+1. You have `expo-router` installed
+2. You have new architecture enabled
+3. You are using `index.tsx` as your entrypoint
+
+When expo-router's own modified entrypoint sees your `index.tsx`, it will be
+confused and incorrectly overrides some native modules.
+
+### Partial USB Support
 
 USB connections without specified a serial number is supported and tested in the
 following environments (see
