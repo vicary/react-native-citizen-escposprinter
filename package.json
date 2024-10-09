@@ -5,7 +5,7 @@
     "packages/*"
   ],
   "scripts": {
-    "prepare": "husky",
+    "prepare": "husky && yarn workspace react-native-citizen-escposprinter run build",
     "test": "yarn workspaces run test"
   },
   "prettier": {

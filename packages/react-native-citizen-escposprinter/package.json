@@ -1,6 +1,6 @@
 {
   "name": "react-native-citizen-escposprinter",
-  "version": "0.0.0-development",
+  "version": "0.0.0",
   "description": "A Turbo Module wrapper for the Citizen ESC POS Printer SDK.",
   "keywords": [
     "react-native",
@@ -54,10 +54,9 @@
     "!**/.*"
   ],
   "scripts": {
-    "postinstall": "bob build",
+    "build": "bob build",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "prepack": "bob build",
-    "prepare": "bob build",
+    "prepublishOnly": "bob build",
     "test": "tsc --noEmit && jest --collectCoverage"
   },
   "commitlint": {
