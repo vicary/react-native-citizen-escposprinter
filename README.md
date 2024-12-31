@@ -20,23 +20,20 @@ of methods and their details, you may refer to the PDF manual inside the
 ```tsx
 import {
   connect,
-  cutPaper,
-  disconnect,
   ESCPOSConst,
-  printText,
   searchCitizenPrinters,
 } from "react-native-citizen-escposprinter";
 
 const main = async () => {
-  const printers = await searchCitizenPrinters(
+  const results = await searchCitizenPrinters(
     ESCPOSConst.CMP_PORT_WiFi,
   );
-  console.info("Found printers:", printers);
+  console.info("Found printers:", results);
 
-  await connect(printers[0].ipAddress);
-  await printText("Hello World!\n");
-  await cutPaper(ESCPOSConst.CMP_CUT_FULL_PREFEED);
-  await disconnect();
+  const printer = await connect(results[0].ipAddress);
+  await printer.printText("Hello World!\n");
+  await printer.cutPaper(ESCPOSConst.CMP_CUT_FULL_PREFEED);
+  await printer.disconnect();
 };
 ```
 

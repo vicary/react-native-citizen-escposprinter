@@ -5,19 +5,21 @@ let queue = DispatchQueue(label: "CitizenESCPOSPrinter", qos: .userInitiated)
 
 @objc(CitizenEscposprinter)
 class CitizenEscposprinter: NSObject {
-  var printer: ESCPOSPrinter? = ESCPOSPrinter()
+  var printers: [ESCPOSPrinter?] = []
 
   internal func handleRejection(
     reject: RCTPromiseRejectBlock,
-    errorCode: Int32
+    errorCode: Int32,
+    printer: ESCPOSPrinter
   ) {
-    let errorCodeEx = self.printer!.getErrorCodeExtended()
+    let errorCodeEx = printer.getErrorCodeExtended()
 
-    if errorCodeEx > 0 {
-      reject("ESCSPOSPrinter", String(errorCodeEx), nil)
-    } else {
-      reject("ESCSPOSPrinter", String(errorCode), nil)
+    guard errorCodeEx == 0 else {
+      reject("CitizenESCPOSPrinter", String(errorCodeEx), nil)
+      return
     }
+
+    reject("ESCSPOSPrinter", String(errorCode), nil)
   }
 
   internal func handleRejection(
@@ -48,6 +50,7 @@ class CitizenEscposprinter: NSObject {
 
     queue.async {
       var result = ESCPOSConst.CMP_E_ILLEGAL
+      let printer = ESCPOSPrinter()
 
       switch argType {
       case ESCPOSConst.CMP_PORT_BLUETOOTH, ESCPOSConst.CMP_PORT_WiFi:
@@ -56,18 +59,18 @@ class CitizenEscposprinter: NSObject {
 
         switch (argPort, argTimeout) {
         case (let port, let timeout) where port <= 0 && timeout <= 0:
-          result = self.printer!.connect(
+          result = printer.connect(
             argType,
             withAddrress: argAddr
           )
         case (_, let timeout) where timeout <= 0:
-          result = self.printer!.connect(
+          result = printer.connect(
             argType,
             withAddrress: argAddr,
             withPort: argPort
           )
         default:
-          result = self.printer!.connect(
+          result = printer.connect(
             argType,
             withAddrress: argAddr,
             withPort: argPort,
@@ -75,7 +78,7 @@ class CitizenEscposprinter: NSObject {
           )
         }
       case ESCPOSConst.CMP_PORT_USB, ESCPOSConst.CMP_PORT_SNMP:
-        result = self.printer!.connect(
+        result = printer.connect(
           argType,
           withAddrress: argAddr
         )
@@ -84,26 +87,37 @@ class CitizenEscposprinter: NSObject {
       }
 
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
-      resolve(nil)
+      self.printers.append(printer)
+
+      resolve(self.printers.count - 1)
     }
   }
 
   @objc
   func disconnect(
-    _ resolve: @escaping RCTPromiseResolveBlock,
+    _ printerId: Double,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.disconnect()
-
-      guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+      let intId = Int(printerId)
+      guard let printer = self.printers[intId] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
         return
       }
+
+      let result = printer.disconnect()
+
+      guard result == CMP_SUCCESS else {
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
+        return
+      }
+
+      self.printers[intId] = nil
 
       resolve(nil)
     }
@@ -111,11 +125,17 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func setEncoding(
-    _ encoding: NSString?,
+    _ printerId: Double,
+    to encoding: NSString?,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
       let cfEnc = CFStringConvertIANACharSetNameToEncoding(encoding as CFString?)
       let nsEnc = CFStringConvertEncodingToNSStringEncoding(cfEnc)
       guard nsEnc != kCFStringEncodingInvalidId else {
@@ -123,9 +143,9 @@ class CitizenEscposprinter: NSObject {
         return
       }
 
-      let result = self.printer!.setEncoding(String.Encoding(rawValue: nsEnc))
+      let result = printer.setEncoding(String.Encoding(rawValue: nsEnc))
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -135,13 +155,19 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func printerCheck(
-    _ resolve: @escaping RCTPromiseResolveBlock,
+    _ printerId: Double,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.printerCheck()
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.printerCheck()
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -151,18 +177,25 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func status(
-    _ type: Double,
+    _ printerId: Double,
+    ofType type: Double,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      resolve(self.printer!.status())
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      resolve(printer.status())
     }
   }
 
   @objc
   func printText(
-    _ data: NSString?,
+    _ printerId: Double,
+    withData data: NSString?,
     alignedTo side: Double,
     withFontStyle attr: Double,
     ofSize size: Double,
@@ -170,14 +203,19 @@ class CitizenEscposprinter: NSObject {
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.printText(
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.printText(
         data as String?,
         withAlignment: Int32(side),
         withAttribute: Int32(attr),
         withTextSize: Int32(size)
       )
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -187,7 +225,8 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func printPaddingText(
-    _ data: NSString?,
+    _ printerId: Double,
+    withData data: NSString?,
     withFontStyle attr: Double,
     ofSize size: Double,
     paddedTo length: Double,
@@ -196,7 +235,12 @@ class CitizenEscposprinter: NSObject {
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.printPaddingText(
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.printPaddingText(
         data as String?,
         withAttribute: Int32(attr),
         withTextSize: Int32(size),
@@ -204,7 +248,7 @@ class CitizenEscposprinter: NSObject {
         withSide: Int32(side)
       )
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -214,7 +258,8 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func printTextLocalFont(
-    _ data: NSString?,
+    _ printerId: Double,
+    withData data: NSString?,
     alignedTo side: Double,
     withTypeface font: NSString,
     ofSize size: Double,
@@ -225,7 +270,12 @@ class CitizenEscposprinter: NSObject {
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.printTextLocalFont(
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.printTextLocalFont(
         data as String?,
         withAlignment: Int32(side),
         withFontName: font as String,
@@ -235,7 +285,7 @@ class CitizenEscposprinter: NSObject {
         withVRatio: Int32(vRatio)
       )
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -245,7 +295,8 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func printBitmap(
-    _ data: NSString?,
+    _ printerId: Double,
+    withData data: NSString?,
     inWidth size: Double,
     alignedTo side: Double,
     withBlendMode mode: Double,
@@ -253,6 +304,11 @@ class CitizenEscposprinter: NSObject {
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
       guard data != nil,
         let imageData = Data(base64Encoded: data! as String, options: .ignoreUnknownCharacters),
         let image = UIImage(data: imageData)
@@ -261,14 +317,14 @@ class CitizenEscposprinter: NSObject {
         return
       }
 
-      let result = self.printer!.printBitmapData(
+      let result = printer.printBitmapData(
         image,
         withWidth: Int32(size),
         withAlignment: Int32(side),
         withMode: Int32(mode)
       )
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -278,14 +334,20 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func printNVBitmap(
-    _ imageId: Double,
+    _ printerId: Double,
+    withImageId imageId: Double,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.printNVBitmap(Int32(imageId))
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.printNVBitmap(Int32(imageId))
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -295,7 +357,8 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func printBarcode(
-    _ data: NSString?,
+    _ printerId: Double,
+    withData data: NSString?,
     withSymbology symbology: Double,
     inHeight height: Double,
     inWidth width: Double,
@@ -305,7 +368,12 @@ class CitizenEscposprinter: NSObject {
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.printBarCode(
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.printBarCode(
         data as String?,
         withSymbology: Int32(symbology),
         withHeight: Int32(height),
@@ -314,7 +382,7 @@ class CitizenEscposprinter: NSObject {
         withTextPosition: Int32(textPosition)
       )
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -324,7 +392,8 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func printPDF417(
-    _ data: NSString?,
+    _ printerId: Double,
+    withData data: NSString?,
     withDigits digits: Double,
     withSteps steps: Double,
     withModuleWidth width: Double,
@@ -335,7 +404,12 @@ class CitizenEscposprinter: NSObject {
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.printPDF417(
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.printPDF417(
         data as String?,
         withDigits: Int32(digits),
         withSteps: Int32(steps),
@@ -345,7 +419,7 @@ class CitizenEscposprinter: NSObject {
         withAlignment: Int32(side)
       )
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -355,7 +429,8 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func printQRCode(
-    _ data: NSString?,
+    _ printerId: Double,
+    withData data: NSString?,
     withModuleSize size: Double,
     withECLevel ecLevel: Double,
     alignedTo side: Double,
@@ -363,14 +438,19 @@ class CitizenEscposprinter: NSObject {
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.printQRCode(
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.printQRCode(
         data as String?,
         withModuleSize: Int32(size),
         withECLevel: Int32(ecLevel),
         withAlignment: Int32(side)
       )
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -380,7 +460,8 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func printGS1DataBarStacked(
-    _ data: NSString?,
+    _ printerId: Double,
+    withData data: NSString?,
     withSymbology symbology: Double,
     withModuleSize size: Double,
     withMaxWidth maxWidth: Double,
@@ -389,7 +470,12 @@ class CitizenEscposprinter: NSObject {
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.printGS1DataBarStacked(
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.printGS1DataBarStacked(
         data as String?,
         withSymbology: Int32(symbology),
         withModuleSize: Int32(size),
@@ -397,7 +483,7 @@ class CitizenEscposprinter: NSObject {
         withAlignment: Int32(side)
       )
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -407,14 +493,20 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func cutPaper(
-    _ percentage: Double,
+    _ printerId: Double,
+    to percentage: Double,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.cutPaper(Int32(percentage))
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.cutPaper(Int32(percentage))
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -424,14 +516,20 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func unitFeed(
-    _ dots: Double,
+    _ printerId: Double,
+    forDots dots: Double,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.unitFeed(Int32(dots))
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.unitFeed(Int32(dots))
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -441,14 +539,20 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func markFeed(
-    _ type: Double,
+    _ printerId: Double,
+    ofType type: Double,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.markFeed(Int32(type))
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.markFeed(Int32(type))
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -458,15 +562,21 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func openDrawer(
-    _ drawer: Double,
+    _ printerId: Double,
+    at drawer: Double,
     withPulseLength pulseLength: Double,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.openDrawer(Int32(drawer), withPulseLength: Int32(pulseLength))
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.openDrawer(Int32(drawer), withPulseLength: Int32(pulseLength))
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -476,14 +586,20 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func transactionPrint(
-    _ control: Double,
+    _ printerId: Double,
+    at control: Double,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.transactionPrint(Int32(control))
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.transactionPrint(Int32(control))
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -493,14 +609,20 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func rotatePrint(
-    _ rotation: Double,
+    _ printerId: Double,
+    to rotation: Double,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.rotatePrint(Int32(rotation))
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.rotatePrint(Int32(rotation))
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -510,14 +632,20 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func pageModePrint(
-    _ control: Double,
+    _ printerId: Double,
+    at control: Double,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.pageModePrint(Int32(control))
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.pageModePrint(Int32(control))
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -527,13 +655,19 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func clearPrintArea(
-    _ resolve: @escaping RCTPromiseResolveBlock,
+    _ printerId: Double,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.clearPrintArea()
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.clearPrintArea()
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -543,13 +677,19 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func clearOutput(
-    _ resolve: @escaping RCTPromiseResolveBlock,
+    _ printerId: Double,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.clearOutput()
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.clearOutput()
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -559,7 +699,8 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func printData(
-    _ data: NSString?,
+    _ printerId: Double,
+    withData data: NSString?,
     withLength size: Double,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
@@ -570,6 +711,11 @@ class CitizenEscposprinter: NSObject {
     }
 
     queue.async {
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
       guard var rawData = Data(base64Encoded: data! as String, options: .ignoreUnknownCharacters)
       else {
         self.handleRejection(reject: reject, message: "Expected raw data.")
@@ -578,9 +724,9 @@ class CitizenEscposprinter: NSObject {
 
       rawData.withUnsafeMutableBytes({ (bytes) -> Void in
         let typedBuffer = bytes.bindMemory(to: Int8.self)
-        let result = self.printer!.printData(typedBuffer.baseAddress!, withLength: UInt(size))
+        let result = printer.printData(typedBuffer.baseAddress!, withLength: UInt(size))
         guard result == CMP_SUCCESS else {
-          self.handleRejection(reject: reject, errorCode: result)
+          self.handleRejection(reject: reject, errorCode: result, printer: printer)
           return
         }
 
@@ -591,7 +737,8 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func printNormal(
-    _ data: NSString?,
+    _ printerId: Double,
+    withData data: NSString?,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
@@ -601,9 +748,14 @@ class CitizenEscposprinter: NSObject {
     }
 
     queue.async {
-      let result = self.printer!.printNormal(data! as String)
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.printNormal(data! as String)
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -613,7 +765,8 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func watermarkPrint(
-    _ start: Double,
+    _ printerId: Double,
+    at start: Double,
     withNVImageNumber imageId: Double,
     withPass pass: Double,
     withFeed feed: Double,
@@ -622,7 +775,12 @@ class CitizenEscposprinter: NSObject {
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.watermarkPrint(
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.watermarkPrint(
         Int32(start),
         withNVImageNumber: Int32(imageId),
         withPass: Int32(pass),
@@ -630,7 +788,7 @@ class CitizenEscposprinter: NSObject {
         withRepeat: Int32(reps)
       )
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -648,10 +806,11 @@ class CitizenEscposprinter: NSObject {
     let type = Int32(connectType)
 
     queue.async {
+      let printer = ESCPOSPrinter()
       let result: UnsafeMutablePointer<Int32> = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
       guard
         let printers =
-          (self.printer!.searchCitizenPrinter(
+          (printer.searchCitizenPrinter(
             Int32(connectType),
             withSearchTime: Int32(time),
             result: result
@@ -688,13 +847,13 @@ class CitizenEscposprinter: NSObject {
                 ]
           })
       else {
-        self.handleRejection(reject: reject, errorCode: CMP_E_ILLEGAL)
+        self.handleRejection(reject: reject, errorCode: CMP_E_ILLEGAL, printer: printer)
         return
       }
 
       let exitCode = result.pointee
       guard exitCode == CMP_SUCCESS || exitCode == CMP_E_NO_LIST else {
-        self.handleRejection(reject: reject, errorCode: exitCode)
+        self.handleRejection(reject: reject, errorCode: exitCode, printer: printer)
         return
       }
 
@@ -710,22 +869,23 @@ class CitizenEscposprinter: NSObject {
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
+      let printer = ESCPOSPrinter()
       let result: UnsafeMutablePointer<Int32> = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
       guard
         let printers =
-          (self.printer!.searchESCPOSPrinter(
+          (printer.searchESCPOSPrinter(
             Int32(connectType),
             withSearchTime: Int32(time),
             result: result
           ) as? [String])?.sorted(by: { self.ipToNumber($0) < self.ipToNumber($1) })
       else {
-        self.handleRejection(reject: reject, errorCode: CMP_E_ILLEGAL)
+        self.handleRejection(reject: reject, errorCode: CMP_E_ILLEGAL, printer: printer)
         return
       }
 
       let exitCode = result.pointee
       guard exitCode == CMP_SUCCESS || exitCode == CMP_E_NO_LIST else {
-        self.handleRejection(reject: reject, errorCode: exitCode)
+        self.handleRejection(reject: reject, errorCode: exitCode, printer: printer)
         return
       }
 
@@ -735,7 +895,8 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func printerCheckEx(
-    _ connectType: Double,
+    _ printerId: Double,
+    ofType connectType: Double,
     toAddress addr: NSString?,
     withPort port: NSNumber,
     waitFor timeout: NSNumber,
@@ -746,6 +907,11 @@ class CitizenEscposprinter: NSObject {
     let argAddr = addr as String?
 
     queue.async {
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
       var result = ESCPOSConst.CMP_E_ILLEGAL
       var status = Int32(0)
 
@@ -756,20 +922,20 @@ class CitizenEscposprinter: NSObject {
 
         switch (argPort, argTimeout) {
         case (let port, let timeout) where port <= 0 && timeout <= 0:
-          result = self.printer!.printerCheckEx(
+          result = printer.printerCheckEx(
             &status,
             withConnectType: argType,
             withAddrress: argAddr
           )
         case (_, let timeout) where timeout <= 0:
-          result = self.printer!.printerCheckEx(
+          result = printer.printerCheckEx(
             &status,
             withConnectType: argType,
             withAddrress: argAddr,
             withPort: argPort
           )
         default:
-          result = self.printer!.printerCheckEx(
+          result = printer.printerCheckEx(
             &status,
             withConnectType: argType,
             withAddrress: argAddr,
@@ -778,7 +944,7 @@ class CitizenEscposprinter: NSObject {
           )
         }
       case ESCPOSConst.CMP_PORT_USB, ESCPOSConst.CMP_PORT_SNMP:
-        result = self.printer!.printerCheckEx(
+        result = printer.printerCheckEx(
           &status,
           withConnectType: argType,
           withAddrress: argAddr
@@ -788,7 +954,7 @@ class CitizenEscposprinter: NSObject {
       }
 
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -798,7 +964,8 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func openDrawerEx(
-    _ drawer: Double,
+    _ printerId: Double,
+    at drawer: Double,
     withPulseLength pulseLength: Double,
     connectType type: Double,
     toAddress addr: NSString?,
@@ -813,6 +980,11 @@ class CitizenEscposprinter: NSObject {
     let argAddr = addr as String?
 
     queue.async {
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
       var result = ESCPOSConst.CMP_E_ILLEGAL
 
       switch argType {
@@ -822,14 +994,14 @@ class CitizenEscposprinter: NSObject {
 
         switch (argPort, argTimeout) {
         case (let port, let timeout) where port <= 0 && timeout <= 0:
-          result = self.printer!.openDrawerEx(
+          result = printer.openDrawerEx(
             argDrawer,
             withPulseLength: argPulseLength,
             withConnectType: argType,
             withAddrress: argAddr
           )
         case (_, let timeout) where timeout <= 0:
-          result = self.printer!.openDrawerEx(
+          result = printer.openDrawerEx(
             argDrawer,
             withPulseLength: argPulseLength,
             withConnectType: argType,
@@ -837,7 +1009,7 @@ class CitizenEscposprinter: NSObject {
             withPort: argPort
           )
         default:
-          result = self.printer!.openDrawerEx(
+          result = printer.openDrawerEx(
             argDrawer,
             withPulseLength: argPulseLength,
             withConnectType: argType,
@@ -847,7 +1019,7 @@ class CitizenEscposprinter: NSObject {
           )
         }
       case ESCPOSConst.CMP_PORT_USB, ESCPOSConst.CMP_PORT_SNMP:
-        result = self.printer!.openDrawerEx(
+        result = printer.openDrawerEx(
           argDrawer,
           withPulseLength: argPulseLength,
           withConnectType: argType,
@@ -858,7 +1030,7 @@ class CitizenEscposprinter: NSObject {
       }
 
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -868,14 +1040,20 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func setPrintCompletedTimeout(
-    _ timeout: Double,
+    _ printerId: Double,
+    to timeout: Double,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.setPrintCompletedTimeout(Int32(timeout))
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.setPrintCompletedTimeout(Int32(timeout))
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -885,20 +1063,26 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func setLog(
-    _ mode: Double,
+    _ printerId: Double,
+    toMode mode: Double,
     withPath path: String,
     limitTo size: Double,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.setLog(
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.setLog(
         Int32(mode),
         withPath: path,
         withMaxSize: Int32(size)
       )
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -911,7 +1095,7 @@ class CitizenEscposprinter: NSObject {
     _ resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    resolve(self.printer!.getVersionCode())
+    resolve(ESCPOSPrinter().getVersionCode())
   }
 
   @objc
@@ -919,43 +1103,73 @@ class CitizenEscposprinter: NSObject {
     _ resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-    resolve(self.printer!.getVersionName())
+    resolve(ESCPOSPrinter().getVersionName())
   }
 
   @objc
   func getPageModeArea(
-    _ resolve: @escaping RCTPromiseResolveBlock,
-    rejecter reject: @escaping RCTPromiseRejectBlock
-  ) {
-    resolve(self.printer!.getPageModeArea())
-  }
-
-  @objc
-  func getPageModePrintArea(
-    _ resolve: @escaping RCTPromiseResolveBlock,
-    rejecter reject: @escaping RCTPromiseRejectBlock
-  ) {
-    resolve(self.printer!.getPageModePrintArea())
-  }
-
-  @objc
-  func getPageModePrintDirection(
-    _ resolve: @escaping RCTPromiseResolveBlock,
-    rejecter reject: @escaping RCTPromiseRejectBlock
-  ) {
-    resolve(self.printer!.getPageModePrintDirection())
-  }
-
-  @objc
-  func setPageModePrintDirection(
-    _ direction: Double,
+    _ printerId: Double,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.setPageModePrintDirection(Int32(direction))
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      resolve(printer.getPageModeArea())
+    }
+  }
+
+  @objc
+  func getPageModePrintArea(
+    _ printerId: Double,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    queue.async {
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      resolve(printer.getPageModePrintArea())
+    }
+  }
+
+  @objc
+  func getPageModePrintDirection(
+    _ printerId: Double,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    queue.async {
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      resolve(printer.getPageModePrintDirection())
+    }
+  }
+
+  @objc
+  func setPageModePrintDirection(
+    _ printerId: Double,
+    to direction: Double,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    queue.async {
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.setPageModePrintDirection(Int32(direction))
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -965,22 +1179,36 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func getPageModeHorizontalPosition(
-    _ resolve: @escaping RCTPromiseResolveBlock,
-    rejecter reject: @escaping RCTPromiseRejectBlock
-  ) {
-    resolve(self.printer!.getPageModeHorizontalPosition())
-  }
-
-  @objc
-  func setPageModeHorizontalPosition(
-    _ position: Double,
+    _ printerId: Double,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.setPageModeHorizontalPosition(Int32(position))
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      resolve(printer.getPageModeHorizontalPosition())
+    }
+  }
+
+  @objc
+  func setPageModeHorizontalPosition(
+    _ printerId: Double,
+    to position: Double,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    queue.async {
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.setPageModeHorizontalPosition(Int32(position))
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -990,22 +1218,36 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func getPageModeVerticalPosition(
-    _ resolve: @escaping RCTPromiseResolveBlock,
-    rejecter reject: @escaping RCTPromiseRejectBlock
-  ) {
-    resolve(self.printer!.getPageModeVerticalPosition())
-  }
-
-  @objc
-  func setPageModeVerticalPosition(
-    _ position: Double,
+    _ printerId: Double,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.setPageModeVerticalPosition(Int32(position))
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      resolve(printer.getPageModeVerticalPosition())
+    }
+  }
+
+  @objc
+  func setPageModeVerticalPosition(
+    _ printerId: Double,
+    to position: Double,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    queue.async {
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.setPageModeVerticalPosition(Int32(position))
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -1015,22 +1257,36 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func getRecLineSpacing(
-    _ resolve: @escaping RCTPromiseResolveBlock,
-    rejecter reject: @escaping RCTPromiseRejectBlock
-  ) {
-    resolve(self.printer!.getRecLineSpacing())
-  }
-
-  @objc
-  func setRecLineSpacing(
-    _ spacing: Double,
+    _ printerId: Double,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.setRecLineSpacing(Int32(spacing))
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      resolve(printer.getRecLineSpacing())
+    }
+  }
+
+  @objc
+  func setRecLineSpacing(
+    _ printerId: Double,
+    to spacing: Double,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    queue.async {
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.setRecLineSpacing(Int32(spacing))
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 
@@ -1040,22 +1296,36 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func getMapMode(
-    _ resolve: @escaping RCTPromiseResolveBlock,
-    rejecter reject: @escaping RCTPromiseRejectBlock
-  ) {
-    resolve(self.printer!.getMapMode())
-  }
-
-  @objc
-  func setMapMode(
-    _ mode: Double,
+    _ printerId: Double,
     resolver resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
     queue.async {
-      let result = self.printer!.setMapMode(Int32(mode))
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      resolve(printer.getMapMode())
+    }
+  }
+
+  @objc
+  func setMapMode(
+    _ printerId: Double,
+    to mode: Double,
+    resolver resolve: @escaping RCTPromiseResolveBlock,
+    rejecter reject: @escaping RCTPromiseRejectBlock
+  ) {
+    queue.async {
+      guard let printer = self.printers[Int(printerId)] else {
+        self.handleRejection(reject: reject, message: "Printer not found.")
+        return
+      }
+
+      let result = printer.setMapMode(Int32(mode))
       guard result == CMP_SUCCESS else {
-        self.handleRejection(reject: reject, errorCode: result)
+        self.handleRejection(reject: reject, errorCode: result, printer: printer)
         return
       }
 

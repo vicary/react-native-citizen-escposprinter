@@ -134,7 +134,7 @@
     "typescript": "*"
   },
   "peerDependencies": {
-    "react": "^17 || ^18",
+    "react": "^17 || ^18 || ^19",
     "react-native": "^0.69 || ^0.70 || ^0.71 || ^0.72 || ^0.73 || ^0.74 || ^0.75"
   },
   "engines": {

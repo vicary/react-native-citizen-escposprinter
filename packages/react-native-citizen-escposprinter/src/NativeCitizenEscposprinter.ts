@@ -8,20 +8,22 @@ export interface Spec extends TurboModule {
     address: string,
     port: number,
     timeout: number,
-  ): Promise<void>;
+  ): Promise<number>;
 
-  disconnect(): Promise<void>;
+  disconnect(id: number): Promise<void>;
 
-  setEncoding(encoding: string): Promise<void>;
+  setEncoding(id: number, encoding: string): Promise<void>;
 
-  printerCheck(): Promise<void>;
+  printerCheck(id: number): Promise<void>;
 
   status(
+    id: number,
     /** ESCPOSPrinterStatus */
     type: number,
   ): Promise<number>;
 
   printText(
+    id: number,
     data: string,
     /** @type ESCPOSPrinterPrintAlignment */
     alignment: number,
@@ -32,6 +34,7 @@ export interface Spec extends TurboModule {
   ): Promise<void>;
 
   printPaddingText(
+    id: number,
     data: string,
     /** @type ESCPOSPrinterTextAttribute */
     attribute: number,
@@ -43,6 +46,7 @@ export interface Spec extends TurboModule {
   ): Promise<void>;
 
   printTextLocalFont(
+    id: number,
     data: string,
     /** @type ESCPOSPrinterPrintAlignment */
     alignment: number,
@@ -58,6 +62,7 @@ export interface Spec extends TurboModule {
   ): Promise<void>;
 
   printBitmap(
+    id: number,
     data: string,
     width: number,
     /** @type ESCPOSPrinterPrintAlignment */
@@ -67,6 +72,7 @@ export interface Spec extends TurboModule {
   ): Promise<void>;
 
   printBarCode(
+    id: number,
     data: string,
     /** @type ESCPOSPrinterBarcodeType */
     symbology: number,
@@ -79,6 +85,7 @@ export interface Spec extends TurboModule {
   ): Promise<void>;
 
   printPDF417(
+    id: number,
     data: string,
     digits: number,
     steps: number,
@@ -91,6 +98,7 @@ export interface Spec extends TurboModule {
   ): Promise<void>;
 
   printQRCode(
+    id: number,
     data: string,
     moduleSize: number,
     /** @type ESCPOSPrinterQRCodeECLevel */
@@ -100,6 +108,7 @@ export interface Spec extends TurboModule {
   ): Promise<void>;
 
   printGS1DataBarStacked(
+    id: number,
     data: string,
     /** @type ESCPOSPrinterGS1DatabarType */
     symbology: number,
@@ -110,47 +119,54 @@ export interface Spec extends TurboModule {
   ): Promise<void>;
 
   cutPaper(
+    id: number,
     /** @type ESCPOSPrinterCutType */
     type: number,
   ): Promise<void>;
 
-  unitFeed(ufCount: number): Promise<void>;
+  unitFeed(id: number, ufCount: number): Promise<void>;
 
   markFeed(
+    id: number,
     /** @type ESCPOSPrinterMarkFeedType */
     type: number,
   ): Promise<void>;
 
   openDrawer(
+    id: number,
     /** @type ESCPOSPrinterDrawer */
     drawer: number,
     pulseLen: number,
   ): Promise<void>;
 
   transactionPrint(
+    id: number,
     /** @type ESCPOSPrinterTransactionControl */
     control: number,
   ): Promise<void>;
 
   rotatePrint(
+    id: number,
     /** @type ESCPOSPrinterRotation */
     rotation: number,
   ): Promise<void>;
 
   pageModePrint(
+    id: number,
     /** @type ESCPOSPrinterPageModeControl */
     control: number,
   ): Promise<void>;
 
-  clearPrintArea(): Promise<void>;
+  clearPrintArea(id: number): Promise<void>;
 
-  clearOutput(): Promise<void>;
+  clearOutput(id: number): Promise<void>;
 
-  printData(data: string): Promise<void>;
+  printData(id: number, data: string): Promise<void>;
 
-  printNormal(data: string): Promise<void>;
+  printNormal(id: number, data: string): Promise<void>;
 
   watermarkPrint(
+    id: number,
     start: number,
     nvImageNumber: number,
     pass: number,
@@ -158,7 +174,7 @@ export interface Spec extends TurboModule {
     repeat: number,
   ): Promise<void>;
 
-  printNVBitmap(nvImageNumber: number): Promise<void>;
+  printNVBitmap(id: number, nvImageNumber: number): Promise<void>;
 
   searchCitizenPrinter(
     /** @type ESCPOSPrinterSearchType */
@@ -173,6 +189,7 @@ export interface Spec extends TurboModule {
   ): Promise<string[]>;
 
   printerCheckEx(
+    id: number,
     /** @type ESCPOSPrinterConnectType */
     connectType: number,
     address: string,
@@ -181,6 +198,7 @@ export interface Spec extends TurboModule {
   ): Promise<number>;
 
   openDrawerEx(
+    id: number,
     /** @type ESCPOSPrinterDrawer */
     drawer: number,
     pulseLen: number,
@@ -191,42 +209,49 @@ export interface Spec extends TurboModule {
     timeout: number,
   ): Promise<void>;
 
-  setPrintCompletedTimeout(timeout: number): Promise<void>;
+  setPrintCompletedTimeout(id: number, timeout: number): Promise<void>;
 
-  setLog(mode: number, path: string, maxSize: number): Promise<void>;
+  setLog(
+    id: number,
+    mode: number,
+    path: string,
+    maxSize: number,
+  ): Promise<void>;
 
   getVersionCode(): Promise<number>;
 
   getVersionName(): Promise<string>;
 
-  getPageModeArea(): Promise<string>;
+  getPageModeArea(id: number): Promise<string>;
 
-  getPageModePrintArea(): Promise<string>;
+  getPageModePrintArea(id: number): Promise<string>;
 
-  setPageModePrintArea(area: string): Promise<void>;
+  setPageModePrintArea(id: number, area: string): Promise<void>;
 
-  getPageModePrintDirection(): Promise<number>;
+  getPageModePrintDirection(id: number): Promise<number>;
 
   setPageModePrintDirection(
+    id: number,
     /** @type ESCPOSPrinterPageModePrintDirection */
     direction: number,
   ): Promise<void>;
 
-  getPageModeHorizontalPosition(): Promise<number>;
+  getPageModeHorizontalPosition(id: number): Promise<number>;
 
-  setPageModeHorizontalPosition(position: number): Promise<void>;
+  setPageModeHorizontalPosition(id: number, position: number): Promise<void>;
 
-  getPageModeVerticalPosition(): Promise<number>;
+  getPageModeVerticalPosition(id: number): Promise<number>;
 
-  setPageModeVerticalPosition(position: number): Promise<void>;
+  setPageModeVerticalPosition(id: number, position: number): Promise<void>;
 
-  getRecLineSpacing(): Promise<number>;
+  getRecLineSpacing(id: number): Promise<number>;
 
-  setRecLineSpacing(spacing: number): Promise<void>;
+  setRecLineSpacing(id: number, spacing: number): Promise<void>;
 
-  getMapMode(): Promise<number>;
+  getMapMode(id: number): Promise<number>;
 
   setMapMode(
+    id: number,
     /** @type ESCPOSPrinterMapMode */
     mode: number,
   ): Promise<void>;

@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.authors      = package["author"]
 
   s.platforms    = { :ios => "11.0" }
-  s.source       = { :git => package["repository"], :tag => "#{s.version}" }
+  s.source       = { :git => package["repository"]["url"], :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm,swift}"
   s.vendored_frameworks = "ios/**.xcframework"

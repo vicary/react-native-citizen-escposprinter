@@ -34,25 +34,30 @@ RCT_EXTERN_METHOD(connect
                   rejecter:  (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(disconnect
-                  :         (RCTPromiseResolveBlock) resolve
+                  :         (double)                 printerId
+                  resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(setEncoding
-                  :         (NSString *)             charset
+                  :         (double)                 printerId
+                  to:       (NSString *)             charset
                   resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(printerCheck
-                  :         (RCTPromiseResolveBlock) resolve
+                  :         (double)                 printerId
+                  resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(status
-                  :         (double)                 status
+                  :         (double)                 printerId
+                  ofType:   (double)                 status
                   resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(printText
-                  :              (NSString *)             data
+                  :              (double)                 printerId
+                  withData:      (NSString *)             data
                   alignedTo:     (double)                 side
                   withFontStyle: (double)                 attr
                   ofSize:        (double)                 size
@@ -60,7 +65,8 @@ RCT_EXTERN_METHOD(printText
                   rejecter:      (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(printPaddingText
-                  :              (NSString *)             data
+                  :              (double)                 printerId
+                  withData:      (NSString *)             data
                   withFontStyle: (double)                 attr
                   ofSize:        (double)                 size
                   paddedTo:      (double)                 length
@@ -69,7 +75,8 @@ RCT_EXTERN_METHOD(printPaddingText
                   rejecter:      (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(printTextLocalFont
-                  :              (NSString *)             data
+                  :              (double)                 printerId
+                  withData:      (NSString *)             data
                   alignedTo:     (double)                 side
                   withTypeface:  (NSString *)             typeface
                   ofSize:        (double)                 size
@@ -80,7 +87,8 @@ RCT_EXTERN_METHOD(printTextLocalFont
                   rejecter:      (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(printBitmap
-                  :              (NSString *)             data
+                  :              (double)                 printerId
+                  withData:      (NSString *)             data
                   inWidth:       (double)                 size
                   alignedTo:     (double)                 side
                   withBlendMode: (double)                 mode
@@ -88,12 +96,14 @@ RCT_EXTERN_METHOD(printBitmap
                   rejecter:      (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(printNVBitmap
-                  :         (double)                 imageId
-                  resolver: (RCTPromiseResolveBlock) resolve
-                  rejecter: (RCTPromiseRejectBlock)  reject)
+                  :            (double)                 printerId
+                  withImageId: (double)                 imageId
+                  resolver:    (RCTPromiseResolveBlock) resolve
+                  rejecter:    (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(printBarcode
-                  :                 (NSString *)             data
+                  :                 (double)                 printerId
+                  withData:         (NSString *)             data
                   withSymbology:    (double)                 symbology
                   inHeight:         (double)                 height
                   inWidth:          (double)                 width
@@ -103,7 +113,8 @@ RCT_EXTERN_METHOD(printBarcode
                   rejecter:         (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(printPDF417
-                  :                (NSString *)             data
+                  :                (double)                 printerId
+                  withData:        (NSString *)             data
                   withDigits:      (double)                 digits
                   withSteps:       (double)                 steps
                   withModuleWidth: (double)                 width
@@ -114,7 +125,8 @@ RCT_EXTERN_METHOD(printPDF417
                   rejecter:        (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(printQRCode
-                  :               (NSString *)             data
+                  :               (double)                 printerId
+                  withData:       (NSString *)             data
                   withModuleSize: (double)                 size
                   withECLevel:    (double)                 ecLevel
                   alignedTo:      (double)                 side
@@ -122,7 +134,8 @@ RCT_EXTERN_METHOD(printQRCode
                   rejecter:       (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(printGS1DataBarStacked
-                  :               (NSString *)             data
+                  :               (double)                 printerId
+                  withData:       (NSString *)             data
                   withSymbology:  (double)                 symbology
                   withModuleSize: (double)                 size
                   withMaxWidth:   (double)                 maxWidth
@@ -131,62 +144,74 @@ RCT_EXTERN_METHOD(printGS1DataBarStacked
                   rejecter:       (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(cutPaper
-                  :         (double)                 percentage
+                  :         (double)                 printerId
+                  to:       (double)                 percentage
                   resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(unitFeed
-                  :         (double)                 dots
+                  :         (double)                 printerId
+                  forDots:  (double)                 dots
                   resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(markFeed
-                  :         (double)                 type
+                  :         (double)                 printerId
+                  ofType:   (double)                 type
                   resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(openDrawer
-                  :                (double)                 drawer
+                  :                (double)                 printerId
+                  at:              (double)                 drawer
                   withPulseLength: (double)                 pulseLength
                   resolver:        (RCTPromiseResolveBlock) resolve
                   rejecter:        (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(transactionPrint
-                  :         (double)                 control
+                  :         (double)                 printerId
+                  at:       (double)                 control
                   resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(rotatePrint
-                  :         (double)                 rotation
+                  :         (double)                 printerId
+                  to:       (double)                 rotation
                   resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(pageModePrint
-                  :         (double)                 control
+                  :         (double)                 printerId
+                  at:       (double)                 control
                   resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(clearPrintArea
-                  :         (RCTPromiseResolveBlock) resolve
+                  :         (double)                 printerId
+                  resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(clearOutput
-                  :         (RCTPromiseResolveBlock) resolve
+                  :         (double)                 printerId
+                  resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(printData
-                  :           (NSString *)             data
+                  :           (double)                 printerId
+                  withData:   (NSString *)             data
                   withLength: (double)                 size
                   resolver:   (RCTPromiseResolveBlock) resolve
                   rejecter:   (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(printNormal
-                  :         (NSString *) data
-                  resolver: (RCTPromiseResolveBlock)       resolve
-                  rejecter: (RCTPromiseRejectBlock)        reject)
+                  :         (double)                   printerId
+                  withData: (NSString *)               data
+                  resolver: (RCTPromiseResolveBlock)   resolve
+                  rejecter: (RCTPromiseRejectBlock)    reject)
 
 RCT_EXTERN_METHOD(watermarkPrint
-                  :                  (double)                 start
+                  :                  (double)                 printerId
+                  at:                (double)                 start
                   withNVImageNumber: (double)                 imageId
                   withPass:          (double)                 pass
                   withFeed:          (double)                 feed
@@ -207,7 +232,8 @@ RCT_EXTERN_METHOD(searchESCPOSPrinter
                   rejecter:       (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(printerCheckEx
-                  :          (double)                 connectType
+                  :          (double)                 printerId
+                  ofType:    (double)                 connectType
                   toAddress: (NSString *)             address
                   withPort:  (double)             port
                   waitFor:   (double)             timeout
@@ -215,7 +241,8 @@ RCT_EXTERN_METHOD(printerCheckEx
                   rejecter:  (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(openDrawerEx
-                  :                (double)                 drawer
+                  :                (double)                 printerId
+                  at:              (double)                 drawer
                   withPulseLength: (double)                 pulseLength
                   connectType:     (double)                 type
                   toAddress:       (NSString *)             address
@@ -225,12 +252,14 @@ RCT_EXTERN_METHOD(openDrawerEx
                   rejecter:        (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(setPrintCompletedTimeout
-                  :         (double)                 timeout
+                  :         (double)                 printerId
+                  to:       (double)                 timeout
                   resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(setLog
-                  :         (double)                 mode
+                  :         (double)                 printerId
+                  toMode:   (double)                 mode
                   withPath: (NSString *)             path
                   limitTo:  (double)                 size
                   resolver: (RCTPromiseResolveBlock) resolve
@@ -245,51 +274,62 @@ RCT_EXTERN_METHOD(getVersionName
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(getPageModeArea
-                  :         (RCTPromiseResolveBlock) resolve
+                  :         (double)                 printerId
+                  resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(getPageModePrintDirection
-                  :         (RCTPromiseResolveBlock) resolve
+                  :         (double)                 printerId
+                  resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(setPageModePrintDirection
-                  :         (double)                 direction
+                  :         (double)                 printerId
+                  to:       (double)                 direction
                   resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(getPageModeHorizontalPosition
-                  :         (RCTPromiseResolveBlock) resolve
+                  :         (double)                 printerId
+                  resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(setPageModeHorizontalPosition
-                  :         (double)                 position
+                  :         (double)                 printerId
+                  to:       (double)                 position
                   resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(getPageModeVerticalPosition
-                  :         (RCTPromiseResolveBlock) resolve
+                  :         (double)                 printerId
+                  resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(setPageModeVerticalPosition
-                  :         (double)                 position
+                  :         (double)                 printerId
+                  to:       (double)                 position
                   resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(getRecLineSpacing
-                  :         (RCTPromiseResolveBlock) resolve
+                  :         (double)                 printerId
+                  resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(setRecLineSpacing
-                  :         (double)                 spacing
+                  :         (double)                 printerId
+                  to:       (double)                 spacing
                   resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(getMapMode
-                  :         (RCTPromiseResolveBlock) resolve
+                  :         (double)                 printerId
+                  resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
 RCT_EXTERN_METHOD(setMapMode
-                  :         (double)                 mode
+                  :         (double)                 printerId
+                  to:       (double)                 mode
                   resolver: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)  reject)
 
