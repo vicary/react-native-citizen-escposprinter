@@ -157,6 +157,7 @@ packages/*/lib/
 .gradle
 local.properties
 *.iml
+**/android/.settings/
 
 # BUCK
 buck-out/

@@ -48,10 +48,6 @@ class CitizenEscposprinterModule internal constructor(val context: ReactApplicat
       null
     }
 
-  protected fun handleRejection(promise: Promise, error: Throwable) {
-    promise.reject("ESCPOSPrinter", error)
-  }
-
   protected fun ipToNumber(ip: String): Long =
     ip.split(".").fold(0L) { acc, s -> (acc shl 8) + s.toLong() }
 
@@ -315,7 +311,7 @@ class CitizenEscposprinterModule internal constructor(val context: ReactApplicat
       runCatching {
         Base64.decode(data, Base64.DEFAULT)
       }.onFailure {
-        handleRejection(promise, it)
+        promise.reject(errorCode, it)
       }.onSuccess { bytes ->
         getPrinter(id, promise)?.apply {
           run {
@@ -672,7 +668,7 @@ class CitizenEscposprinterModule internal constructor(val context: ReactApplicat
       runCatching {
         Base64.decode(data, Base64.DEFAULT)
       }.onFailure {
-        handleRejection(promise, it)
+        promise.reject(errorCode, it)
       }.onSuccess {
         getPrinter(id, promise)?.apply {
           printData(it)
