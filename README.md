@@ -30,7 +30,10 @@ const main = async () => {
   );
   console.info("Found printers:", results);
 
-  const printer = await connect(results[0].ipAddress);
+  const printer = await connect(
+    ESCPOSConst.CMP_PORT_WiFi,
+    results[0].ipAddress
+  );
   await printer.printText("Hello World!\n");
   await printer.cutPaper(ESCPOSConst.CMP_CUT_FULL_PREFEED);
   await printer.disconnect();
