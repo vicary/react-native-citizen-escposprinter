@@ -895,7 +895,6 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func printerCheckEx(
-    _ printerId: Double,
     ofType connectType: Double,
     toAddress addr: NSString?,
     withPort port: NSNumber,
@@ -907,11 +906,7 @@ class CitizenEscposprinter: NSObject {
     let argAddr = addr as String?
 
     queue.async {
-      guard let printer = self.printers[Int(printerId)] else {
-        self.handleRejection(reject: reject, message: "Printer not found.")
-        return
-      }
-
+      let printer = ESCPOSPrinter()
       var result = ESCPOSConst.CMP_E_ILLEGAL
       var status = Int32(0)
 
@@ -964,7 +959,6 @@ class CitizenEscposprinter: NSObject {
 
   @objc
   func openDrawerEx(
-    _ printerId: Double,
     at drawer: Double,
     withPulseLength pulseLength: Double,
     connectType type: Double,
@@ -980,11 +974,7 @@ class CitizenEscposprinter: NSObject {
     let argAddr = addr as String?
 
     queue.async {
-      guard let printer = self.printers[Int(printerId)] else {
-        self.handleRejection(reject: reject, message: "Printer not found.")
-        return
-      }
-
+      let printer = ESCPOSPrinter()
       var result = ESCPOSConst.CMP_E_ILLEGAL
 
       switch argType {

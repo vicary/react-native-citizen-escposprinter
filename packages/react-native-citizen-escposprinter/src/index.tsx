@@ -147,7 +147,11 @@ export async function connect(
 }
 
 class CitizenEscposprinter implements AsyncDisposable {
-  constructor(private readonly id: number) {}
+  #id: number;
+
+  constructor(id: number) {
+    this.#id = id;
+  }
 
   /**
    * Supports `using` keyword via the Explicit Resource Management proposal.
@@ -174,7 +178,7 @@ class CitizenEscposprinter implements AsyncDisposable {
    */
   async disconnect() {
     try {
-      return await NativeInterface.disconnect(this.id);
+      return await NativeInterface.disconnect(this.#id);
     } catch (error) {
       return handleRejection(error);
     }
@@ -194,7 +198,7 @@ class CitizenEscposprinter implements AsyncDisposable {
    */
   async setEncoding(encoding: string) {
     try {
-      return await NativeInterface.setEncoding(this.id, encoding);
+      return await NativeInterface.setEncoding(this.#id, encoding);
     } catch (error) {
       return handleRejection(error);
     }
@@ -220,7 +224,7 @@ class CitizenEscposprinter implements AsyncDisposable {
    */
   async printerCheck() {
     try {
-      return await NativeInterface.printerCheck(this.id);
+      return await NativeInterface.printerCheck(this.#id);
     } catch (error) {
       return handleRejection(error);
     }
@@ -246,9 +250,9 @@ class CitizenEscposprinter implements AsyncDisposable {
   ) {
     try {
       if (Platform.OS === "ios") {
-        return await NativeInterface.status(this.id, 0);
+        return await NativeInterface.status(this.#id, 0);
       } else {
-        return await NativeInterface.status(this.id, type);
+        return await NativeInterface.status(this.#id, type);
       }
     } catch (error) {
       return handleRejection(error);
@@ -275,7 +279,7 @@ class CitizenEscposprinter implements AsyncDisposable {
   ) {
     try {
       return await NativeInterface.printText(
-        this.id,
+        this.#id,
         data,
         alignment,
         attribute,
@@ -310,7 +314,7 @@ class CitizenEscposprinter implements AsyncDisposable {
   ) {
     try {
       return await NativeInterface.printPaddingText(
-        this.id,
+        this.#id,
         data,
         attribute,
         textSize,
@@ -346,7 +350,7 @@ class CitizenEscposprinter implements AsyncDisposable {
   ) {
     try {
       return await NativeInterface.printTextLocalFont(
-        this.id,
+        this.#id,
         data,
         alignment,
         fontType,
@@ -375,7 +379,7 @@ class CitizenEscposprinter implements AsyncDisposable {
   ) {
     try {
       return await NativeInterface.printBitmap(
-        this.id,
+        this.#id,
         data,
         width,
         alignment,
@@ -464,7 +468,7 @@ class CitizenEscposprinter implements AsyncDisposable {
     nvImageNumber: number,
   ) {
     try {
-      return await NativeInterface.printNVBitmap(this.id, nvImageNumber);
+      return await NativeInterface.printNVBitmap(this.#id, nvImageNumber);
     } catch (error) {
       return handleRejection(error);
     }
@@ -501,7 +505,7 @@ class CitizenEscposprinter implements AsyncDisposable {
   ) {
     try {
       return await NativeInterface.printBarCode(
-        this.id,
+        this.#id,
         data,
         symbology,
         height,
@@ -542,7 +546,7 @@ class CitizenEscposprinter implements AsyncDisposable {
   ) {
     try {
       return await NativeInterface.printPDF417(
-        this.id,
+        this.#id,
         data,
         digits,
         steps,
@@ -578,7 +582,7 @@ class CitizenEscposprinter implements AsyncDisposable {
   ) {
     try {
       return await NativeInterface.printQRCode(
-        this.id,
+        this.#id,
         data,
         moduleSize,
         ECLevel,
@@ -620,7 +624,7 @@ class CitizenEscposprinter implements AsyncDisposable {
   ) {
     try {
       return await NativeInterface.printGS1DataBarStacked(
-        this.id,
+        this.#id,
         data,
         symbology,
         moduleSize,
@@ -635,7 +639,7 @@ class CitizenEscposprinter implements AsyncDisposable {
   /** This method is used to cut the paper. */
   async cutPaper(type: ESCPOSPrinterCutType) {
     try {
-      return await NativeInterface.cutPaper(this.id, type);
+      return await NativeInterface.cutPaper(this.#id, type);
     } catch (error) {
       return handleRejection(error);
     }
@@ -647,7 +651,7 @@ class CitizenEscposprinter implements AsyncDisposable {
     ufCount: number,
   ) {
     try {
-      return await NativeInterface.unitFeed(this.id, ufCount);
+      return await NativeInterface.unitFeed(this.#id, ufCount);
     } catch (error) {
       return handleRejection(error);
     }
@@ -656,7 +660,7 @@ class CitizenEscposprinter implements AsyncDisposable {
   /** This method is used to utilize label paper and black mark paper. */
   async markFeed(type: ESCPOSPrinterMarkFeedType) {
     try {
-      return await NativeInterface.markFeed(this.id, type);
+      return await NativeInterface.markFeed(this.#id, type);
     } catch (error) {
       return handleRejection(error);
     }
@@ -669,7 +673,7 @@ class CitizenEscposprinter implements AsyncDisposable {
     pulseLen: number,
   ) {
     try {
-      return await NativeInterface.openDrawer(this.id, drawer, pulseLen);
+      return await NativeInterface.openDrawer(this.#id, drawer, pulseLen);
     } catch (error) {
       return handleRejection(error);
     }
@@ -707,7 +711,7 @@ class CitizenEscposprinter implements AsyncDisposable {
    */
   async transactionPrint(control: ESCPOSPrinterTransactionControl) {
     try {
-      return await NativeInterface.transactionPrint(this.id, control);
+      return await NativeInterface.transactionPrint(this.#id, control);
     } catch (error) {
       return handleRejection(error);
     }
@@ -733,7 +737,7 @@ class CitizenEscposprinter implements AsyncDisposable {
    */
   async rotatePrint(rotation: ESCPOSPrinterRotation) {
     try {
-      return await NativeInterface.rotatePrint(this.id, rotation);
+      return await NativeInterface.rotatePrint(this.#id, rotation);
     } catch (error) {
       return handleRejection(error);
     }
@@ -779,7 +783,7 @@ class CitizenEscposprinter implements AsyncDisposable {
    */
   async pageModePrint(control: ESCPOSPrinterPageModeControl) {
     try {
-      return await NativeInterface.pageModePrint(this.id, control);
+      return await NativeInterface.pageModePrint(this.#id, control);
     } catch (error) {
       return handleRejection(error);
     }
@@ -788,7 +792,7 @@ class CitizenEscposprinter implements AsyncDisposable {
   /** This method is used to clear the area defined by the PageModePrintArea property. */
   async clearPrintArea() {
     try {
-      return await NativeInterface.clearPrintArea(this.id);
+      return await NativeInterface.clearPrintArea(this.#id);
     } catch (error) {
       return handleRejection(error);
     }
@@ -803,7 +807,7 @@ class CitizenEscposprinter implements AsyncDisposable {
    */
   async clearOutput() {
     try {
-      return await NativeInterface.clearOutput(this.id);
+      return await NativeInterface.clearOutput(this.#id);
     } catch (error) {
       return handleRejection(error);
     }
@@ -819,7 +823,7 @@ class CitizenEscposprinter implements AsyncDisposable {
    */
   async printData(data: string) {
     try {
-      return await NativeInterface.printData(this.id, data);
+      return await NativeInterface.printData(this.#id, data);
     } catch (error) {
       return handleRejection(error);
     }
@@ -833,7 +837,7 @@ class CitizenEscposprinter implements AsyncDisposable {
    */
   async printNormal(data: string) {
     try {
-      return await NativeInterface.printNormal(this.id, data);
+      return await NativeInterface.printNormal(this.#id, data);
     } catch (error) {
       return handleRejection(error);
     }
@@ -882,89 +886,12 @@ class CitizenEscposprinter implements AsyncDisposable {
   ) {
     try {
       return await NativeInterface.watermarkPrint(
-        this.id,
+        this.#id,
         start,
         nvImageNumber,
         pass,
         feed,
         repeat,
-      );
-    } catch (error) {
-      return handleRejection(error);
-    }
-  }
-
-  /**
-   * This method is used to connect printer and get the status of the printer.
-   * After the process is complete, disconnect the connection. (except
-   * connection type `CMP_PORT_SNMP`)
-   *
-   * The `CMP_PORT_SNMP` in the connect type can be used with printers connected
-   * to the network. By using this connection type, you can get the status
-   * regardless of other connections. In order to use this connection type, the
-   * printer supported with this function.
-   */
-  async printerCheckEx(
-    connectType: ESCPOSPrinterConnectType,
-    /**
-     * WiFi:
-     * - 0.0.0.0 ~ 255.255.255.255
-     *
-     * Bluetooth:
-     * - 00:00:00:00:00:00 ~ FF:FF:FF:FF:FF:FF
-     * - Device name (Automatic detection)
-     */
-    address = "",
-    port = 0,
-    timeout = 0,
-  ): Promise<ESCPOSPrinterStatus> {
-    address = address?.trim();
-
-    try {
-      return await NativeInterface.printerCheckEx(
-        this.id,
-        connectType,
-        address,
-        port,
-        timeout,
-      );
-    } catch (error) {
-      return handleRejection(error);
-    }
-  }
-
-  /**
-   * This method is used to connect printer and open the cash drawer is connected
-   * to the printer. After the process is complete, disconnect the connection.
-   *
-   * This method can execute even if the printer error (cover open or paper empty).
-   */
-  openDrawerEx(
-    drawer: ESCPOSPrinterDrawer,
-    /** 1 - 8 (x 100) msec */
-    pulseLen: number,
-    connectType: ESCPOSPrinterConnectType,
-    /**
-     * WiFi:
-     * - 0.0.0.0 ~ 255.255.255.255
-     *
-     * Bluetooth:
-     * - 00:00:00:00:00:00 ~ FF:FF:FF:FF:FF:FF
-     * - Device name (Automatic detection)
-     */
-    address = "",
-    port = 0,
-    timeout = 0,
-  ) {
-    try {
-      return NativeInterface.openDrawerEx(
-        this.id,
-        drawer,
-        pulseLen,
-        connectType,
-        address,
-        port,
-        timeout,
       );
     } catch (error) {
       return handleRejection(error);
@@ -989,7 +916,7 @@ class CitizenEscposprinter implements AsyncDisposable {
     timeout: number,
   ) {
     try {
-      return await NativeInterface.setPrintCompletedTimeout(this.id, timeout);
+      return await NativeInterface.setPrintCompletedTimeout(this.#id, timeout);
     } catch (error) {
       return handleRejection(error);
     }
@@ -1015,7 +942,7 @@ class CitizenEscposprinter implements AsyncDisposable {
     maxSize: number,
   ) {
     try {
-      return await NativeInterface.setLog(this.id, mode, path, maxSize);
+      return await NativeInterface.setLog(this.#id, mode, path, maxSize);
     } catch (error) {
       return handleRejection(error);
     }
@@ -1044,7 +971,7 @@ class CitizenEscposprinter implements AsyncDisposable {
    */
   async getPageModeArea() {
     try {
-      return NativeInterface.getPageModeArea(this.id);
+      return NativeInterface.getPageModeArea(this.#id);
     } catch (error) {
       return handleRejection(error);
     }
@@ -1070,7 +997,7 @@ class CitizenEscposprinter implements AsyncDisposable {
    */
   async getPageModePrintArea() {
     try {
-      return NativeInterface.getPageModePrintArea(this.id);
+      return NativeInterface.getPageModePrintArea(this.#id);
     } catch (error) {
       return handleRejection(error);
     }
@@ -1078,7 +1005,7 @@ class CitizenEscposprinter implements AsyncDisposable {
 
   async setPageModePrintArea(area: string) {
     try {
-      return NativeInterface.setPageModePrintArea(this.id, area);
+      return NativeInterface.setPageModePrintArea(this.#id, area);
     } catch (error) {
       return handleRejection(error);
     }
@@ -1109,7 +1036,7 @@ class CitizenEscposprinter implements AsyncDisposable {
    */
   async getPageModePrintDirection(): Promise<ESCPOSPrinterPageModePrintDirection> {
     try {
-      return NativeInterface.getPageModePrintDirection(this.id);
+      return NativeInterface.getPageModePrintDirection(this.#id);
     } catch (error) {
       return handleRejection(error);
     }
@@ -1119,7 +1046,7 @@ class CitizenEscposprinter implements AsyncDisposable {
     direction: ESCPOSPrinterPageModePrintDirection,
   ) {
     try {
-      return NativeInterface.setPageModePrintDirection(this.id, direction);
+      return NativeInterface.setPageModePrintDirection(this.#id, direction);
     } catch (error) {
       return handleRejection(error);
     }
@@ -1140,7 +1067,7 @@ class CitizenEscposprinter implements AsyncDisposable {
    */
   async getPageModeHorizontalPosition() {
     try {
-      return NativeInterface.getPageModeHorizontalPosition(this.id);
+      return NativeInterface.getPageModeHorizontalPosition(this.#id);
     } catch (error) {
       return handleRejection(error);
     }
@@ -1148,7 +1075,7 @@ class CitizenEscposprinter implements AsyncDisposable {
 
   async setPageModeHorizontalPosition(position: number) {
     try {
-      return NativeInterface.setPageModeHorizontalPosition(this.id, position);
+      return NativeInterface.setPageModeHorizontalPosition(this.#id, position);
     } catch (error) {
       return handleRejection(error);
     }
@@ -1169,7 +1096,7 @@ class CitizenEscposprinter implements AsyncDisposable {
    */
   async getPageModeVerticalPosition() {
     try {
-      return NativeInterface.getPageModeVerticalPosition(this.id);
+      return NativeInterface.getPageModeVerticalPosition(this.#id);
     } catch (error) {
       return handleRejection(error);
     }
@@ -1177,7 +1104,7 @@ class CitizenEscposprinter implements AsyncDisposable {
 
   async setPageModeVerticalPosition(position: number) {
     try {
-      return NativeInterface.setPageModeVerticalPosition(this.id, position);
+      return NativeInterface.setPageModeVerticalPosition(this.#id, position);
     } catch (error) {
       return handleRejection(error);
     }
@@ -1196,7 +1123,7 @@ class CitizenEscposprinter implements AsyncDisposable {
    */
   async getRecLineSpacing() {
     try {
-      return NativeInterface.getRecLineSpacing(this.id);
+      return NativeInterface.getRecLineSpacing(this.#id);
     } catch (error) {
       return handleRejection(error);
     }
@@ -1204,7 +1131,7 @@ class CitizenEscposprinter implements AsyncDisposable {
 
   async setRecLineSpacing(spacing: number) {
     try {
-      return NativeInterface.setRecLineSpacing(this.id, spacing);
+      return NativeInterface.setRecLineSpacing(this.#id, spacing);
     } catch (error) {
       return handleRejection(error);
     }
@@ -1244,7 +1171,7 @@ class CitizenEscposprinter implements AsyncDisposable {
    */
   async getMapMode(): Promise<ESCPOSPrinterMapMode> {
     try {
-      return await NativeInterface.getMapMode(this.id);
+      return await NativeInterface.getMapMode(this.#id);
     } catch (error) {
       return handleRejection(error);
     }
@@ -1252,7 +1179,7 @@ class CitizenEscposprinter implements AsyncDisposable {
 
   async setMapMode(mode: ESCPOSPrinterMapMode) {
     try {
-      return await NativeInterface.setMapMode(this.id, mode);
+      return await NativeInterface.setMapMode(this.#id, mode);
     } catch (error) {
       return handleRejection(error);
     }
@@ -1392,6 +1319,81 @@ export async function getVersionCode() {
 export async function getVersionName() {
   try {
     return NativeInterface.getVersionName();
+  } catch (error) {
+    return handleRejection(error);
+  }
+}
+
+/**
+ * This method is used to connect printer and get the status of the printer.
+ * After the process is complete, disconnect the connection. (except
+ * connection type `CMP_PORT_SNMP`)
+ *
+ * The `CMP_PORT_SNMP` in the connect type can be used with printers connected
+ * to the network. By using this connection type, you can get the status
+ * regardless of other connections. In order to use this connection type, the
+ * printer supported with this function.
+ */
+export async function printerCheckEx(
+  connectType: ESCPOSPrinterConnectType,
+  /**
+   * WiFi:
+   * - 0.0.0.0 ~ 255.255.255.255
+   *
+   * Bluetooth:
+   * - 00:00:00:00:00:00 ~ FF:FF:FF:FF:FF:FF
+   * - Device name (Automatic detection)
+   */
+  address = "",
+  port = 0,
+  timeout = 0,
+): Promise<ESCPOSPrinterStatus> {
+  address = address?.trim();
+
+  try {
+    return await NativeInterface.printerCheckEx(
+      connectType,
+      address,
+      port,
+      timeout,
+    );
+  } catch (error) {
+    return handleRejection(error);
+  }
+}
+
+/**
+ * This method is used to connect printer and open the cash drawer is connected
+ * to the printer. After the process is complete, disconnect the connection.
+ *
+ * This method can execute even if the printer error (cover open or paper empty).
+ */
+export async function openDrawerEx(
+  drawer: ESCPOSPrinterDrawer,
+  /** 1 - 8 (x 100) msec */
+  pulseLen: number,
+  connectType: ESCPOSPrinterConnectType,
+  /**
+   * WiFi:
+   * - 0.0.0.0 ~ 255.255.255.255
+   *
+   * Bluetooth:
+   * - 00:00:00:00:00:00 ~ FF:FF:FF:FF:FF:FF
+   * - Device name (Automatic detection)
+   */
+  address = "",
+  port = 0,
+  timeout = 0,
+) {
+  try {
+    return await NativeInterface.openDrawerEx(
+      drawer,
+      pulseLen,
+      connectType,
+      address,
+      port,
+      timeout,
+    );
   } catch (error) {
     return handleRejection(error);
   }

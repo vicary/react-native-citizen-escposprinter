@@ -8,28 +8,24 @@ import com.facebook.react.module.model.ReactModuleInfo
 import java.util.HashMap
 
 class CitizenEscposprinterPackage : TurboReactPackage() {
-  override fun getModule(name: String, reactContext: ReactApplicationContext): NativeModule? {
-    return if (name == CitizenEscposprinterModule.NAME) {
+  override fun getModule(name: String, reactContext: ReactApplicationContext): NativeModule? =
+    if (name == CitizenEscposprinterModule.NAME) {
       CitizenEscposprinterModule(reactContext)
     } else {
       null
     }
-  }
 
-  override fun getReactModuleInfoProvider(): ReactModuleInfoProvider {
-    return ReactModuleInfoProvider {
-      val moduleInfos: MutableMap<String, ReactModuleInfo> = HashMap()
-      val isTurboModule: Boolean = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
-      moduleInfos[CitizenEscposprinterModule.NAME] = ReactModuleInfo(
+  override fun getReactModuleInfoProvider() = ReactModuleInfoProvider {
+    mapOf(
+      CitizenEscposprinterModule.NAME to ReactModuleInfo(
         CitizenEscposprinterModule.NAME,
         CitizenEscposprinterModule.NAME,
         false,  // canOverrideExistingModule
         false,  // needsEagerInit
-        true,  // hasConstants
+        // true,  // hasConstants
         false,  // isCxxModule
-        isTurboModule // isTurboModule
+        BuildConfig.IS_NEW_ARCHITECTURE_ENABLED  // isTurboModule
       )
-      moduleInfos
-    }
+    )
   }
 }

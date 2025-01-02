@@ -189,7 +189,6 @@ export interface Spec extends TurboModule {
   ): Promise<string[]>;
 
   printerCheckEx(
-    id: number,
     /** @type ESCPOSPrinterConnectType */
     connectType: number,
     address: string,
@@ -198,7 +197,6 @@ export interface Spec extends TurboModule {
   ): Promise<number>;
 
   openDrawerEx(
-    id: number,
     /** @type ESCPOSPrinterDrawer */
     drawer: number,
     pulseLen: number,
