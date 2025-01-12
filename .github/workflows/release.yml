@@ -19,11 +19,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup
         uses: ./.github/actions/setup
-
-      - name: Lint files
+      - name: Linting
         run: yarn lint
 
   test:
@@ -31,27 +29,25 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup
         uses: ./.github/actions/setup
-
-      - name: Run unit tests
+      - name: Testing
         run: yarn test --maxWorkers=2 --coverage
 
   release:
+    runs-on: ubuntu-latest
     permissions:
       contents: write
-    runs-on: ubuntu-latest
+      issues: write
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup
         uses: ./.github/actions/setup
-
       - name: Release
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |-
           cp ../../README.md .
