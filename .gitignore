@@ -1,3 +1,5 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
 #
 # React
 #
@@ -48,12 +50,20 @@ bower_components/
 build/Release
 
 # Dependency directories
-node_modules
-node_modules.nosync/
+node_modules/
 jspm_packages/
 
 # TypeScript v1 declaration files
 typings/
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
 
 # TypeScript cache
 *.tsbuildinfo
@@ -184,12 +194,26 @@ ios/Pods/
 
 # Expo
 **/.expo/
-examples/**/ios/
-examples/**/android/
-expo-env.d.ts
+**/dist/
+**/ios/
+**/android/
+**/web-build/
+**/expo-env.d.ts
+
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
 
 # DotEnv
-.env
+.env*.local
 
 # Local Netlify folder
 .netlify/
